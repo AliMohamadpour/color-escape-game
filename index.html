@@ -1,81 +1,456 @@
+
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#101827"><title>Color Escape</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#101827">
+<title>Color Escape</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#101827,#1c2940);color:#fff;font-family:Tahoma,Arial,sans-serif;min-height:100vh}
-.wrap{max-width:520px;margin:auto;padding:18px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-h1{font-size:24px;margin:8px 0}.muted{color:#aebbd0;font-size:13px}.pill{background:#26364f;padding:9px 13px;border-radius:20px;font-size:13px}
-.panel{background:#1b2940;border:1px solid #354761;border-radius:18px;padding:16px;margin-top:18px;box-shadow:0 12px 30px #0003}
-.stats{display:flex;justify-content:space-around;text-align:center}.stat b{display:block;font-size:22px;margin-bottom:4px}
-.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;justify-items:center;align-items:end;min-height:220px;margin:24px 0 10px}
-.tube{width:62px;height:166px;border:3px solid #b8c7d9;border-top:0;border-radius:0 0 18px 18px;background:#ffffff12;display:flex;flex-direction:column-reverse;overflow:hidden;padding:4px;gap:2px;cursor:pointer;transition:.15s}
-.tube.selected{transform:translateY(-9px);border-color:#ffd166;box-shadow:0 0 0 3px #ffd16635}
-.ball{width:100%;height:25%;border-radius:7px;box-shadow:inset 0 3px 5px #fff5,inset 0 -4px 6px #0003}
-.controls{display:flex;gap:10px}.btn{border:0;border-radius:13px;padding:13px 15px;font-weight:bold;font-size:15px;cursor:pointer;background:#ffd166;color:#1b2432;flex:1}
-.btn.secondary{background:#344761;color:#fff}.message{min-height:24px;text-align:center;color:#ffd166;font-size:14px;margin-top:10px}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:linear-gradient(160deg,#101827,#1c2940);
+ color:#fff;
+ font-family:Tahoma,Arial,sans-serif;
+ min-height:100vh
+}
+.wrap{max-width:520px;margin:auto;padding:18px 14px 30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+h1{font-size:24px;margin:8px 0}
+.muted{color:#aebbd0;font-size:13px}
+.pill{background:#26364f;padding:9px 13px;border-radius:20px;font-size:13px}
+.panel{
+ background:#1b2940;
+ border:1px solid #354761;
+ border-radius:18px;
+ padding:16px;
+ margin-top:18px;
+ box-shadow:0 12px 30px #0003
+}
+.stats{display:flex;justify-content:space-around;text-align:center}
+.stat b{display:block;font-size:22px;margin-bottom:4px}
+.board{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:12px;
+ justify-items:center;
+ align-items:end;
+ min-height:220px;
+ margin:24px 0 10px
+}
+.tube{
+ width:62px;
+ height:166px;
+ border:3px solid #b8c7d9;
+ border-top:0;
+ border-radius:0 0 18px 18px;
+ background:#ffffff12;
+ display:flex;
+ flex-direction:column-reverse;
+ overflow:hidden;
+ padding:4px;
+ gap:2px;
+ cursor:pointer;
+ transition:.15s
+}
+.tube.selected{
+ transform:translateY(-9px);
+ border-color:#ffd166;
+ box-shadow:0 0 0 3px #ffd16635
+}
+.ball{
+ width:100%;
+ height:25%;
+ border-radius:7px;
+ box-shadow:inset 0 3px 5px #fff5,inset 0 -4px 6px #0003
+}
+.controls{display:flex;gap:10px}
+.btn{
+ border:0;
+ border-radius:13px;
+ padding:13px 10px;
+ font-weight:bold;
+ font-size:14px;
+ cursor:pointer;
+ background:#ffd166;
+ color:#1b2432;
+ flex:1
+}
+.btn.secondary{background:#344761;color:#fff}
+.message{
+ min-height:24px;
+ text-align:center;
+ color:#ffd166;
+ font-size:14px;
+ margin-top:10px
+}
 .footer{text-align:center;color:#9eacc1;font-size:12px;margin-top:18px}
-@media(max-width:360px){.tube{width:55px;height:150px}.board{gap:8px}}
-</style></head>
-<body><main class="wrap">
-<div class="top"><div><div class="muted">بازی فکری مرتب‌سازی رنگ‌ها</div><h1>Color Escape</h1></div><div class="pill" id="player">بازیکن مهمان</div></div>
+@media(max-width:360px){
+ .tube{width:55px;height:150px}
+ .board{gap:8px}
+ .btn{font-size:12px;padding:12px 5px}
+}
+</style>
+</head>
+
+<body>
+<main class="wrap">
+
+<div class="top">
+ <div>
+  <div class="muted">بازی فکری مرتب‌سازی رنگ‌ها</div>
+  <h1>Color Escape</h1>
+ </div>
+ <div class="pill" id="player">بازیکن مهمان</div>
+</div>
+
 <section class="panel">
-<div class="stats"><div class="stat"><b id="level">1</b><span class="muted">مرحله</span></div><div class="stat"><b id="moves">0</b><span class="muted">حرکت</span></div><div class="stat"><b id="best">—</b><span class="muted">رکورد</span></div></div>
-<div class="board" id="board"></div>
-<div class="controls"><button class="btn secondary" id="restart">شروع دوباره</button><button class="btn secondary" id="undo">برگشت</button><button class="btn" id="next">مرحله بعد</button></div>
-<div class="message" id="message">یک لوله را انتخاب کن، سپس رنگ را به لوله دیگر منتقل کن.</div>
+
+ <div class="stats">
+  <div class="stat">
+   <b id="level">1</b>
+   <span class="muted">مرحله</span>
+  </div>
+  <div class="stat">
+   <b id="moves">0</b>
+   <span class="muted">حرکت</span>
+  </div>
+  <div class="stat">
+   <b id="best">—</b>
+   <span class="muted">رکورد</span>
+  </div>
+ </div>
+
+ <div class="board" id="board"></div>
+
+ <div class="controls">
+  <button class="btn secondary" id="restart">شروع دوباره</button>
+  <button class="btn secondary" id="undo">برگشت</button>
+  <button class="btn" id="next">مرحله بعد</button>
+ </div>
+
+ <div class="message" id="message">
+  یک لوله را انتخاب کن، سپس رنگ را به لوله دیگر منتقل کن.
+ </div>
+
 </section>
-<section class="panel"><div style="font-weight:bold;margin-bottom:8px">قوانین بازی</div><div class="muted">رنگ‌ها را طوری جابه‌جا کن که هر لوله فقط یک رنگ داشته باشد. هر لوله حداکثر ۴ توپ می‌گیرد. فقط رنگ بالایی لوله قابل انتقال است.</div></section>
-<div class="footer">پیشرفت بازی روی همین دستگاه ذخیره می‌شود؛ در صورت اجرای داخل تلگرام، شناسه بازیکن نیز شناسایی می‌شود.</div>
+
+<section class="panel">
+ <div style="font-weight:bold;margin-bottom:8px">قوانین بازی</div>
+ <div class="muted">
+ رنگ‌ها را طوری جابه‌جا کن که هر لوله فقط یک رنگ داشته باشد.
+ هر لوله حداکثر ۴ توپ می‌گیرد.
+ فقط رنگ بالایی لوله قابل انتقال است.
+ </div>
+</section>
+
+<div class="footer">
+ پیشرفت بازی ذخیره می‌شود و در ورود بعدی قابل بازیابی است.
+</div>
+
 </main>
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <script>
-const COLORS=["#ef476f","#06d6a0","#118ab2","#ffd166","#9b5de5","#f78c6b","#8ac926","#4cc9f0"];
+const COLORS=[
+ "#ef476f","#06d6a0","#118ab2","#ffd166",
+ "#9b5de5","#f78c6b","#8ac926","#4cc9f0"
+];
+
 const $=id=>document.getElementById(id);
-let level=1,moves=0,board=[],selected=-1,history=[],best=null;
-const tg=window.Telegram?.WebApp; if(tg){tg.ready();tg.expand();if(tg.initDataUnsafe?.user){const u=tg.initDataUnsafe.user;$("player").textContent=(u.first_name||"بازیکن").slice(0,16)}}
+
+let level=1;
+let moves=0;
+let board=[];
+let selected=-1;
+let history=[];
+let best=null;
+let bestLevel=50;
+
+const tg=window.Telegram?.WebApp;
+
+if(tg){
+ tg.ready();
+ tg.expand();
+
+ if(tg.initDataUnsafe?.user){
+  const u=tg.initDataUnsafe.user;
+  $("player").textContent=(u.first_name||"بازیکن").slice(0,16);
+ }
+}
+
 const storageKey="colorEscapeProgressV1";
-const guestId="guest-"+(localStorage.getItem("colorEscapeGuestId")||(()=>{const v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("colorEscapeGuestId",v);return v})());
+
+const guestId="guest-"+(
+ localStorage.getItem("colorEscapeGuestId")||
+ (()=>{
+  const v=Math.random().toString(36).slice(2)+Date.now().toString(36);
+  localStorage.setItem("colorEscapeGuestId",v);
+  return v;
+ })()
+);
+
+function getPlayerId(){
+ const u=tg?.initDataUnsafe?.user;
+ return u?.id?String(u.id):guestId;
+}
+
+function loadLocal(){
+ try{
+  const x=JSON.parse(localStorage.getItem(storageKey)||"{}");
+  level=Math.max(1,Number(x.level)||1);
+  best=x.best||null;
+ }catch(e){
+  level=1;
+  best=null;
+ }
+}
+
+function saveLocal(){
+ localStorage.setItem(storageKey,JSON.stringify({
+  level,
+  best
+ }));
+}
+
+async function loadCloudProgress(){
+ try{
+  const response=await fetch(
+   "/api/progress?telegram_id="+encodeURIComponent(getPlayerId())
+  );
+
+  const result=await response.json();
+
+  if(result.success&&result.player){
+   const cloudLevel=Number(result.player.level);
+
+   if(Number.isInteger(cloudLevel)&&cloudLevel>=1){
+    level=Math.max(level,cloudLevel);
+   }
+
+   $("message").textContent="پیشرفت قبلی شما بازیابی شد 🎉";
+  }
+
+ }catch(e){
+  console.error("Cloud load error:",e);
+  $("message").textContent="ادامه بازی از اطلاعات دستگاه";
+ }
+}
+
 async function syncProgress(){
  const u=tg?.initDataUnsafe?.user;
- const telegram_id=u?.id?String(u.id):guestId;
+ const telegram_id=getPlayerId();
  const name=u?.first_name||"Guest";
- try{await fetch("/api/progress",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({telegram_id,name,level:level+1,completed:1})})}catch(e){}
-}
-function load(){try{const x=JSON.parse(localStorage.getItem(storageKey)||"{}");level=Math.max(1,x.level||1);best=x.best||null}catch{}}
-function save(){localStorage.setItem(storageKey,JSON.stringify({level,best}));}
-function newBoard(n){
- const count=Math.min(3+Math.floor((n-1)/8),6), arr=[];
- for(let c=0;c<count;c++)for(let j=0;j<4;j++)arr.push(c);
- // Fisher-Yates shuffle; reject solved boards
- for(let tries=0;tries<100;tries++){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
- const tubes=Array.from({length:count+1},(_,i)=>i===count?[]:arr.slice(i*4,i*4+4));
- if(tubes.slice(0,count).some(t=>t.some(v=>v!==t[0])))return tubes;
+
+ try{
+  const response=await fetch("/api/progress",{
+   method:"POST",
+   headers:{"content-type":"application/json"},
+   body:JSON.stringify({
+    telegram_id,
+    name,
+    level:level+1,
+    completed:1
+   })
+  });
+
+  const result=await response.json();
+
+  if(!result.success){
+   console.error("Save error:",result.error);
+  }
+
+ }catch(e){
+  console.error("Cloud save error:",e);
  }
- return Array.from({length:count+1},(_,i)=>i===count?[]:Array(4).fill(i%count));
 }
-function start(){board=newBoard(level);moves=0;selected=-1;history=[];render()}
+
+function newBoard(n){
+ const count=Math.min(3+Math.floor((n-1)/8),6);
+ const arr=[];
+
+ for(let c=0;c<count;c++){
+  for(let j=0;j<4;j++)arr.push(c);
+ }
+
+ for(let tries=0;tries<100;tries++){
+
+  const shuffled=arr.slice();
+
+  for(let i=shuffled.length-1;i>0;i--){
+   let j=Math.floor(Math.random()*(i+1));
+   [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+
+  const tubes=Array.from({length:count+1},(_,i)=>
+   i===count?[]:shuffled.slice(i*4,i*4+4)
+  );
+
+  if(tubes.slice(0,count).some(t=>t.some(v=>v!==t[0]))){
+   return tubes;
+  }
+ }
+
+ return Array.from({length:count+1},(_,i)=>
+  i===count?[]:Array(4).fill(i%count)
+ );
+}
+
+function start(){
+ board=newBoard(level);
+ moves=0;
+ selected=-1;
+ history=[];
+ render();
+}
+
 function render(){
- $("level").textContent=level;$("moves").textContent=moves;$("best").textContent=best??"—";
- const root=$("board");root.innerHTML="";
- board.forEach((tube,i)=>{const el=document.createElement("div");el.className="tube"+(selected===i?" selected":"");el.setAttribute("aria-label","لوله "+(i+1));tube.forEach(c=>{const b=document.createElement("div");b.className="ball";b.style.background=COLORS[c%COLORS.length];el.appendChild(b)});el.onclick=()=>tap(i);root.appendChild(el)});
+ $("level").textContent=level;
+ $("moves").textContent=moves;
+ $("best").textContent=best??"—";
+
+ const root=$("board");
+ root.innerHTML="";
+
+ board.forEach((tube,i)=>{
+  const el=document.createElement("div");
+
+  el.className="tube"+(selected===i?" selected":"");
+  el.setAttribute("aria-label","لوله "+(i+1));
+
+  tube.forEach(c=>{
+   const b=document.createElement("div");
+   b.className="ball";
+   b.style.background=COLORS[c%COLORS.length];
+   el.appendChild(b);
+  });
+
+  el.onclick=()=>tap(i);
+  root.appendChild(el);
+ });
 }
-function solved(){return board.every(t=>t.length===0|| (t.length===4&&t.every(v=>v===t[0])))}
+
+function solved(){
+ return board.every(t=>
+  t.length===0||
+  (t.length===4&&t.every(v=>v===t[0]))
+ );
+}
+
 function tap(i){
- if(selected<0){if(board[i].length){selected=i;render()}return}
- if(selected===i){selected=-1;render();return}
- const from=board[selected],to=board[i];
- if(from.length&&to.length<4&&(!to.length||to[to.length-1]===from[from.length-1])){
-  history.push({board:board.map(t=>t.slice()),moves});const color=from[from.length-1];let amount=0;
-  while(from.length&&from[from.length-1]===color&&to.length<4){to.push(from.pop());amount++}
-  moves++;$("message").textContent=amount+" توپ جابه‌جا شد.";selected=-1;render();
-  if(solved()){$("message").textContent="آفرین! مرحله را کامل کردی 🎉";best=best===null?moves:Math.min(best,moves);if(level>= (bestLevel||50)){}save();syncProgress();$("next").textContent="مرحله بعد";}
- }else{selected=i;render();$("message").textContent="این حرکت مجاز نیست؛ لوله خالی یا هم‌رنگ را انتخاب کن."}
+
+ if(selected<0){
+  if(board[i].length){
+   selected=i;
+   render();
+  }
+  return;
+ }
+
+ if(selected===i){
+  selected=-1;
+  render();
+  return;
+ }
+
+ const from=board[selected];
+ const to=board[i];
+
+ if(
+  from.length&&
+  to.length<4&&
+  (!to.length||to[to.length-1]===from[from.length-1])
+ ){
+
+  history.push({
+   board:board.map(t=>t.slice()),
+   moves
+  });
+
+  const color=from[from.length-1];
+  let amount=0;
+
+  while(
+   from.length&&
+   from[from.length-1]===color&&
+   to.length<4
+  ){
+   to.push(from.pop());
+   amount++;
+  }
+
+  moves++;
+  $("message").textContent=amount+" توپ جابه‌جا شد.";
+
+  selected=-1;
+  render();
+
+  if(solved()){
+   $("message").textContent="آفرین! مرحله را کامل کردی 🎉";
+
+   best=best===null?moves:Math.min(best,moves);
+
+   saveLocal();
+   syncProgress();
+
+   $("next").textContent="مرحله بعد";
+  }
+
+ }else{
+  selected=i;
+  render();
+  $("message").textContent=
+   "این حرکت مجاز نیست؛ لوله خالی یا هم‌رنگ را انتخاب کن.";
+ }
 }
-let bestLevel=50;
-$("restart").onclick=()=>{start();$("message").textContent="مرحله از نو شروع شد."};
-$("undo").onclick=()=>{if(history.length){const h=history.pop();board=h.board;moves=h.moves;selected=-1;render()}};
-$("next").onclick=()=>{if(!solved()){$("message").textContent="اول مرحله را کامل کن.";return}level++;save();start();$("message").textContent="مرحله جدید شروع شد. موفق باشی!"};
-load();start();
-</script></body></html>
+
+$("restart").onclick=()=>{
+ start();
+ $("message").textContent="مرحله از نو شروع شد.";
+};
+
+$("undo").onclick=()=>{
+ if(history.length){
+  const h=history.pop();
+  board=h.board;
+  moves=h.moves;
+  selected=-1;
+  render();
+ }
+};
+
+$("next").onclick=()=>{
+ if(!solved()){
+  $("message").textContent="اول مرحله را کامل کن.";
+  return;
+ }
+
+ level++;
+ saveLocal();
+ start();
+
+ $("message").textContent="مرحله جدید شروع شد. موفق باشی!";
+ $("next").textContent="مرحله بعد";
+};
+
+async function init(){
+ loadLocal();
+
+ $("message").textContent="در حال بازیابی پیشرفت...";
+
+ await loadCloudProgress();
+
+ saveLocal();
+ start();
+
+ $("message").textContent="بازی آماده است. موفق باشی!";
+}
+
+init();
+</script>
+
+</body>
+</html>
