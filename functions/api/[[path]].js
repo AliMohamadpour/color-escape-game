@@ -18,6 +18,36 @@ export async function onRequest(context) {
     );
   }
 
+  // خواندن مرحله ذخیره‌شده
+  if (request.method === "GET") {
+    const telegram_id = String(
+      url.searchParams.get("telegram_id") || ""
+    ).trim();
+
+    if (!telegram_id) {
+      return Response.json(
+        { success: false, error: "Missing telegram_id" },
+        { status: 400 }
+      );
+    }
+
+    try {
+      const player = await env.DB.prepare(
+        "SELECT telegram_id, name, level, completed FROM Players WHERE telegram_id = ?"
+      ).bind(telegram_id).first();
+
+      return Response.json({
+        success: true,
+        player: player || null
+      });
+    } catch (error) {
+      return Response.json(
+        { success: false, error: error.message },
+        { status: 500 }
+      );
+    }
+  }
+
   if (request.method !== "POST") {
     return Response.json(
       { success: false, error: "Method not allowed" },
