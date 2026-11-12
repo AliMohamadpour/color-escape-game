@@ -37,23 +37,19 @@ async function createSession(env, playerId) {
 
 async function getPlayer(request, env) {
   const auth = request.headers.get("Authorization") || "";
-  const token = auth.startsWith("Bearer ")
-    ? auth.slice(7)
-    : "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
 
   if (!token) return null;
 
   const tokenHash = await hash(token);
 
-  const session = await env.DB.prepare(`
+  return await env.DB.prepare(`
     SELECT p.*
     FROM player_sessions s
     JOIN players p ON p.telegram_id = s.telegram_id
     WHERE s.token_hash = ?
       AND s.expires_at > ?
   `).bind(tokenHash, new Date().toISOString()).first();
-
-  return session || null;
 }
 
 function bytesToHex(bytes) {
@@ -116,6 +112,7 @@ async function verifyTelegram(initData, botToken) {
   }
 
   let difference = 0;
+
   for (let i = 0; i < calculated.length; i++) {
     difference |= calculated.charCodeAt(i) ^ receivedHash.charCodeAt(i);
   }
@@ -164,16 +161,13 @@ export async function onRequest({ request, env }) {
     }
 
     if (request.method !== "POST") {
-      return reply({
-        success: false,
-        message: "Method not allowed"
-      }, 405);
+      return reply({ success: false, message: "Method not allowed" }, 405);
     }
 
     const data = await request.json();
     const action = data.action;
 
-    // 1. Create guest account
+    // Guest login
     if (action === "guest") {
       const guestId = crypto.randomUUID();
       const playerId = "guest:" + guestId;
@@ -187,22 +181,19 @@ export async function onRequest({ request, env }) {
 
       const session = await createSession(env, playerId);
 
+      const player = await env.DB.prepare(`
+        SELECT * FROM players WHERE telegram_id = ?
+      `).bind(playerId).first();
+
       return reply({
         success: true,
-        player: {
-          id: playerId,
-          guest_id: guestId,
-          name: name || "بازیکن",
-          auth_type: "guest",
-          level: 0,
-          completed: 0
-        },
+        player,
         token: session.token,
         expires_at: session.expires
       }, 201);
     }
 
-    // 2. Telegram login
+    // Telegram login
     if (action === "telegram") {
       const user = await verifyTelegram(
         data.initData,
@@ -216,8 +207,7 @@ export async function onRequest({ request, env }) {
       ].filter(Boolean).join(" ").slice(0, 60) || "بازیکن";
 
       let player = await env.DB.prepare(`
-        SELECT * FROM players
-        WHERE telegram_user_id = ?
+        SELECT * FROM players WHERE telegram_user_id = ?
       `).bind(telegramUserId).first();
 
       if (player) {
@@ -227,18 +217,15 @@ export async function onRequest({ request, env }) {
           WHERE telegram_id = ?
         `).bind(name, player.telegram_id).run();
       } else {
-        const playerId = "tg:" + telegramUserId;
-
         await env.DB.prepare(`
           INSERT INTO players
           (telegram_id, telegram_user_id, name, auth_type)
           VALUES (?, ?, ?, 'telegram')
-        `).bind(playerId, telegramUserId, name).run();
+        `).bind("tg:" + telegramUserId, telegramUserId, name).run();
       }
 
       player = await env.DB.prepare(`
-        SELECT * FROM players
-        WHERE telegram_user_id = ?
+        SELECT * FROM players WHERE telegram_user_id = ?
       `).bind(telegramUserId).first();
 
       const session = await createSession(env, player.telegram_id);
@@ -251,54 +238,75 @@ export async function onRequest({ request, env }) {
       });
     }
 
-    // 3. Current player
+    // Current player
     if (action === "me") {
       const player = await getPlayer(request, env);
 
       if (!player) {
-        return reply({
-          success: false,
-          message: "Login required"
-        }, 401);
+        return reply({ success: false, message: "Login required" }, 401);
       }
 
-      return reply({
-        success: true,
-        player
-      });
+      return reply({ success: true, player });
     }
 
-    // 4. Save completed level
+    // Save level, moves and coins
     if (action === "progress") {
       const player = await getPlayer(request, env);
 
       if (!player) {
-        return reply({
-          success: false,
-          message: "Login required"
-        }, 401);
+        return reply({ success: false, message: "Login required" }, 401);
       }
 
       const level = Number(data.level);
+      const moves = Number(data.moves);
 
       if (!Number.isInteger(level) || level < 1 || level > 500) {
-        return reply({
-          success: false,
-          message: "Invalid level"
-        }, 400);
+        return reply({ success: false, message: "Invalid level" }, 400);
       }
 
-      const isNewRecord = level > player.level;
+      if (!Number.isInteger(moves) || moves < 1 || moves > 100000) {
+        return reply({ success: false, message: "Invalid moves" }, 400);
+      }
 
-      if (isNewRecord) {
+      // Is this the player's first completion of this level?
+      const inserted = await env.DB.prepare(`
+        INSERT OR IGNORE INTO player_level_records
+        (telegram_id, level, best_moves)
+        VALUES (?, ?, ?)
+      `).bind(player.telegram_id, level, moves).run();
+
+      const firstCompletion = Number(inserted.meta?.changes || 0) > 0;
+
+      // Keep the best (lowest) move count for this level.
+      await env.DB.prepare(`
+        INSERT INTO player_level_records
+        (telegram_id, level, best_moves)
+        VALUES (?, ?, ?)
+        ON CONFLICT(telegram_id, level)
+        DO UPDATE SET
+          best_moves = MIN(best_moves, excluded.best_moves),
+          completed_at = CASE
+            WHEN excluded.best_moves < best_moves
+            THEN CURRENT_TIMESTAMP
+            ELSE completed_at
+          END
+      `).bind(player.telegram_id, level, moves).run();
+
+      // Reward only once per completed level.
+      const reward = firstCompletion
+        ? 15 + Math.min(35, Math.floor(level / 10))
+        : 0;
+
+      if (firstCompletion) {
         await env.DB.batch([
           env.DB.prepare(`
             UPDATE players
             SET level = MAX(level, ?),
                 completed = completed + 1,
+                coins = coins + ?,
                 updated_at = CURRENT_TIMESTAMP
             WHERE telegram_id = ?
-          `).bind(level, player.telegram_id),
+          `).bind(Math.min(500, level + 1), reward, player.telegram_id),
 
           env.DB.prepare(`
             INSERT INTO score_history (telegram_id, level)
@@ -307,23 +315,57 @@ export async function onRequest({ request, env }) {
         ]);
       }
 
+      // Update overall best move count.
+      await env.DB.prepare(`
+        UPDATE players
+        SET best_moves = CASE
+          WHEN best_moves IS NULL THEN ?
+          ELSE MIN(best_moves, ?)
+        END,
+        updated_at = CURRENT_TIMESTAMP
+        WHERE telegram_id = ?
+      `).bind(moves, moves, player.telegram_id).run();
+
       const updated = await env.DB.prepare(`
         SELECT * FROM players WHERE telegram_id = ?
       `).bind(player.telegram_id).first();
 
       return reply({
         success: true,
-        new_record: isNewRecord,
+        first_completion: firstCompletion,
+        reward,
         player: updated
       });
     }
 
-    // 5. Leaderboard
+    // Player's level records
+    if (action === "records") {
+      const player = await getPlayer(request, env);
+
+      if (!player) {
+        return reply({ success: false, message: "Login required" }, 401);
+      }
+
+      const result = await env.DB.prepare(`
+        SELECT level, best_moves, completed_at
+        FROM player_level_records
+        WHERE telegram_id = ?
+        ORDER BY level ASC
+      `).bind(player.telegram_id).all();
+
+      return reply({
+        success: true,
+        records: result.results
+      });
+    }
+
+    // Global leaderboard
     if (action === "leaderboard") {
       const result = await env.DB.prepare(`
-        SELECT name, level, completed, auth_type
+        SELECT name, level, completed, coins, best_moves, auth_type
         FROM players
-        ORDER BY level DESC, completed DESC
+        ORDER BY completed DESC, level DESC, coins DESC,
+                 best_moves ASC
         LIMIT 50
       `).all();
 
@@ -333,12 +375,10 @@ export async function onRequest({ request, env }) {
       });
     }
 
-    // 6. Logout
+    // Logout
     if (action === "logout") {
       const auth = request.headers.get("Authorization") || "";
-      const token = auth.startsWith("Bearer ")
-        ? auth.slice(7)
-        : "";
+      const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
 
       if (token) {
         await env.DB.prepare(`
