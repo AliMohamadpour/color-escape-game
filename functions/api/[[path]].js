@@ -18,10 +18,20 @@ export async function onRequestPost({ request, env }) {
       }, 500);
     }
 
-    const body = await request.json();
+    let body;
+
+    try {
+      body = await request.json();
+    } catch {
+      return json({
+        success: false,
+        error: "Invalid JSON"
+      }, 400);
+    }
 
     const telegramId = String(body.telegram_id || "").trim();
     const name = String(body.name || "Guest").trim();
+
     const level = Number(body.level);
     const completed = Number(body.completed);
 
@@ -30,8 +40,11 @@ export async function onRequestPost({ request, env }) {
       telegramId.length > 100 ||
       !Number.isInteger(level) ||
       !Number.isInteger(completed) ||
-      level < 1 || level > 500 ||
-      completed < 0 || completed > 500
+      level < 1 ||
+      level > 500 ||
+      completed < 0 ||
+      completed > 500 ||
+      completed >= level
     ) {
       return json({
         success: false,
