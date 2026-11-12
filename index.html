@@ -1,405 +1,384 @@
 
-<!doctype html>
-<html lang="en" dir="ltr">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#101827">
+<meta name="theme-color" content="#101426">
 <title>Color Escape</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(160deg,#101827,#1c2940);color:#fff;font-family:Arial,Tahoma,sans-serif;min-height:100vh}
-.wrap{max-width:520px;margin:auto;padding:18px 14px 30px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-h1{font-size:24px;margin:8px 0}
-.muted{color:#aebbd0;font-size:13px}
-.pill{background:#26364f;padding:9px 13px;border-radius:20px;font-size:13px}
-select{background:#344761;color:white;border:1px solid #536781;border-radius:10px;padding:9px;font-size:13px}
-.panel{background:#1b2940;border:1px solid #354761;border-radius:18px;padding:16px;margin-top:18px;box-shadow:0 12px 30px #0003}
-.stats{display:flex;justify-content:space-around;text-align:center}
-.stat b{display:block;font-size:22px;margin-bottom:4px}
-.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;justify-items:center;align-items:end;min-height:220px;margin:24px 0 10px}
-.tube{width:62px;height:166px;border:3px solid #b8c7d9;border-top:0;border-radius:0 0 18px 18px;background:#ffffff12;display:flex;flex-direction:column-reverse;overflow:hidden;padding:4px;gap:2px;cursor:pointer;transition:.15s}
-.tube.selected{transform:translateY(-9px);border-color:#ffd166;box-shadow:0 0 0 3px #ffd16635}
-.ball{width:100%;height:25%;border-radius:7px;box-shadow:inset 0 3px 5px #fff5,inset 0 -4px 6px #0003}
-.controls{display:flex;gap:10px;flex-wrap:wrap}
-.btn{border:0;border-radius:13px;padding:13px 10px;font-weight:bold;font-size:14px;cursor:pointer;background:#ffd166;color:#1b2432;flex:1}
-.btn.secondary{background:#344761;color:#fff}
-.message{min-height:24px;text-align:center;color:#ffd166;font-size:14px;margin-top:10px}
-.footer{text-align:center;color:#9eacc1;font-size:12px;margin-top:18px;line-height:1.8}
-[dir="rtl"] .top,[dir="rtl"] .controls{direction:rtl}
-[dir="rtl"] body{text-align:right}
-@media(max-width:360px){.tube{width:55px;height:150px}.board{gap:8px}}
+body{
+ margin:0;min-height:100vh;color:white;
+ font-family:Tahoma,Arial,sans-serif;
+ background:radial-gradient(circle at top,#293b68,#101426 65%);
+ display:flex;justify-content:center;
+}
+.app{width:100%;max-width:550px;padding:18px 15px 30px}
+header{text-align:center;margin-bottom:18px}
+.logo{font-size:34px;font-weight:900;letter-spacing:2px;
+ background:linear-gradient(90deg,#35eaff,#a77aff,#ff55bd);
+ -webkit-background-clip:text;color:transparent}
+.subtitle{color:#aab5d4;font-size:12px;margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:15px}
+.stat{
+ background:linear-gradient(145deg,#273453,#18223a);
+ border:1px solid #465579;border-radius:15px;
+ padding:12px 5px;text-align:center;
+ box-shadow:0 5px 0 #0c1426;
+}
+.stat small{display:block;color:#aab5d4;font-size:11px;margin-bottom:7px}
+.stat strong{font-size:19px;color:#55eaff}
+.progressbox{
+ background:#202b45;border-radius:20px;padding:12px 14px;
+ margin-bottom:18px;border:1px solid #39496b
+}
+.progressinfo{display:flex;justify-content:space-between;font-size:12px;margin-bottom:9px}
+.progress{height:9px;background:#111a2d;border-radius:20px;overflow:hidden}
+.progressbar{height:100%;width:0;background:linear-gradient(90deg,#29e5ff,#9c68ff);transition:.3s}
+.gamebox{
+ background:linear-gradient(145deg,#263653,#151e34);
+ border:1px solid #526486;border-radius:23px;padding:15px;
+ box-shadow:0 12px 30px #050a18aa;
+}
+.gamehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.gamehead strong{font-size:15px}
+.gamehead span{font-size:11px;color:#aab5d4}
+#board{
+ width:100%;display:grid;gap:3px;
+ background:#0c1426;padding:8px;border-radius:14px;
+ border:2px solid #4b6087;
+ box-shadow:inset 0 0 20px #0008;
+ touch-action:none;
+}
+.cell{
+ aspect-ratio:1;border-radius:4px;
+ background:linear-gradient(145deg,#202c48,#172139);
+ position:relative;
+}
+.cell.wall{
+ background:linear-gradient(145deg,#52688f,#273754);
+ box-shadow:inset 0 2px 3px #ffffff35,inset 0 -3px 3px #101a30;
+}
+.cell.path{background:linear-gradient(145deg,#111c32,#182641)}
+.cell.start{background:#123b48}
+.cell.exit{
+ background:radial-gradient(circle,#4dffbd,#087c68);
+ box-shadow:0 0 13px #30ffb7;
+ animation:pulse 1.5s infinite alternate;
+}
+.cell.player{
+ background:radial-gradient(circle at 35% 30%,#fff,#42edff 35%,#1478ff 75%);
+ box-shadow:0 0 15px #39eaff,0 0 5px white;
+ border-radius:50%;z-index:2;
+ transform:scale(.78);
+}
+@keyframes pulse{to{box-shadow:0 0 22px #30ffb7}}
+.message{
+ text-align:center;color:#aebcdb;font-size:12px;
+ line-height:2;margin:13px 0 5px
+}
+.controls{display:grid;grid-template-columns:repeat(3,58px);
+ justify-content:center;gap:7px;margin:18px auto 5px}
+.control{
+ height:52px;border:1px solid #607ba8;border-radius:13px;
+ color:white;font-size:23px;
+ background:linear-gradient(145deg,#405a85,#243653);
+ box-shadow:0 4px 0 #10192d;
+ cursor:pointer;touch-action:manipulation
+}
+.control:active{transform:translateY(3px);box-shadow:none}
+.empty{visibility:hidden}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:17px}
+.action{
+ border:0;border-radius:13px;padding:14px 8px;
+ color:white;font-weight:bold;font-size:13px;
+ background:linear-gradient(135deg,#7656ed,#4a49ba);
+ cursor:pointer;
+}
+.action.secondary{background:linear-gradient(135deg,#148eaa,#17617f)}
+.action:active{transform:scale(.97)}
+.footer{text-align:center;color:#7888aa;font-size:10px;margin-top:20px}
+.overlay{
+ position:fixed;inset:0;background:#050918df;
+ display:none;align-items:center;justify-content:center;
+ padding:20px;z-index:10
+}
+.popup{
+ width:100%;max-width:350px;text-align:center;
+ background:linear-gradient(145deg,#293b60,#131d35);
+ border:1px solid #657ba6;border-radius:23px;padding:28px 20px;
+ box-shadow:0 15px 60px #0009
+}
+.popup h2{color:#55f3d2}
+.popup p{color:#c2cde4;line-height:2;font-size:14px}
+.popup button{
+ border:0;border-radius:12px;padding:14px 30px;
+ color:#101426;background:linear-gradient(90deg,#55edff,#62ffc1);
+ font-weight:bold;font-size:15px;cursor:pointer
+}
+@media(max-width:370px){
+ .app{padding:12px 10px}
+ .gamebox{padding:10px}
+ .controls{grid-template-columns:repeat(3,53px)}
+ .control{height:48px}
+}
 </style>
 </head>
 <body>
-<main class="wrap">
- <div class="top">
-  <div>
-   <div class="muted" id="subtitle">Color sorting puzzle</div>
-   <h1>Color Escape</h1>
-  </div>
-  <select id="language" aria-label="Language">
-   <option value="en">🇬🇧 English</option>
-   <option value="fa">🇮🇷 فارسی</option>
-   <option value="ar">🇸🇦 العربية</option>
-   <option value="tr">🇹🇷 Türkçe</option>
-   <option value="de">🇩🇪 Deutsch</option>
-   <option value="fr">🇫🇷 Français</option>
-   <option value="es">🇪🇸 Español</option>
-  </select>
-  <div class="pill" id="player">Guest</div>
+<div class="app">
+<header>
+ <div class="logo">COLOR ESCAPE</div>
+ <div class="subtitle">راه خروج را پیدا کن و قهرمان شو!</div>
+</header>
+
+<div class="stats">
+ <div class="stat"><small>مرحله</small><strong id="level">1</strong></div>
+ <div class="stat"><small>سکه‌ها</small><strong id="coins">0</strong></div>
+ <div class="stat"><small>حرکت‌ها</small><strong id="moves">0</strong></div>
+</div>
+
+<div class="progressbox">
+ <div class="progressinfo">
+  <span>پیشرفت بازی</span>
+  <span id="percent">0%</span>
  </div>
+ <div class="progress"><div class="progressbar" id="bar"></div></div>
+</div>
 
- <section class="panel">
-  <div class="stats">
-   <div class="stat"><b id="level">1</b><span class="muted" id="levelLabel">Level</span></div>
-   <div class="stat"><b id="moves">0</b><span class="muted" id="movesLabel">Moves</span></div>
-   <div class="stat"><b id="best">—</b><span class="muted" id="bestLabel">Best</span></div>
-  </div>
-
-  <div class="board" id="board"></div>
-
-  <div class="controls">
-   <button class="btn secondary" id="restart">Restart</button>
-   <button class="btn secondary" id="undo">Undo</button>
-   <button class="btn" id="next">Next Level</button>
-  </div>
-  <div class="message" id="message">Select a tube, then move its top color to another tube.</div>
- </section>
-
- <section class="panel">
-  <div style="font-weight:bold;margin-bottom:8px" id="rulesTitle">How to play</div>
-  <div class="muted" id="rulesText">Sort the colors so each tube contains only one color. Each tube holds up to 4 balls. Only the top color can be moved.</div>
- </section>
-
- <div class="footer" id="footer">
-  Your progress is saved automatically. Telegram players can continue on another device.
+<div class="gamebox">
+ <div class="gamehead">
+  <strong id="stageTitle">مرحله ۱</strong>
+  <span id="difficulty">آسان</span>
  </div>
-</main>
+ <div id="board"></div>
+ <div class="message" id="message">
+  با حرکت دادن گوی آبی، مسیر خروج سبز را پیدا کن.
+ </div>
+</div>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<div class="controls">
+ <button class="control empty"></button>
+ <button class="control" onclick="move(0,-1)">▲</button>
+ <button class="control empty"></button>
+ <button class="control" onclick="move(-1,0)">◀</button>
+ <button class="control" onclick="move(0,1)">▼</button>
+ <button class="control" onclick="move(1,0)">▶</button>
+</div>
+
+<div class="actions">
+ <button class="action" onclick="restart()">شروع دوباره</button>
+ <button class="action secondary" onclick="showHelp()">راهنمای بازی</button>
+</div>
+
+<div class="footer">COLOR ESCAPE • 500 LEVELS • HAVE FUN</div>
+</div>
+
+<div class="overlay" id="overlay">
+ <div class="popup">
+  <div style="font-size:48px">🏆</div>
+  <h2 id="popupTitle">آفرین!</h2>
+  <p id="popupText">مرحله را با موفقیت تمام کردی.</p>
+  <button onclick="nextLevel()">مرحله بعدی</button>
+ </div>
+</div>
+
 <script>
-const translations={
-en:{
-subtitle:"Color sorting puzzle",guest:"Guest",level:"Level",moves:"Moves",best:"Best",
-restart:"Restart",undo:"Undo",next:"Next Level",
-ready:"Select a tube, then move its top color to another tube.",
-rulesTitle:"How to play",
-rulesText:"Sort the colors so each tube contains only one color. Each tube holds up to 4 balls. Only the top color can be moved.",
-footer:"Your progress is saved automatically. Telegram players can continue on another device.",
-moved:" balls moved.",win:"Amazing! Level completed 🎉",
-invalid:"Invalid move. Choose an empty tube or a tube with the same color.",
-restartMsg:"Level restarted.",completeFirst:"Complete this level first.",
-newLevel:"New level started. Good luck!",loading:"Loading your progress...",
-restored:"Your progress has been restored!",saveError:"Could not connect to the server. Local progress is saved.",
-tube:"Tube"
-},
-fa:{
-subtitle:"بازی فکری مرتب‌سازی رنگ‌ها",guest:"بازیکن مهمان",level:"مرحله",moves:"حرکت",best:"رکورد",
-restart:"شروع دوباره",undo:"برگشت",next:"مرحله بعد",
-ready:"یک لوله را انتخاب کن، سپس رنگ بالایی را به لوله دیگر منتقل کن.",
-rulesTitle:"قوانین بازی",
-rulesText:"رنگ‌ها را طوری جابه‌جا کن که هر لوله فقط یک رنگ داشته باشد. هر لوله حداکثر ۴ توپ می‌گیرد. فقط رنگ بالایی قابل انتقال است.",
-footer:"پیشرفت بازی به‌صورت خودکار ذخیره می‌شود. بازیکنان تلگرام می‌توانند در دستگاه دیگری ادامه دهند.",
-moved:" توپ جابه‌جا شد.",win:"آفرین! مرحله را کامل کردی 🎉",
-invalid:"این حرکت مجاز نیست؛ لوله خالی یا هم‌رنگ را انتخاب کن.",
-restartMsg:"مرحله از نو شروع شد.",completeFirst:"اول مرحله را کامل کن.",
-newLevel:"مرحله جدید شروع شد. موفق باشی!",loading:"در حال دریافت پیشرفت شما...",
-restored:"پیشرفت شما بازیابی شد!",saveError:"اتصال به سرور برقرار نشد؛ پیشرفت محلی ذخیره شد.",
-tube:"لوله"
-},
-ar:{
-subtitle:"لعبة ترتيب الألوان",guest:"لاعب زائر",level:"المستوى",moves:"الحركات",best:"أفضل نتيجة",
-restart:"إعادة اللعب",undo:"تراجع",next:"المستوى التالي",
-ready:"اختر أنبوبًا ثم انقل اللون العلوي إلى أنبوب آخر.",
-rulesTitle:"طريقة اللعب",
-rulesText:"رتّب الألوان بحيث يحتوي كل أنبوب على لون واحد فقط. يتسع كل أنبوب لأربع كرات. يمكن نقل اللون العلوي فقط.",
-footer:"يتم حفظ تقدمك تلقائيًا. يمكن للاعبي تيليجرام المتابعة على جهاز آخر.",
-moved:" كرات تم نقلها.",win:"رائع! أكملت المستوى 🎉",
-invalid:"حركة غير صالحة. اختر أنبوبًا فارغًا أو أنبوبًا من نفس اللون.",
-restartMsg:"تمت إعادة المستوى.",completeFirst:"أكمل هذا المستوى أولاً.",
-newLevel:"بدأ مستوى جديد. حظًا سعيدًا!",loading:"جارٍ تحميل تقدمك...",
-restored:"تم استعادة تقدمك!",saveError:"تعذر الاتصال بالخادم. تم حفظ التقدم محليًا.",
-tube:"أنبوب"
-},
-tr:{
-subtitle:"Renk sıralama bulmacası",guest:"Misafir",level:"Seviye",moves:"Hamle",best:"Rekor",
-restart:"Yeniden başlat",undo:"Geri al",next:"Sonraki seviye",
-ready:"Bir tüp seç, ardından üstteki rengi başka bir tüpe taşı.",
-rulesTitle:"Nasıl oynanır",
-rulesText:"Her tüpte yalnızca bir renk kalacak şekilde renkleri sırala. Her tüp en fazla 4 top alır. Yalnızca üstteki renk taşınabilir.",
-footer:"İlerlemen otomatik kaydedilir. Telegram oyuncuları başka cihazda devam edebilir.",
-moved:" top taşındı.",win:"Harika! Seviyeyi tamamladın 🎉",
-invalid:"Geçersiz hamle. Boş veya aynı renkte bir tüp seç.",
-restartMsg:"Seviye yeniden başlatıldı.",completeFirst:"Önce bu seviyeyi tamamla.",
-newLevel:"Yeni seviye başladı. İyi şanslar!",loading:"İlerlemen yükleniyor...",
-restored:"İlerlemen geri yüklendi!",saveError:"Sunucuya bağlanılamadı. Yerel ilerleme kaydedildi.",
-tube:"Tüp"
-},
-de:{
-subtitle:"Farbsortier-Rätsel",guest:"Gast",level:"Level",moves:"Züge",best:"Bestwert",
-restart:"Neustart",undo:"Rückgängig",next:"Nächstes Level",
-ready:"Wähle ein Röhrchen und verschiebe die oberste Farbe in ein anderes.",
-rulesTitle:"Spielanleitung",
-rulesText:"Sortiere die Farben so, dass jedes Röhrchen nur eine Farbe enthält. Jedes Röhrchen fasst bis zu 4 Kugeln. Nur die oberste Farbe kann bewegt werden.",
-footer:"Dein Fortschritt wird automatisch gespeichert. Telegram-Spieler können auf einem anderen Gerät weiterspielen.",
-moved:" Kugeln verschoben.",win:"Fantastisch! Level abgeschlossen 🎉",
-invalid:"Ungültiger Zug. Wähle ein leeres Röhrchen oder eines mit derselben Farbe.",
-restartMsg:"Level neu gestartet.",completeFirst:"Schließe zuerst dieses Level ab.",
-newLevel:"Neues Level gestartet. Viel Glück!",loading:"Fortschritt wird geladen...",
-restored:"Dein Fortschritt wurde wiederhergestellt!",saveError:"Server nicht erreichbar. Lokal gespeichert.",
-tube:"Röhrchen"
-},
-fr:{
-subtitle:"Puzzle de tri des couleurs",guest:"Invité",level:"Niveau",moves:"Coups",best:"Record",
-restart:"Recommencer",undo:"Annuler",next:"Niveau suivant",
-ready:"Choisissez un tube, puis déplacez sa couleur supérieure vers un autre tube.",
-rulesTitle:"Comment jouer",
-rulesText:"Triez les couleurs pour que chaque tube ne contienne qu'une seule couleur. Chaque tube peut contenir 4 billes. Seule la couleur du dessus peut être déplacée.",
-footer:"Votre progression est enregistrée automatiquement. Les joueurs Telegram peuvent continuer sur un autre appareil.",
-moved:" billes déplacées.",win:"Bravo ! Niveau terminé 🎉",
-invalid:"Mouvement impossible. Choisissez un tube vide ou de la même couleur.",
-restartMsg:"Niveau recommencé.",completeFirst:"Terminez d'abord ce niveau.",
-newLevel:"Nouveau niveau commencé. Bonne chance !",loading:"Chargement de votre progression...",
-restored:"Votre progression a été restaurée !",saveError:"Serveur inaccessible. Progression locale enregistrée.",
-tube:"Tube"
-},
-es:{
-subtitle:"Rompecabezas de ordenar colores",guest:"Invitado",level:"Nivel",moves:"Movimientos",best:"Récord",
-restart:"Reiniciar",undo:"Deshacer",next:"Siguiente nivel",
-ready:"Selecciona un tubo y mueve su color superior a otro tubo.",
-rulesTitle:"Cómo jugar",
-rulesText:"Ordena los colores para que cada tubo contenga un solo color. Cada tubo admite hasta 4 bolas. Solo se puede mover el color superior.",
-footer:"Tu progreso se guarda automáticamente. Los jugadores de Telegram pueden continuar en otro dispositivo.",
-moved:" bolas movidas.",win:"¡Excelente! Nivel completado 🎉",
-invalid:"Movimiento no válido. Elige un tubo vacío o del mismo color.",
-restartMsg:"Nivel reiniciado.",completeFirst:"Completa este nivel primero.",
-newLevel:"Nuevo nivel iniciado. ¡Buena suerte!",loading:"Cargando tu progreso...",
-restored:"¡Tu progreso ha sido restaurado!",saveError:"No se pudo conectar al servidor. Progreso guardado localmente.",
-tube:"Tubo"
-}
-};
-
-const $=id=>document.getElementById(id);
-const tg=window.Telegram?.WebApp;
-if(tg){tg.ready();tg.expand()}
-
-const storageKey="colorEscapeProgressV1";
-const langKey="colorEscapeLanguage";
-const guestId="guest-"+(localStorage.getItem("colorEscapeGuestId")||(()=>{
- const v=Math.random().toString(36).slice(2)+Date.now().toString(36);
- localStorage.setItem("colorEscapeGuestId",v);return v;
-})());
-
-let lang=localStorage.getItem(langKey);
-if(!translations[lang]){
- const browser=(navigator.language||"en").slice(0,2);
- lang=translations[browser]?browser:"en";
-}
-let level=1,moves=0,board=[],selected=-1,history=[],best=null;
+const TOTAL=500;
+let level=1,coins=0,moves=0;
+let maze=[],N=5,SIZE=11;
+let player={x:1,y:1};
+let finish={x:9,y:9};
 let completed=false;
 
-function tr(key){return translations[lang][key]||translations.en[key]||key}
-
-function applyLanguage(){
- const rtl=lang==="fa"||lang==="ar";
- document.documentElement.lang=lang;
- document.documentElement.dir=rtl?"rtl":"ltr";
- $("language").value=lang;
- $("subtitle").textContent=tr("subtitle");
- $("levelLabel").textContent=tr("level");
- $("movesLabel").textContent=tr("moves");
- $("bestLabel").textContent=tr("best");
- $("restart").textContent=tr("restart");
- $("undo").textContent=tr("undo");
- $("next").textContent=tr(completed?"next":"next");
- $("rulesTitle").textContent=tr("rulesTitle");
- $("rulesText").textContent=tr("rulesText");
- $("footer").textContent=tr("footer");
- if(!tg?.initDataUnsafe?.user)$("player").textContent=tr("guest");
- $("message").textContent=tr("ready");
- render();
-}
-
-$("language").addEventListener("change",e=>{
- lang=e.target.value;
- localStorage.setItem(langKey,lang);
- applyLanguage();
-});
-
-function getPlayerId(){
- const u=tg?.initDataUnsafe?.user;
- return u?.id?String(u.id):guestId;
-}
-
-async function syncProgress(){
- const u=tg?.initDataUnsafe?.user;
- const telegram_id=getPlayerId();
- const name=u?.first_name||"Guest";
+function loadSave(){
  try{
-  const r=await fetch("/api/progress",{
-   method:"POST",
-   headers:{"content-type":"application/json"},
-   body:JSON.stringify({telegram_id,name,level:level+1,completed:1})
-  });
-  if(!r.ok)throw new Error("Save failed");
-  return true;
- }catch(e){
-  $("message").textContent=tr("saveError");
-  return false;
- }
-}
-
-async function loadCloudProgress(){
- try{
-  const r=await fetch("/api/progress?telegram_id="+encodeURIComponent(getPlayerId()));
-  if(!r.ok)return;
-  const data=await r.json();
-  if(data.success&&data.player){
-   const cloudLevel=Number(data.player.level);
-   if(Number.isInteger(cloudLevel)&&cloudLevel>=1){
-    level=Math.max(level,cloudLevel);
-    save();
-    $("message").textContent=tr("restored");
-   }
-  }
+  level=Math.max(1,Math.min(TOTAL,Number(localStorage.getItem("ce_level"))||1));
+  coins=Math.max(0,Number(localStorage.getItem("ce_coins"))||0);
  }catch(e){}
 }
 
-function load(){
- try{
-  const x=JSON.parse(localStorage.getItem(storageKey)||"{}");
-  level=Math.max(1,Number(x.level)||1);
-  best=x.best??null;
- }catch{}
-}
 function save(){
- localStorage.setItem(storageKey,JSON.stringify({level,best}));
+ try{
+  localStorage.setItem("ce_level",level);
+  localStorage.setItem("ce_coins",coins);
+ }catch(e){}
 }
 
-const COLORS=["#ef476f","#06d6a0","#118ab2","#ffd166","#9b5de5","#f78c6b","#8ac926","#4cc9f0"];
+function createMaze(){
+ N=Math.min(14,5+Math.floor((level-1)/50));
+ SIZE=N*2+1;
+ maze=Array.from({length:SIZE},()=>Array(SIZE).fill(1));
 
-function newBoard(n){
- const count=Math.min(3+Math.floor((n-1)/8),6);
- const arr=[];
- for(let c=0;c<count;c++)for(let j=0;j<4;j++)arr.push(c);
- for(let tries=0;tries<100;tries++){
-  const shuffled=arr.slice();
-  for(let i=shuffled.length-1;i>0;i--){
-   const j=Math.floor(Math.random()*(i+1));
-   [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+ let visited=Array.from({length:N},()=>Array(N).fill(false));
+ let stack=[[0,0]];
+ visited[0][0]=true;
+ maze[1][1]=0;
+
+ while(stack.length){
+  let [cx,cy]=stack[stack.length-1];
+  let dirs=[
+   [0,-1],[1,0],[0,1],[-1,0]
+  ].sort(()=>Math.random()-.5);
+  let found=false;
+
+  for(let [dx,dy] of dirs){
+   let nx=cx+dx,ny=cy+dy;
+   if(nx>=0&&ny>=0&&nx<N&&ny<N&&!visited[ny][nx]){
+    visited[ny][nx]=true;
+    maze[cy*2+1+dy][cx*2+1+dx]=0;
+    maze[ny*2+1][nx*2+1]=0;
+    stack.push([nx,ny]);
+    found=true;
+    break;
+   }
   }
-  const tubes=Array.from({length:count+1},(_,i)=>
-   i===count?[]:shuffled.slice(i*4,i*4+4));
-  if(tubes.slice(0,count).some(t=>t.some(v=>v!==t[0])))return tubes;
+  if(!found)stack.pop();
  }
- return Array.from({length:count+1},(_,i)=>i===count?[]:Array(4).fill(i%count));
-}
 
-function start(){
- board=newBoard(level);
- moves=0;selected=-1;history=[];completed=false;
- $("next").textContent=tr("next");
+ player={x:1,y:1};
+ finish={x:SIZE-2,y:SIZE-2};
+ maze[finish.y][finish.x]=0;
+ moves=0;
+ completed=false;
  render();
+ updateInfo();
 }
 
 function render(){
- $("level").textContent=level;
- $("moves").textContent=moves;
- $("best").textContent=best??"—";
- const root=$("board");
- root.innerHTML="";
- board.forEach((tube,i)=>{
-  const el=document.createElement("div");
-  el.className="tube"+(selected===i?" selected":"");
-  el.setAttribute("role","button");
-  el.setAttribute("aria-label",tr("tube")+" "+(i+1));
-  el.setAttribute("tabindex","0");
-  tube.forEach(c=>{
-   const b=document.createElement("div");
-   b.className="ball";
-   b.style.background=COLORS[c%COLORS.length];
-   el.appendChild(b);
-  });
-  el.onclick=()=>tap(i);
-  el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tap(i)}};
-  root.appendChild(el);
- });
+ const board=document.getElementById("board");
+ board.innerHTML="";
+ board.style.gridTemplateColumns=`repeat(${SIZE},1fr)`;
+
+ for(let y=0;y<SIZE;y++){
+  for(let x=0;x<SIZE;x++){
+   let cell=document.createElement("div");
+   cell.className="cell";
+   if(maze[y][x]===1)cell.classList.add("wall");
+   else cell.classList.add("path");
+
+   if(x===1&&y===1)cell.classList.add("start");
+   if(x===finish.x&&y===finish.y)cell.classList.add("exit");
+   if(x===player.x&&y===player.y){
+    cell.classList.add("player");
+   }
+   board.appendChild(cell);
+  }
+ }
 }
 
-function solved(){
- return board.every(t=>t.length===0||(t.length===4&&t.every(v=>v===t[0])));
-}
-
-function tap(i){
+function move(dx,dy){
  if(completed)return;
- if(selected<0){
-  if(board[i].length){selected=i;render()}
-  return;
- }
- if(selected===i){selected=-1;render();return}
- const from=board[selected],to=board[i];
- if(from.length&&to.length<4&&(!to.length||to[to.length-1]===from[from.length-1])){
-  history.push({board:board.map(t=>t.slice()),moves});
-  const color=from[from.length-1];
-  let amount=0;
-  while(from.length&&from[from.length-1]===color&&to.length<4){
-   to.push(from.pop());amount++;
-  }
-  moves++;selected=-1;
-  $("message").textContent=amount+tr("moved");
-  render();
-  if(solved()){
-   completed=true;
-   $("message").textContent=tr("win");
-   best=best===null?moves:Math.min(best,moves);
-   save();
-   syncProgress();
-   render();
-  }
- }else{
-  selected=i;render();
-  $("message").textContent=tr("invalid");
+ let nx=player.x+dx,ny=player.y+dy;
+ if(nx<0||ny<0||nx>=SIZE||ny>=SIZE)return;
+ if(maze[ny][nx]===1)return;
+
+ player.x=nx;
+ player.y=ny;
+ moves++;
+ render();
+ updateInfo();
+
+ if(nx===finish.x&&ny===finish.y){
+  win();
  }
 }
 
-$("restart").onclick=()=>{
- start();
- $("message").textContent=tr("restartMsg");
-};
-
-$("undo").onclick=()=>{
- if(history.length&&!completed){
-  const h=history.pop();
-  board=h.board;moves=h.moves;selected=-1;
-  render();
- }
-};
-
-$("next").onclick=()=>{
- if(!completed){
-  $("message").textContent=tr("completeFirst");
-  return;
- }
- level++;
+function win(){
+ if(completed)return;
+ completed=true;
+ let reward=10+Math.min(level,40);
+ coins+=reward;
  save();
- start();
- $("message").textContent=tr("newLevel");
-};
+ updateInfo();
 
-async function init(){
- load();
- applyLanguage();
- const u=tg?.initDataUnsafe?.user;
- if(u)$("player").textContent=(u.first_name||tr("guest")).slice(0,16);
- start();
- $("message").textContent=tr("loading");
- await loadCloudProgress();
- start();
- $("message").textContent=tr("ready");
+ document.getElementById("popupTitle").textContent=
+  level===TOTAL?"تو قهرمان بازی شدی!":"مرحله با موفقیت تمام شد!";
+ document.getElementById("popupText").textContent=
+  `عالی بود! ${moves} حرکت انجام دادی و ${reward} سکه گرفتی.`;
+ document.querySelector("#overlay button").textContent=
+  level===TOTAL?"بازی دوباره":"مرحله بعدی";
+ document.getElementById("overlay").style.display="flex";
 }
-init();
+
+function nextLevel(){
+ document.getElementById("overlay").style.display="none";
+ if(level>=TOTAL){
+  level=1;
+  coins+=100;
+ }else{
+  level++;
+ }
+ save();
+ createMaze();
+}
+
+function restart(){
+ createMaze();
+ document.getElementById("message").textContent=
+  "از نقطه شروع حرکت کن و به خروجی سبز برس.";
+}
+
+function updateInfo(){
+ document.getElementById("level").textContent=level;
+ document.getElementById("coins").textContent=coins;
+ document.getElementById("moves").textContent=moves;
+ document.getElementById("stageTitle").textContent="مرحله "+level;
+ let p=Math.floor((level-1)/TOTAL*100);
+ document.getElementById("percent").textContent=p+"%";
+ document.getElementById("bar").style.width=p+"%";
+
+ let d=level<=50?"آسان":level<=150?"متوسط":
+ level<=300?"سخت":"حرفه‌ای";
+ document.getElementById("difficulty").textContent=d;
+}
+
+function showHelp(){
+ document.getElementById("popupTitle").textContent="راهنمای بازی";
+ document.getElementById("popupText").textContent=
+ "با دکمه‌های جهت‌دار یا کلیدهای کیبورد حرکت کن. از دیوارها عبور نکن و خودت را به خروجی سبز برسان. هر مرحله سکه جایزه دارد.";
+ document.querySelector("#overlay button").textContent="متوجه شدم";
+ document.querySelector("#overlay button").onclick=()=>{
+  document.getElementById("overlay").style.display="none";
+  document.querySelector("#overlay button").onclick=nextLevel;
+ };
+ document.getElementById("overlay").style.display="flex";
+}
+
+document.addEventListener("keydown",e=>{
+ const keys={
+  ArrowUp:[0,-1],w:[0,-1],
+  ArrowDown:[0,1],s:[0,1],
+  ArrowLeft:[-1,0],a:[-1,0],
+  ArrowRight:[1,0],d:[1,0]
+ };
+ if(keys[e.key]){
+  e.preventDefault();
+  move(...keys[e.key]);
+ }
+});
+
+let touchStart=null;
+const board=document.getElementById("board");
+board.addEventListener("touchstart",e=>{
+ const t=e.touches[0];
+ touchStart={x:t.clientX,y:t.clientY};
+},{passive:true});
+
+board.addEventListener("touchend",e=>{
+ if(!touchStart)return;
+ const t=e.changedTouches[0];
+ let dx=t.clientX-touchStart.x;
+ let dy=t.clientY-touchStart.y;
+ if(Math.max(Math.abs(dx),Math.abs(dy))>20){
+  if(Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1,0);
+  else move(0,dy>0?1:-1);
+ }
+ touchStart=null;
+},{passive:true});
+
+loadSave();
+createMaze();
 </script>
 </body>
 </html>
