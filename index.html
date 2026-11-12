@@ -1,997 +1,240 @@
-
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#080e20">
-<title>Color Escape 3D</title>
-
-<style>
-*{box-sizing:border-box}
-:root{
- --bg:#080e20;
- --panel:#141f38;
- --cyan:#55eaff;
- --gold:#ffd166;
-}
-body{
- margin:0;min-height:100vh;color:white;
- font-family:Tahoma,Arial,sans-serif;
- background:
- radial-gradient(ellipse at 50% -10%,#344c80 0%,transparent 55%),
- linear-gradient(160deg,#080e20,#101b32 65%,#080e20);
-}
-button{font-family:inherit;cursor:pointer}
-.wrap{max-width:570px;margin:auto;padding:18px 13px 35px}
-header{text-align:center;padding:8px 0 15px}
-.logo{
- font-size:34px;font-weight:1000;letter-spacing:2px;
- background:linear-gradient(90deg,#51efff,#b48aff,#ff72c5);
- -webkit-background-clip:text;background-clip:text;color:transparent;
- filter:drop-shadow(0 0 15px #45dfff55)
-}
-.subtitle{font-size:11px;color:#9bafd0;margin-top:7px}
-.topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.guest{
- border:1px solid #3a5277;background:#172541;
- border-radius:30px;padding:9px 13px;font-size:11px;color:#c5d6f3
-}
-.online{font-size:11px;color:#66e8be}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.stat{
- text-align:center;padding:12px 3px;border-radius:15px;
- background:linear-gradient(145deg,#243858,#111d34);
- border:1px solid #40577e;
- box-shadow:0 5px 0 #080e1c,0 8px 18px #0003
-}
-.stat b{display:block;font-size:20px;color:#65e9ff;margin-bottom:5px}
-.stat span{font-size:10px;color:#aebed8}
-.panel{
- margin-top:15px;padding:15px;
- border-radius:21px;
- background:linear-gradient(145deg,#1b2b49,#101a30);
- border:1px solid #394f73;
- box-shadow:0 12px 30px #0004
-}
-.progresshead{display:flex;justify-content:space-between;font-size:11px;color:#c4d2e9;margin-bottom:9px}
-.progress{height:7px;background:#091326;border-radius:20px;overflow:hidden}
-.bar{
- height:100%;width:0%;
- background:linear-gradient(90deg,#35dfff,#aa78ff);
- box-shadow:0 0 12px #47eaff;transition:.4s
-}
-.gamehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.gamehead b{font-size:15px}
-.difficulty{
- font-size:10px;padding:7px 10px;border-radius:20px;
- background:#293c60;color:#7cecff
-}
-.instructions{
- color:#a9bad5;font-size:11px;text-align:center;
- line-height:2;margin:10px 0 17px
-}
-.board{
- display:grid;
- grid-template-columns:repeat(var(--count),minmax(0,1fr));
- gap:clamp(4px,1.6vw,10px);
- align-items:end;justify-items:center;
- padding:14px 3px 19px;
- min-height:205px;
- perspective:900px;
-}
-.tube{
- position:relative;width:100%;max-width:55px;
- height:clamp(130px,38vw,174px);
- border:2px solid #a9c9e6;
- border-top:0;
- border-radius:5px 5px 17px 17px;
- background:linear-gradient(90deg,#ffffff08,#a5dfff20 18%,#ffffff06 40%,#ffffff17 75%,#ffffff05);
- box-shadow:
- inset 5px 0 8px #ffffff12,
- inset -5px 0 8px #9ddfff12,
- 0 12px 12px #0005;
- display:flex;flex-direction:column-reverse;
- align-items:center;
- padding:5px 3px 6px;
- gap:3px;
- cursor:pointer;
- transform:rotateX(3deg);
- transition:transform .2s,border-color .2s,filter .2s;
- overflow:visible;
-}
-.tube:before{
- content:"";position:absolute;
- top:-5px;left:-3px;right:-3px;height:7px;
- border:2px solid #d5eaff;
- border-radius:50%;
- background:linear-gradient(90deg,#4c6b8c,#d8f3ff,#526b90);
- box-shadow:0 0 9px #9edfff45;
-}
-.tube:after{
- content:"";position:absolute;
- bottom:2px;left:12%;right:12%;height:5px;
- border-radius:50%;background:#b9eaff50;filter:blur(3px)
-}
-.tube.selected{
- transform:translateY(-13px) rotateX(3deg);
- border-color:#ffe18a;
- filter:drop-shadow(0 0 9px #ffd16699);
-}
-.tube.locked{cursor:default}
-.ball{
- position:relative;width:100%;height:23%;
- min-height:15px;flex-shrink:0;
- border-radius:50%;
- background:radial-gradient(circle at 30% 23%,#ffffff 0%,var(--c) 29%,var(--shade) 100%);
- box-shadow:
- inset 1px 3px 5px #ffffffa0,
- inset -3px -5px 7px #0005,
- 0 2px 4px #0008;
- border:1px solid #ffffff35;
- animation:appear .18s ease-out;
-}
-.ball:after{
- content:"";position:absolute;top:13%;left:18%;
- width:22%;height:12%;border-radius:50%;
- background:#ffffff9c;filter:blur(2px)
-}
-@keyframes appear{
- from{transform:scale(.75);opacity:.5}
- to{transform:scale(1);opacity:1}
-}
-.message{
- text-align:center;min-height:37px;
- color:#fbdc88;font-size:12px;line-height:2;
- padding:7px 3px
-}
-.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.btn{
- border:1px solid #526b96;border-radius:12px;padding:13px 5px;
- color:#fff;font-weight:bold;font-size:11px;
- background:linear-gradient(145deg,#354d76,#1c2c49);
- box-shadow:0 4px 0 #0a1427;
-}
-.btn.primary{
- background:linear-gradient(135deg,#42eaff,#5d8fff);
- border:0;color:#09152b
-}
-.btn:active{transform:translateY(3px);box-shadow:none}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.extra{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-.extra .btn{background:linear-gradient(145deg,#503e87,#28254f)}
-.help{
- color:#aabbd4;font-size:11px;line-height:2;
- text-align:center;margin-top:17px
-}
-.footer{text-align:center;color:#7186aa;font-size:10px;margin-top:20px}
-.overlay{
- display:none;position:fixed;inset:0;z-index:20;
- background:#050a18eF;align-items:center;justify-content:center;padding:20px
-}
-.popup{
- width:100%;max-width:350px;padding:27px 20px;
- text-align:center;border-radius:23px;
- background:linear-gradient(145deg,#263c65,#111b32);
- border:1px solid #637ca9;box-shadow:0 20px 60px #0009
-}
-.popup .emoji{font-size:48px}
-.popup h2{color:#6af2d1}
-.popup p{color:#c4d1e8;font-size:13px;line-height:2}
-.popup button{
- background:linear-gradient(90deg,#56eaff,#80ffc6);
- border:0;border-radius:12px;padding:14px 28px;
- font-weight:bold;color:#10213b
-}
-@media(max-width:350px){
- .wrap{padding:12px 9px}
- .stat b{font-size:17px}
- .board{gap:4px}
- .tube{min-width:0}
- .actions .btn{font-size:10px}
-}
-</style>
-</head>
-
-<body>
-<main class="wrap">
-
-<header>
- <div class="logo">COLOR ESCAPE</div>
- <div class="subtitle">THE ULTIMATE COLOR PUZZLE EXPERIENCE</div>
-</header>
-
-<div class="topline">
- <div class="guest" id="player">👤 بازیکن مهمان</div>
- <div class="online" id="connection">● در حال اتصال...</div>
-</div>
-
-<div class="stats">
- <div class="stat"><b id="level">1</b><span>مرحله</span></div>
- <div class="stat"><b id="moves">0</b><span>حرکت</span></div>
- <div class="stat"><b id="coins">0</b><span>سکه</span></div>
- <div class="stat"><b id="best">—</b><span>رکورد</span></div>
-</div>
-
-<section class="panel">
- <div class="progresshead">
-  <span>پیشرفت مراحل</span>
-  <span id="percent">0 از 500</span>
- </div>
- <div class="progress"><div class="bar" id="bar"></div></div>
-</section>
-
-<section class="panel">
- <div class="gamehead">
-  <b id="stageTitle">مرحله ۱</b>
-  <span class="difficulty" id="difficulty">آسان</span>
- </div>
-
- <div class="instructions">
-  توپ‌ها را جابه‌جا کن تا هر لوله فقط یک رنگ داشته باشد.
-  فقط توپ بالایی را می‌توانی منتقل کنی.
- </div>
-
- <div class="board" id="board"></div>
-
- <div class="message" id="message">
-  ابتدا یک لوله و سپس لوله مقصد را انتخاب کن.
- </div>
-
- <div class="actions">
-  <button class="btn" id="restart">↻ شروع دوباره</button>
-  <button class="btn" id="undo">↶ برگشت</button>
-  <button class="btn primary" id="next">مرحله بعد ←</button>
- </div>
-
- <div class="extra">
-  <button class="btn" id="hint">💡 راهنمایی</button>
-  <button class="btn" id="sound">🔊 صدا: روشن</button>
- </div>
-</section>
-
-<section class="panel">
- <b style="font-size:13px">🏆 قوانین بازی</b>
- <p class="help">
-  تمام توپ‌های هم‌رنگ را در یک لوله جمع کن.<br>
-  هر لوله ظرفیت ۴ توپ دارد.<br>
-  لوله‌های خالی ابزار کمکی تو هستند.<br>
-  با تکمیل هر مرحله سکه دریافت می‌کنی.
- </p>
-</section>
-
-<div class="footer">COLOR ESCAPE 3D • 500 LEVELS</div>
-</main>
-
-<div class="overlay" id="overlay">
- <div class="popup">
-  <div class="emoji" id="popupEmoji">🏆</div>
-  <h2 id="popupTitle">آفرین!</h2>
-  <p id="popupText">مرحله را کامل کردی.</p>
-  <button id="popupButton">مرحله بعد</button>
- </div>
-</div>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <script>
+(function(){
 "use strict";
+const CAP=4,TOTAL=500;
+const COLORS=["#ff5c70","#45c7f0","#ffd166","#9b83ff","#53d69a","#ff9f43","#ed75ce","#9bd34d"];
+const $=id=>document.getElementById(id);
+const tg=window.Telegram?.WebApp||null;
+if(tg){try{tg.ready();tg.expand();}catch(e){}}
 
-const $ = id => document.getElementById(id);
-const TOTAL = 500;
-const CAPACITY = 4;
+let level=1,tubes=[],selected=-1,moves=0,history=[],best={};
+let coins=Number(localStorage.getItem("ce_coins_v1"))||0;
+let claimed=JSON.parse(localStorage.getItem("ce_rewards_v1")||"[]");
+let goldenSkin=localStorage.getItem("ce_golden_skin_v1")==="1";
+let unlockedAchievements=JSON.parse(localStorage.getItem("ce_achievements_v1")||"[]");
+let dailyData=JSON.parse(localStorage.getItem("ce_daily_reward_v1")||'{"lastClaim":"","streak":0}');
+let leaderboardSentLevel=0;
+const LEVEL_REWARD=20,SKIP_COST=30;
+const LEADERBOARD_API="";
 
-const COLORS = [
- {main:"#ff365f",shade:"#8d1036"},
- {main:"#20e0a0",shade:"#08764f"},
- {main:"#219bff",shade:"#124a9c"},
- {main:"#ffd34e",shade:"#a96a0c"},
- {main:"#b16aff",shade:"#5a268f"},
- {main:"#ff8959",shade:"#a33b21"},
- {main:"#e9f5ff",shade:"#758da8"}
+if(goldenSkin)document.body.classList.add("golden");
+
+async function submitLeaderboardScore(){
+if(!tg?.initData)return;
+const completed=claimed.length?Math.max(...claimed.map(Number).filter(Number.isFinite),0):0;
+const score=Math.max(completed,level-(solved()?0:1));
+if(score<=leaderboardSentLevel)return;
+try{
+const response=await fetch("/score",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({initData:tg.initData,level:score,completed:claimed.length})
+});
+if(response.ok)leaderboardSentLevel=score;
+}catch(e){}
+}
+
+async function loadLeaderboard(){
+const list=$("leaderboardList");
+list.innerHTML="<p>در حال دریافت رتبه‌ها...</p>";
+try{
+const response=await fetch("/leaderboard");
+if(!response.ok)throw new Error();
+const data=await response.json();
+if(!Array.isArray(data.players)||!data.players.length){
+list.innerHTML="<p>هنوز بازیکنی ثبت نشده است.</p>";return;
+}
+list.innerHTML="";
+data.players.forEach((p,i)=>{
+const row=document.createElement("div");row.className="leader-row";
+const rank=document.createElement("div");rank.className="leader-rank";rank.textContent="#"+(i+1);
+const name=document.createElement("div");name.className="leader-name";
+const title=document.createElement("strong");title.textContent=p.name||"بازیکن";
+const meta=document.createElement("div");meta.className="leader-meta";meta.textContent=(p.completed||0)+" مرحله تکمیل‌شده";
+name.append(title,meta);
+const lvl=document.createElement("strong");lvl.textContent="مرحله "+(p.level||0);
+row.append(rank,name,lvl);list.appendChild(row);
+});
+}catch(e){list.innerHTML="<p>ارتباط با سرور برقرار نشد. تنظیمات Cloudflare را بررسی کن.</p>";}
+}
+
+const ACHIEVEMENTS=[
+{id:"first",count:1,title:"شروع قهرمانی",desc:"اولین مرحله",reward:10,icon:"🌟"},
+{id:"five",count:5,title:"پنج‌قدم",desc:"۵ مرحله",reward:25,icon:"🥉"},
+{id:"ten",count:10,title:"قهرمان کوچک",desc:"۱۰ مرحله",reward:50,icon:"🥈"},
+{id:"twentyfive",count:25,title:"استاد رنگ‌ها",desc:"۲۵ مرحله",reward:100,icon:"🥇"},
+{id:"fifty",count:50,title:"قهرمان رنگ‌ها",desc:"۵۰ مرحله",reward:100,icon:"🏆"},
+{id:"hundred",count:100,title:"قهرمان بزرگ",desc:"۱۰۰ مرحله",reward:150,icon:"🏆"},
+{id:"twofifty",count:250,title:"افسانه رنگ‌ها",desc:"۲۵۰ مرحله",reward:250,icon:"💎"},
+{id:"fivehundred",count:500,title:"افسانه Color Escape",desc:"تمام ۵۰۰ مرحله",reward:500,icon:"👑"}
 ];
 
-let level = 1;
-let moves = 0;
-let coins = 0;
-let best = null;
-let board = [];
-let initialBoard = [];
-let selected = -1;
-let history = [];
-let completed = false;
-let soundOn = true;
-let audio = null;
-let playerBest = {};
-let cloudReady = false;
-let cloudPlayer = null;
+function saveCoins(){localStorage.setItem("ce_coins_v1",String(coins));}
+function saveProgress(){try{localStorage.setItem("ce_progress_v1",JSON.stringify({level,tubes,moves}));}catch(e){}}
+function levelColors(n){if(n<=5)return 3;if(n<=12)return 4;if(n<=20)return 5;if(n<=30)return 6;if(n<=40)return 7;return 8;}
+function scrambleSteps(n){if(n<=5)return 12+n*2;if(n<=12)return 25+(n-5)*3;if(n<=20)return 46+(n-12)*3;if(n<=30)return 70+(n-20)*3;if(n<=40)return 100+(n-30)*3;return Math.min(1900,130+(n-40)*4);}
 
-const tg = window.Telegram?.WebApp;
-
-if (tg) {
- tg.ready();
- tg.expand();
-
- if (tg.initDataUnsafe?.user) {
-  $("player").textContent =
-   "👤 " + (tg.initDataUnsafe.user.first_name || "بازیکن");
- }
+function makeLevel(n){
+const count=levelColors(n);
+const result=Array.from({length:count+1},(_,i)=>i<count?Array(CAP).fill(i):[]);
+let seed=9871+n*7919;
+const random=max=>{seed=(seed*16807)%2147483647;return seed%max;};
+let previous="";
+for(let step=0;step<scrambleSteps(n);step++){
+const choices=[];
+for(let from=0;from<result.length;from++){
+const tube=result[from];if(!tube.length)continue;
+const color=tube[tube.length-1];
+let run=1;while(run<tube.length&&tube[tube.length-1-run]===color)run++;
+for(let to=0;to<result.length;to++){
+if(to===from)continue;
+const target=result[to];
+const reversibleMax=run===tube.length?run:run-1;
+const maxMove=Math.min(reversibleMax,CAP-target.length);
+if(maxMove<1)continue;
+if(target.length&&target[target.length-1]===color)continue;
+if(previous===to+":"+from)continue;
+choices.push({from,to,maxMove});
+}
+}
+if(!choices.length)break;
+const move=choices[random(choices.length)];
+const amount=1+random(move.maxMove);
+for(let k=0;k<amount;k++)result[move.to].push(result[move.from].pop());
+previous=move.from+":"+move.to;
+}
+return result;
 }
 
-const storageKey = "colorEscapeProgressV1";
-const extraKey = "colorEscape3DDataV1";
-const tokenKey = "colorEscapeAuthTokenV1";
+function solved(){return tubes.every(t=>t.length===0||(t.length===CAP&&t.every(v=>v===t[0])));}
+function snapshot(){history.push({tubes:tubes.map(t=>t.slice()),moves});if(history.length>100)history.shift();}
 
-let authToken = localStorage.getItem(tokenKey) || "";
-
-// -----------------------------
-// Local storage
-// -----------------------------
-
-function loadLocal() {
- try {
-  const x = JSON.parse(localStorage.getItem(storageKey) || "{}");
-  const y = JSON.parse(localStorage.getItem(extraKey) || "{}");
-
-  level = Math.min(TOTAL, Math.max(1, Number(x.level) || 1));
-  best = x.best ?? null;
-  coins = Math.max(0, Number(y.coins) || 0);
-  playerBest = y.playerBest || {};
-
- } catch (e) {
-  level = 1;
-  best = null;
-  coins = 0;
-  playerBest = {};
- }
+function checkAchievements(){
+let changed=false;
+ACHIEVEMENTS.forEach(a=>{
+if(claimed.length>=a.count&&!unlockedAchievements.includes(a.id)){
+unlockedAchievements.push(a.id);coins+=a.reward;changed=true;
+}
+});
+if(changed){
+localStorage.setItem("ce_achievements_v1",JSON.stringify(unlockedAchievements));
+saveCoins();
+$("message").textContent="🏆 دستاورد جدید باز شد!";
+}
 }
 
-function saveLocal() {
- try {
-  localStorage.setItem(
-   storageKey,
-   JSON.stringify({level, best})
-  );
-
-  localStorage.setItem(
-   extraKey,
-   JSON.stringify({coins, playerBest})
-  );
- } catch (e) {
-  console.log("Local storage unavailable", e);
- }
+function renderAchievements(){
+const list=$("achievementList");list.innerHTML="";
+ACHIEVEMENTS.forEach(a=>{
+const unlocked=unlockedAchievements.includes(a.id);
+const item=document.createElement("div");
+item.className="achievement"+(unlocked?"":" locked");
+item.innerHTML="<div>"+a.icon+"</div>";
+const title=document.createElement("strong");title.textContent=a.title;
+const desc=document.createElement("small");desc.textContent=a.desc+" · "+a.reward+" سکه";
+const status=document.createElement("small");status.textContent=unlocked?"باز شده ✓":"قفل است";
+item.append(title,desc,status);list.appendChild(item);
+});
+$("achievementSummary").textContent=unlockedAchievements.length+" از "+ACHIEVEMENTS.length+" دستاورد باز شده";
 }
 
-// -----------------------------
-// Cloud API
-// -----------------------------
-
-async function apiRequest(action, payload = {}) {
- const headers = {
-  "Content-Type": "application/json"
- };
-
- if (authToken) {
-  headers.Authorization = "Bearer " + authToken;
- }
-
- const response = await fetch("/api/path", {
-  method: "POST",
-  headers,
-  body: JSON.stringify({
-   action,
-   ...payload
-  })
- });
-
- const data = await response.json();
-
- if (!response.ok || !data.success) {
-  throw new Error(data.message || "API error");
- }
-
- return data;
+function render(){
+saveProgress();
+$("level").textContent=level+" / "+TOTAL;
+$("moves").textContent=moves;
+$("best").textContent=best[level]||"—";
+$("coins").textContent=coins;
+$("shopCoins").textContent=coins;
+$("undo").disabled=!history.length;
+$("skip").disabled=level>=TOTAL||coins<SKIP_COST;
+$("next").disabled=!solved()||level>=TOTAL;
+const root=$("tubes");root.innerHTML="";
+tubes.forEach((tube,i)=>{
+const el=document.createElement("button");
+el.type="button";el.className="tube"+(selected===i?" selected":"");
+el.setAttribute("aria-label","Tube "+(i+1));
+el.addEventListener("click",()=>tapTube(i));
+tube.forEach(color=>{
+const liquid=document.createElement("span");
+liquid.className="liquid";liquid.style.background=COLORS[color];
+el.appendChild(liquid);
+});
+root.appendChild(el);
+});
+if(solved()){
+submitLeaderboardScore();
+$("message").textContent="عالی! همه رنگ‌ها مرتب شدند.";
+if(!claimed.includes(level)){
+coins+=LEVEL_REWARD;claimed.push(level);
+saveCoins();localStorage.setItem("ce_rewards_v1",JSON.stringify(claimed));
+}
+checkAchievements();
+if(!best[level]||moves<best[level]){
+best[level]=moves;localStorage.setItem("ce_best",JSON.stringify(best));
+}
+$("best").textContent=best[level];
+$("coins").textContent=coins;
+$("winText").textContent="مرحله "+level+" در "+moves+" حرکت کامل شد. ۲۰ سکه جایزه گرفتی!";
+$("win").classList.add("show");
+}
 }
 
-async function loginCloud() {
-
- // Try previous session
- if (authToken) {
-  try {
-   const data = await apiRequest("me");
-   cloudPlayer = data.player;
-   return data.player;
-  } catch (e) {
-   authToken = "";
-   localStorage.removeItem(tokenKey);
-  }
- }
-
- // Telegram login
- if (tg?.initData) {
-  const data = await apiRequest("telegram", {
-   initData: tg.initData
-  });
-
-  authToken = data.token;
-  localStorage.setItem(tokenKey, authToken);
-
-  cloudPlayer = data.player;
-  return data.player;
- }
-
- // Guest login
- const data = await apiRequest("guest", {
-  name: "بازیکن مهمان"
- });
-
- authToken = data.token;
- localStorage.setItem(tokenKey, authToken);
-
- cloudPlayer = data.player;
- return data.player;
+function tapTube(i){
+if(solved())return;
+if(selected===-1){
+if(tubes[i].length){selected=i;$("message").textContent="حالا لوله مقصد را انتخاب کن.";}
+else $("message").textContent="اول یک لوله دارای رنگ انتخاب کن.";
+render();return;
+}
+if(selected===i){selected=-1;render();return;}
+const from=tubes[selected],to=tubes[i];
+if(from.length&&to.length<CAP&&(!to.length||to[to.length-1]===from[from.length-1])){
+snapshot();
+const color=from[from.length-1];
+while(from.length&&from[from.length-1]===color&&to.length<CAP)to.push(from.pop());
+moves++;selected=-1;render();
+}else if(from.length&&to.length===0){
+snapshot();to.push(from.pop());moves++;selected=-1;render();
+}else{
+selected=i;$("message").textContent="فقط رنگ مشابه یا لوله خالی را انتخاب کن.";render();
+}
 }
 
-async function loadCloudProgress() {
- try {
-  const player = await loginCloud();
-
-  const cloudLevel = Number(player.level);
-
-  if (Number.isInteger(cloudLevel) && cloudLevel >= 1) {
-   level = Math.min(TOTAL, Math.max(level, cloudLevel));
-  }
-
-  coins = Number(player.coins) || 0;
-
-  if (player.best_moves != null) {
-   best = Number(player.best_moves);
-  }
-
-  $("player").textContent =
-   "👤 " + (player.name || "بازیکن");
-
-  const records = await apiRequest("records");
-
-  playerBest = {};
-
-  for (const record of records.records || []) {
-   playerBest[record.level] = Number(record.best_moves);
-  }
-
-  cloudReady = true;
-
-  $("connection").textContent = "● حساب متصل است";
-  $("connection").style.color = "#66e8be";
-
-  return true;
-
- } catch (e) {
-  console.log("Cloud load unavailable:", e);
-
-  cloudReady = false;
-
-  $("connection").textContent = "● حالت آفلاین";
-  $("connection").style.color = "#ffd166";
-
-  return false;
- }
+function start(n){
+level=n;tubes=makeLevel(n);selected=-1;moves=0;history=[];
+$("win").classList.remove("show");
+$("message").textContent="رنگ‌ها را مرتب کن.";
+render();
 }
 
-async function syncProgress(completedLevel, completedMoves, fallbackReward) {
- try {
-  const data = await apiRequest("progress", {
-   level: completedLevel,
-   moves: completedMoves
-  });
+let saved=null;
+try{saved=JSON.parse(localStorage.getItem("ce_progress_v1")||"null");}catch(e){}
+try{best=JSON.parse(localStorage.getItem("ce_best")||"{}")||{};}catch(e){best={};}
+if(saved&&Number.isInteger(saved.level)&&saved.level>=1&&saved.level<=TOTAL&&Array.isArray(saved.tubes)){
+level=saved.level;
+tubes=saved.tubes;
+moves=Number(saved.moves)||0;
+render();
+}else start(1);
 
-  cloudPlayer = data.player;
-
-  // Server is the authority for coins.
-  coins = Number(data.player.coins) || 0;
-
-  if (data.player.best_moves != null) {
-   best = Number(data.player.best_moves);
-  }
-
-  const oldRecord = Number(playerBest[completedLevel]);
-
-  playerBest[completedLevel] =
-   oldRecord > 0
-    ? Math.min(oldRecord, completedMoves)
-    : completedMoves;
-
-  saveLocal();
-  updateInfo();
-
-  $("popupText").textContent =
-   `تعداد حرکت: ${completedMoves} | جایزه: ${data.reward} سکه`;
-
-  $("message").textContent =
-   data.first_completion
-    ? "مرحله و جایزه با موفقیت در حساب ذخیره شد."
-    : "رکورد حرکت شما در حساب به‌روزرسانی شد.";
-
-  return true;
-
- } catch (e) {
-  console.log("Cloud save unavailable:", e);
-
-  // Offline fallback
-  coins += fallbackReward;
-
-  const oldRecord = Number(playerBest[completedLevel]);
-
-  playerBest[completedLevel] =
-   oldRecord > 0
-    ? Math.min(oldRecord, completedMoves)
-    : completedMoves;
-
-  saveLocal();
-  updateInfo();
-
-  $("popupText").textContent =
-   `تعداد حرکت: ${completedMoves} | جایزه محلی: ${fallbackReward} سکه`;
-
-  $("message").textContent =
-   "ذخیره ابری انجام نشد؛ پیشرفت روی دستگاه ذخیره شد.";
-
-  return false;
- }
+function localDateKey(d=new Date()){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function dailyStatus(){
+const today=localDateKey();
+const y=new Date();y.setDate(y.getDate()-1);
+const yesterday=localDateKey(y);
+const streak=dailyData.lastClaim===yesterday?(Number(dailyData.streak)||0)+1:1;
+return {today,already:dailyData.lastClaim===today,streak,reward:Math.min(10+(streak-1)*5,50)};
 }
-
-// -----------------------------
-// Game generation
-// -----------------------------
-
-function generateBoard(n) {
- const count = Math.min(7, 3 + Math.floor((n - 1) / 100));
-
- const tubes = Array.from({length:count + 2}, (_, i) =>
-  i < count ? Array(4).fill(i) : []
- );
-
- let lastFrom = -1;
- let lastTo = -1;
-
- const scramble = Math.min(120, 18 + Math.floor(n * .2));
-
- for (let step = 0; step < scramble; step++) {
-  const choices = [];
-
-  for (let i = 0; i < tubes.length; i++) {
-   if (!tubes[i].length) continue;
-
-   for (let j = 0; j < tubes.length; j++) {
-    if (i === j || tubes[j].length >= 4) continue;
-
-    const color = tubes[i][tubes[i].length - 1];
-
-    if (
-     tubes[j].length &&
-     tubes[j][tubes[j].length - 1] !== color
-    ) continue;
-
-    if (i === lastTo && j === lastFrom) continue;
-
-    choices.push([i, j]);
-   }
-  }
-
-  if (!choices.length) break;
-
-  const [from, to] =
-   choices[Math.floor(Math.random() * choices.length)];
-
-  tubes[to].push(tubes[from].pop());
-
-  lastFrom = from;
-  lastTo = to;
- }
-
- if (isSolvedBoard(tubes)) return generateBoard(n);
-
- return tubes;
+function updateDaily(){
+const d=dailyStatus();
+$("dailyReward").textContent=d.reward+" 🪙";
+$("dailyStreak").textContent="روز "+d.streak+" از زنجیره ورود";
+$("claimDaily").disabled=d.already;
+$("claimDaily").textContent=d.already?"جایزه امروز دریافت شده ✓":"دریافت "+d.reward+" سکه";
 }
-
-function isSolvedBoard(b) {
- return b.every(t =>
-  t.length === 0 ||
-  (
-   t.length === CAPACITY &&
-   t.every(c => c === t[0])
-  )
- );
+function updateShop(){
+$("shopCoins").textContent=coins;
+$("buyHint").disabled=coins<15||solved();
+$("buySkin").disabled=goldenSkin||coins<40;
+$("buySkin").textContent=goldenSkin?"پوسته طلایی فعال است ✓":"خرید پوسته · ۴۰ 🪙";
 }
-
-function cloneBoard(b) {
- return b.map(t => t.slice());
-}
-
-function start() {
- board = generateBoard(level);
- initialBoard = cloneBoard(board);
-
- moves = 0;
- selected = -1;
- history = [];
- completed = false;
-
- $("message").textContent =
-  "لوله مبدأ و سپس لوله مقصد را انتخاب کن.";
-
- $("next").disabled = true;
-
- render();
- updateInfo();
-}
-
-// -----------------------------
-// Display
-// -----------------------------
-
-function render() {
- const root = $("board");
-
- root.innerHTML = "";
- root.style.setProperty("--count", board.length);
-
- board.forEach((tube, i) => {
-  const el = document.createElement("div");
-
-  el.className =
-   "tube" + (selected === i ? " selected" : "");
-
-  el.setAttribute("role", "button");
-  el.setAttribute("aria-label", "لوله " + (i + 1));
-
-  tube.forEach(colorIndex => {
-   const ball = document.createElement("div");
-   const color = COLORS[colorIndex];
-
-   ball.className = "ball";
-   ball.style.setProperty("--c", color.main);
-   ball.style.setProperty("--shade", color.shade);
-
-   el.appendChild(ball);
-  });
-
-  el.onclick = () => tap(i);
-
-  root.appendChild(el);
- });
-}
-
-function updateInfo() {
- $("level").textContent = level;
- $("moves").textContent = moves;
- $("coins").textContent = coins;
- $("best").textContent = best ?? "—";
-
- $("stageTitle").textContent = "مرحله " + level;
-
- const p = Math.floor(
-  (completed ? level : level - 1) / TOTAL * 100
- );
-
- $("bar").style.width = p + "%";
-
- $("percent").textContent =
-  Math.min(TOTAL, completed ? level : level - 1) +
-  " از " + TOTAL;
-
- $("difficulty").textContent =
-  level <= 50 ? "آسان" :
-  level <= 150 ? "متوسط" :
-  level <= 300 ? "سخت" : "حرفه‌ای";
-}
-
-// -----------------------------
-// Player moves
-// -----------------------------
-
-function tap(i) {
- if (completed) return;
-
- if (selected === -1) {
-  if (board[i].length) {
-   selected = i;
-   render();
-
-   $("message").textContent =
-    "حالا لوله مقصد را انتخاب کن.";
-  }
-
-  return;
- }
-
- if (selected === i) {
-  selected = -1;
-  render();
-
-  $("message").textContent = "انتخاب لغو شد.";
-  return;
- }
-
- const from = board[selected];
- const to = board[i];
-
- if (!from.length) {
-  selected = -1;
-  render();
-  return;
- }
-
- const color = from[from.length - 1];
-
- if (
-  to.length >= CAPACITY ||
-  (to.length && to[to.length - 1] !== color)
- ) {
-  selected = i;
-  render();
-
-  $("message").textContent =
-   "فقط به لوله خالی یا هم‌رنگ منتقل کن.";
-
-  return;
- }
-
- history.push({
-  board: cloneBoard(board),
-  moves
- });
-
- to.push(from.pop());
-
- moves++;
- selected = -1;
-
- playSound(440, .07);
-
- render();
- updateInfo();
-
- if (isSolvedBoard(board)) {
-  win();
- } else {
-  $("message").textContent = "حرکت موفق! ادامه بده.";
- }
-}
-
-// -----------------------------
-// Level completion
-// -----------------------------
-
-function win() {
- if (completed) return;
-
- completed = true;
-
- const reward =
-  15 + Math.min(35, Math.floor(level / 10));
-
- best = best === null
-  ? moves
-  : Math.min(best, moves);
-
- const oldRecord = Number(playerBest[level]);
-
- playerBest[level] =
-  oldRecord > 0
-   ? Math.min(oldRecord, moves)
-   : moves;
-
- saveLocal();
- updateInfo();
-
- $("message").textContent =
-  "تبریک! همه رنگ‌ها مرتب شدند 🎉";
-
- $("next").disabled = false;
-
- $("popupEmoji").textContent =
-  level === TOTAL ? "👑" : "🏆";
-
- $("popupTitle").textContent =
-  level === TOTAL
-   ? "قهرمان Color Escape!"
-   : "مرحله تکمیل شد!";
-
- $("popupText").textContent =
-  `تعداد حرکت: ${moves} | در حال ثبت جایزه...`;
-
- $("popupButton").textContent =
-  level === TOTAL ? "پایان بازی" : "مرحله بعد";
-
- $("popupButton").onclick = nextLevel;
-
- $("overlay").style.display = "flex";
-
- playSound(660, .15);
-
- setTimeout(() => playSound(880, .2), 170);
-
- // Save to server
- syncProgress(level, moves, reward);
-}
-
-function nextLevel() {
- $("overlay").style.display = "none";
-
- if (!completed) return;
-
- if (level >= TOTAL) {
-  $("message").textContent =
-   "تبریک! تمام ۵۰۰ مرحله را به پایان رساندی! 👑";
-
-  $("next").disabled = true;
-  return;
- }
-
- level++;
-
- saveLocal();
- start();
-}
-
-// -----------------------------
-// Game controls
-// -----------------------------
-
-function restart() {
- board = cloneBoard(initialBoard);
-
- moves = 0;
- selected = -1;
- history = [];
- completed = false;
-
- $("next").disabled = true;
- $("message").textContent = "مرحله از ابتدا شروع شد.";
-
- render();
- updateInfo();
-}
-
-function undo() {
- if (!history.length || completed) return;
-
- const old = history.pop();
-
- board = old.board;
- moves = old.moves;
-
- selected = -1;
-
- render();
- updateInfo();
-
- $("message").textContent =
-  "حرکت قبلی برگشت داده شد.";
-}
-
-function hint() {
- if (completed) return;
-
- let found = false;
-
- for (let i = 0; i < board.length; i++) {
-  if (!board[i].length) continue;
-
-  const c = board[i][board[i].length - 1];
-
-  for (let j = 0; j < board.length; j++) {
-   if (i === j || board[j].length >= 4) continue;
-
-   if (
-    !board[j].length ||
-    board[j][board[j].length - 1] === c
-   ) {
-    selected = i;
-    render();
-
-    $("message").textContent =
-     "راهنمایی: توپ بالایی این لوله را منتقل کن.";
-
-    found = true;
-    break;
-   }
-  }
-
-  if (found) break;
- }
-
- if (!found) {
-  $("message").textContent =
-   "برای این وضعیت حرکت ساده‌ای پیدا نشد.";
- }
-}
-
-// -----------------------------
-// Sound
-// -----------------------------
-
-function playSound(freq, duration) {
- if (!soundOn) return;
-
- try {
-  audio = audio ||
-   new (window.AudioContext || window.webkitAudioContext)();
-
-  const osc = audio.createOscillator();
-  const gain = audio.createGain();
-
-  osc.frequency.value = freq;
-  osc.type = "sine";
-
-  gain.gain.value = .055;
-
-  gain.gain.exponentialRampToValueAtTime(
-   .001,
-   audio.currentTime + duration
-  );
-
-  osc.connect(gain);
-  gain.connect(audio.destination);
-
-  osc.start();
-  osc.stop(audio.currentTime + duration);
-
- } catch (e) {}
-}
-
-// -----------------------------
-// Buttons
-// -----------------------------
-
-$("restart").onclick = restart;
-$("undo").onclick = undo;
-$("hint").onclick = hint;
-
-$("next").onclick = () => {
- if (completed) nextLevel();
- else {
-  $("message").textContent =
-   "ابتدا مرحله را کامل کن.";
- }
-};
-
-$("sound").onclick = () => {
- soundOn = !soundOn;
-
- $("sound").textContent =
-  soundOn ? "🔊 صدا: روشن" : "🔇 صدا: خاموش";
-
- if (soundOn) playSound(520, .1);
-};
-
-// -----------------------------
-// Startup
-// -----------------------------
-
-async function init() {
- loadLocal();
-
- $("message").textContent =
-  "در حال اتصال به حساب بازیکن...";
-
- const connected = await loadCloudProgress();
-
- saveLocal();
- start();
-
- if (connected) {
-  $("message").textContent =
-   "حساب شما با موفقیت بازیابی شد. موفق باشی!";
- } else {
-  $("message").textContent =
-   "بازی آماده است؛ اطلاعات فعلاً روی دستگاه ذخیره می‌شود.";
- }
-}
-
-init();
-
-</script>
-</body>
-</html>
