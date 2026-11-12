@@ -10,6 +10,7 @@ export async function onRequestGet({ env }) {
 
     const result = await env.DB.prepare(`
       SELECT
+        telegram_id,
         name,
         level,
         completed,
@@ -38,6 +39,7 @@ export async function onRequestGet({ env }) {
       players
     }, {
       headers: {
+        "Content-Type": "application/json; charset=utf-8",
         "Cache-Control": "no-store"
       }
     });
