@@ -1,3 +1,4 @@
+
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
@@ -55,15 +56,17 @@ async function verifyTelegram(initData, botToken) {
     .join("\n");
 
   const secretKey = await hmac(
-    new TextEncoder().encode("WebAppData"),
-    botToken
+    new TextEncoder().encode(botToken),
+    "WebAppData"
   );
 
   const calculatedHash = toHex(
     await hmac(secretKey, dataCheckString)
   );
 
-  if (!safeEqual(calculatedHash, receivedHash)) return null;
+  if (!safeEqual(calculatedHash, receivedHash.toLowerCase())) {
+    return null;
+  }
 
   const authDate = Number(params.get("auth_date"));
   const now = Math.floor(Date.now() / 1000);
@@ -72,26 +75,28 @@ async function verifyTelegram(initData, botToken) {
     return null;
   }
 
-  let user;
   try {
-    user = JSON.parse(params.get("user") || "{}");
+    const user = JSON.parse(params.get("user") || "{}");
+    return user.id ? user : null;
   } catch {
     return null;
   }
-
-  if (!user.id) return null;
-
-  return user;
 }
 
 export async function onRequestPost({ request, env }) {
   try {
     if (!env.DB) {
-      return json({ success: false, error: "Database is not connected" }, 500);
+      return json({
+        success: false,
+        error: "Database is not connected"
+      }, 500);
     }
 
     if (!env.TELEGRAM_BOT_TOKEN) {
-      return json({ success: false, error: "Bot token is not configured" }, 500);
+      return json({
+        success: false,
+        error: "Telegram bot token is not configured"
+      }, 500);
     }
 
     const body = await request.json();
@@ -100,19 +105,17 @@ export async function onRequestPost({ request, env }) {
     const level = Number(body.level);
     const completed = Number(body.completed);
 
-    if (!initData) {
-      return json({ success: false, error: "Telegram data is missing" }, 400);
-    }
-
     if (
+      !initData ||
       !Number.isInteger(level) ||
       !Number.isInteger(completed) ||
-      level < 0 ||
-      level > 500 ||
-      completed < 0 ||
-      completed > 500
+      level < 0 || level > 500 ||
+      completed < 0 || completed > 500
     ) {
-      return json({ success: false, error: "Invalid score" }, 400);
+      return json({
+        success: false,
+        error: "Invalid score"
+      }, 400);
     }
 
     const user = await verifyTelegram(
@@ -121,10 +124,13 @@ export async function onRequestPost({ request, env }) {
     );
 
     if (!user) {
-      return json({ success: false, error: "Invalid Telegram authentication" }, 401);
+      return json({
+        success: false,
+        error: "Invalid Telegram authentication"
+      }, 401);
     }
 
-    const displayName = [
+    const name = [
       user.first_name || "",
       user.last_name || ""
     ].join(" ").trim() || user.username || "Player";
@@ -132,25 +138,29 @@ export async function onRequestPost({ request, env }) {
     await env.DB.prepare(`
       INSERT INTO players (
         telegram_id,
-        display_name,
+        name,
         level,
         completed,
+        auth_type,
+        telegram_user_id,
         updated_at
       )
-      VALUES (?, ?, ?, ?, unixepoch())
+      VALUES (?, ?, ?, ?, 'telegram', ?, CURRENT_TIMESTAMP)
+
       ON CONFLICT(telegram_id) DO UPDATE SET
-        display_name = excluded.display_name,
+        name = excluded.name,
         level = MAX(players.level, excluded.level),
         completed = MAX(players.completed, excluded.completed),
-        updated_at = unixepoch()
-    `)
-      .bind(
-        String(user.id),
-        displayName.slice(0, 80),
-        level,
-        completed
-      )
-      .run();
+        auth_type = 'telegram',
+        telegram_user_id = excluded.telegram_user_id,
+        updated_at = CURRENT_TIMESTAMP
+    `).bind(
+      String(user.id),
+      name.slice(0, 80),
+      level,
+      completed,
+      String(user.id)
+    ).run();
 
     return json({
       success: true,
@@ -160,7 +170,7 @@ export async function onRequestPost({ request, env }) {
   } catch (error) {
     return json({
       success: false,
-      error: "Server error"
+      error: "Could not save score"
     }, 500);
   }
-          }
+}
