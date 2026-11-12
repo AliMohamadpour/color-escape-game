@@ -1,14 +1,12 @@
 CREATE TABLE IF NOT EXISTS players (
- telegram_id TEXT PRIMARY KEY,
- name TEXT NOT NULL DEFAULT 'Player',
- level INTEGER NOT NULL DEFAULT 1,
- completed INTEGER NOT NULL DEFAULT 0,
- updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    telegram_id TEXT PRIMARY KEY,
+    display_name TEXT NOT NULL DEFAULT 'Player',
+    level INTEGER NOT NULL DEFAULT 0
+        CHECK(level BETWEEN 0 AND 500),
+    completed INTEGER NOT NULL DEFAULT 0
+        CHECK(completed BETWEEN 0 AND 500),
+    updated_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
-CREATE TABLE IF NOT EXISTS score_history (
- id INTEGER PRIMARY KEY AUTOINCREMENT,
- telegram_id TEXT NOT NULL,
- level INTEGER NOT NULL,
- created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX IF NOT EXISTS idx_score_history_telegram_id ON score_history(telegram_id);
+
+CREATE INDEX IF NOT EXISTS idx_players_ranking
+ON players(level DESC, completed DESC, updated_at ASC);
