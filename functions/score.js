@@ -1,12 +1,13 @@
 
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), {
+const json = (data, status = 200) => {
+  return new Response(JSON.stringify(data), {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": "no-store"
     }
   });
+};
 
 async function hmac(key, message) {
   const cryptoKey = await crypto.subtle.importKey(
@@ -36,9 +37,11 @@ function safeEqual(a, b) {
   if (a.length !== b.length) return false;
 
   let result = 0;
+
   for (let i = 0; i < a.length; i++) {
     result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
+
   return result === 0;
 }
 
@@ -55,9 +58,10 @@ async function verifyTelegram(initData, botToken) {
     .map(([key, value]) => `${key}=${value}`)
     .join("\n");
 
+  // Telegram WebApp validation
   const secretKey = await hmac(
-    new TextEncoder().encode(botToken),
-    "WebAppData"
+    new TextEncoder().encode("WebAppData"),
+    botToken
   );
 
   const calculatedHash = toHex(
@@ -71,7 +75,11 @@ async function verifyTelegram(initData, botToken) {
   const authDate = Number(params.get("auth_date"));
   const now = Math.floor(Date.now() / 1000);
 
-  if (!authDate || now - authDate > 86400 || authDate > now + 60) {
+  if (
+    !authDate ||
+    now - authDate > 86400 ||
+    authDate > now + 60
+  ) {
     return null;
   }
 
@@ -109,8 +117,10 @@ export async function onRequestPost({ request, env }) {
       !initData ||
       !Number.isInteger(level) ||
       !Number.isInteger(completed) ||
-      level < 0 || level > 500 ||
-      completed < 0 || completed > 500
+      level < 0 ||
+      level > 500 ||
+      completed < 0 ||
+      completed > 500
     ) {
       return json({
         success: false,
@@ -129,6 +139,8 @@ export async function onRequestPost({ request, env }) {
         error: "Invalid Telegram authentication"
       }, 401);
     }
+
+    const telegramId = String(user.id);
 
     const name = [
       user.first_name || "",
@@ -155,16 +167,22 @@ export async function onRequestPost({ request, env }) {
         telegram_user_id = excluded.telegram_user_id,
         updated_at = CURRENT_TIMESTAMP
     `).bind(
-      String(user.id),
+      telegramId,
       name.slice(0, 80),
       level,
       completed,
-      String(user.id)
+      telegramId
     ).run();
 
     return json({
       success: true,
-      message: "Score saved"
+      message: "Score saved",
+      player: {
+        id: telegramId,
+        name,
+        level,
+        completed
+      }
     });
 
   } catch (error) {
