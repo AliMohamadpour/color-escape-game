@@ -4,1175 +4,1182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#080e20">
+<meta name="theme-color" content="#f7f3ed">
 <meta name="description" content="Color Escape 3D - 500 Levels">
 <title>Color Escape 3D</title>
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
+
 :root{
---bg:#080e20;
---panel:#141f38;
---panel2:#1c2946;
---text:#fff;
---muted:#94a3bd;
---gold:#ffc857;
---blue:#48b8ff;
---green:#39dca1;
---danger:#ff647c;
+ --bg:#f7f3ed;
+ --surface:#fffdfb;
+ --surface2:#f0eaf8;
+ --purple:#a78bce;
+ --purple-dark:#8064ae;
+ --mint:#a8d8c6;
+ --mint-dark:#6eaf98;
+ --pink:#efb7c8;
+ --yellow:#f4d58d;
+ --text:#51465f;
+ --muted:#988da0;
+ --border:#e9e1eb;
+ --shadow:0 8px 28px rgba(110,87,133,.10);
 }
-body{
-margin:0;
-background:
-radial-gradient(ellipse at 50% 0%,#172b51 0%,transparent 55%),
-var(--bg);
-color:var(--text);
-font-family:Tahoma,Arial,sans-serif;
-min-height:100vh;
-overflow-x:hidden;
+*{box-sizing:border-box}
+html,body{
+ margin:0;width:100%;height:100%;overflow:hidden;
+ font-family:'Vazirmatn',Tahoma,sans-serif;
+ background:var(--bg);color:var(--text);
 }
-button,select{font-family:inherit}
-button{cursor:pointer}
-.app{
-max-width:650px;
-margin:auto;
-padding:14px 14px 30px;
+button{font-family:inherit;cursor:pointer;border:0}
+#app{
+ width:100%;height:100%;max-width:650px;margin:auto;
+ display:flex;flex-direction:column;position:relative;
+ overflow:hidden;background:
+ radial-gradient(circle at 10% 10%,#f5e6ef 0,transparent 28%),
+ radial-gradient(circle at 90% 25%,#e8e1f5 0,transparent 30%),
+ var(--bg);
 }
-.header{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-margin-bottom:15px;
+.topbar{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:12px 15px 8px;gap:8px;z-index:5;
 }
+.brand{display:flex;align-items:center;gap:9px}
 .logo{
-display:flex;
-align-items:center;
-gap:9px;
-font-weight:900;
-font-size:17px;
+ width:39px;height:39px;border-radius:14px;
+ background:linear-gradient(135deg,#c9b1e9,#f0b9ca);
+ display:grid;place-items:center;color:white;font-size:22px;
+ box-shadow:0 5px 12px #b49acb55;
 }
-.logoIcon{
-width:40px;height:40px;
-border-radius:13px;
-background:linear-gradient(145deg,#38bdf8,#635bff);
-display:grid;place-items:center;
-font-size:23px;
-box-shadow:0 5px 20px #388bff55;
+.brand-name{font-weight:900;font-size:17px;line-height:1.2}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:1px}
+.top-actions{display:flex;gap:7px;align-items:center}
+.pill{
+ display:flex;align-items:center;gap:5px;padding:8px 11px;
+ border-radius:13px;background:var(--surface);
+ box-shadow:var(--shadow);font-size:12px;font-weight:800;
 }
-.coins{
-background:#192742;
-border:1px solid #344667;
-border-radius:30px;
-padding:9px 14px;
-color:var(--gold);
-font-weight:bold;
-display:flex;align-items:center;gap:6px;
+.icon-btn{
+ width:37px;height:37px;border-radius:12px;background:var(--surface);
+ color:var(--text);font-size:17px;box-shadow:var(--shadow);
 }
-.topBtns{display:flex;gap:7px}
-.smallBtn{
-border:1px solid #344667;
-background:#192742;
-color:white;
-border-radius:12px;
-padding:9px 11px;
-font-size:17px;
+main{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 13px 12px}
+.level-row{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:8px 4px 9px;
 }
+.level-title{font-size:13px;color:var(--muted);font-weight:700}
+.level-number{
+ direction:ltr;unicode-bidi:isolate;font-family:Arial,sans-serif;
+ font-weight:900;font-size:23px;color:var(--purple-dark);
+}
+.progress-wrap{height:7px;background:#e9e2ed;border-radius:20px;overflow:hidden;margin-top:5px}
+.progress{height:100%;width:0;background:linear-gradient(90deg,#b9a0df,#a7d8c7);border-radius:20px;transition:width .3s}
+.game-card{
+ flex:1;min-height:180px;position:relative;border-radius:25px;
+ background:linear-gradient(160deg,#fffdfb,#f4eff8);
+ border:1px solid #fff;box-shadow:var(--shadow);overflow:hidden;
+}
+#game3d{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.scene-tip{
+ position:absolute;top:10px;left:0;right:0;text-align:center;
+ font-size:11px;color:#a59aab;pointer-events:none;z-index:2;
+}
+.bottom-area{padding-top:12px}
 .stats{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:9px;
-margin-bottom:13px;
+ display:flex;justify-content:space-around;align-items:center;
+ background:#fffdfb;border:1px solid var(--border);
+ border-radius:17px;padding:10px 5px;margin-bottom:11px;
 }
-.stat{
-background:linear-gradient(145deg,#1a2946,#111c32);
-border:1px solid #2b3d5d;
-border-radius:15px;
-padding:11px 5px;
-text-align:center;
-}
-.stat small{color:var(--muted);font-size:11px}
-.stat strong{display:block;margin-top:5px;font-size:17px}
-.progressBox{
-background:#192742;
-border-radius:20px;
-height:7px;
-overflow:hidden;
-margin-bottom:18px;
-}
-.progress{
-height:100%;
-width:0%;
-background:linear-gradient(90deg,#38bdf8,#9a70ff);
-transition:.3s;
-}
-.gamePanel{
-background:linear-gradient(150deg,#172642,#111b31);
-border:1px solid #304363;
-border-radius:23px;
-padding:15px 10px 20px;
-min-height:380px;
-box-shadow:0 15px 40px #0004;
-}
-.panelTop{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-padding:0 5px;
-}
-.panelTop strong{font-size:14px}
-.panelTop span{font-size:12px;color:var(--muted)}
-.bottles{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-align-items:flex-end;
-gap:23px 13px;
-padding:15px 5px 22px;
-min-height:260px;
-perspective:800px;
-}
-.bottle{
-width:49px;
-height:170px;
-position:relative;
-border-radius:10px 10px 17px 17px;
-border:2px solid #d9f3ff8c;
-border-top:0;
-background:linear-gradient(90deg,#ffffff08,#ffffff20 30%,#ffffff08 70%,#ffffff0c);
-box-shadow:
-inset 5px 0 9px #ffffff15,
-inset -5px 0 9px #ffffff12,
-0 9px 17px #0005;
-overflow:hidden;
-transform:rotateX(-3deg);
-transition:transform .2s,border-color .2s;
-}
-.bottle:before{
-content:"";
-position:absolute;
-top:0;
-left:9px;
-right:9px;
-height:8px;
-border:2px solid #d9f3ff99;
-border-radius:3px 3px 5px 5px;
-background:#b9eaff18;
-z-index:3;
-}
-.bottle:after{
-content:"";
-position:absolute;
-top:12px;
-bottom:8px;
-left:5px;
-width:4px;
-border-radius:10px;
-background:#ffffff24;
-pointer-events:none;
-z-index:4;
-}
-.bottle.selected{
-border-color:#ffc857;
-transform:translateY(-12px) scale(1.05);
-box-shadow:0 0 18px #ffc85755;
-}
-.bottle.locked{opacity:.4}
-.balls{
-position:absolute;
-bottom:5px;
-left:3px;right:3px;
-display:flex;
-flex-direction:column-reverse;
-gap:2px;
-}
-.ball{
-width:100%;
-height:36px;
-border-radius:7px 7px 11px 11px;
-position:relative;
-box-shadow:
-inset 3px 3px 5px #ffffff55,
-inset -3px -5px 7px #0005,
-0 2px 3px #0005;
-}
-.ball:after{
-content:"";
-position:absolute;
-width:11px;height:5px;
-border-radius:50%;
-background:#ffffff70;
-top:5px;left:7px;
-filter:blur(1px);
-}
-.bottle.selected .ball{filter:brightness(1.12)}
-.controls{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:8px;
-margin-top:12px;
+.stat{text-align:center;min-width:60px}
+.stat strong{display:block;font-size:16px;color:var(--purple-dark)}
+.stat span{font-size:10px;color:var(--muted)}
+.actions{
+ display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
 }
 .action{
-border:1px solid #3a5278;
-background:#213455;
-color:white;
-border-radius:14px;
-padding:12px 3px;
-font-size:12px;
-font-weight:bold;
+ border-radius:15px;background:#fffdfb;color:var(--text);
+ padding:10px 3px 8px;box-shadow:var(--shadow);
+ display:flex;flex-direction:column;align-items:center;gap:4px;
+ min-height:62px;border:1px solid var(--border);
 }
-.action .ico{display:block;font-size:21px;margin-bottom:5px}
-.action.primary{
-background:linear-gradient(135deg,#397df7,#7659f5);
-border:0;
-}
-.action.gold{
-background:linear-gradient(135deg,#a87519,#edb849);
-color:#251800;
-border:0;
-}
-.action:active,.smallBtn:active{transform:scale(.96)}
-.bottomGrid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-margin-top:14px;
-}
-.menuCard{
-background:#172642;
-border:1px solid #304363;
-border-radius:17px;
-padding:15px;
-text-align:center;
-cursor:pointer;
-}
-.menuCard .ico{font-size:25px}
-.menuCard strong{display:block;margin-top:7px;font-size:13px}
-.menuCard small{color:var(--muted);font-size:10px}
-.overlay{
-position:fixed;
-inset:0;
-background:#030817d9;
-backdrop-filter:blur(8px);
-display:none;
-align-items:center;
-justify-content:center;
-padding:15px;
-z-index:20;
-}
-.overlay.show{display:flex}
-.modal{
-width:100%;
-max-width:420px;
-max-height:85vh;
-overflow:auto;
-background:linear-gradient(150deg,#1b2c4c,#101a2f);
-border:1px solid #40577c;
-border-radius:23px;
-padding:20px;
-box-shadow:0 20px 60px #0009;
-}
-.modalHead{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
-.modalHead h3{margin:0;font-size:17px}
-.close{
-background:#2b3d5d;color:white;
-border:0;border-radius:10px;
-width:32px;height:32px;font-size:18px;
-}
-.item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-padding:13px;
-margin-bottom:9px;
-background:#243653;
-border-radius:13px;
-font-size:13px;
-}
-.item button{
-border:0;border-radius:9px;
-padding:9px 13px;
-background:#4a81f8;color:white;
-font-weight:bold;
-}
-.item button:disabled{opacity:.4}
-.reward{
-text-align:center;
-font-size:45px;
-margin:10px;
-}
-.notice{
-position:fixed;
-bottom:25px;
-left:50%;
-transform:translateX(-50%) translateY(100px);
-background:#253c5e;
-border:1px solid #54729d;
-border-radius:13px;
-padding:13px 20px;
-font-size:13px;
-z-index:50;
-transition:.3s;
-white-space:nowrap;
-}
-.notice.show{transform:translateX(-50%) translateY(0)}
-select{
-background:#243653;
-color:white;
-border:1px solid #425a7e;
-padding:10px;
-border-radius:10px;
-width:100%;
-}
+.action .ico{font-size:20px}
+.action small{font-size:10px;font-weight:800}
+.action:active,.primary:active{transform:scale(.97)}
+.action.primary-action{background:#eee6f8;border-color:#e1d4f1;color:#8064ae}
+.action.mint-action{background:#e8f5ef;border-color:#d4ece1;color:#578d79}
+.action.pink-action{background:#faedf1;border-color:#f2dce4;color:#b6758d}
 .footer{
-text-align:center;
-color:#657994;
-font-size:10px;
-padding:20px;
+ display:flex;justify-content:space-between;align-items:center;
+ padding:10px 4px 2px;color:#a79cab;font-size:10px;
 }
-@media(max-width:380px){
-.bottles{gap:18px 9px}
-.bottle{width:43px;height:155px}
-.ball{height:32px}
-.gamePanel{padding:12px 6px}
+.footer button{background:none;color:var(--purple-dark);font-weight:800;font-size:11px}
+.modal-backdrop{
+ position:absolute;inset:0;background:#51465f66;z-index:20;
+ display:none;align-items:center;justify-content:center;padding:18px;
+ backdrop-filter:blur(5px);
+}
+.modal-backdrop.show{display:flex}
+.modal{
+ width:100%;max-width:390px;max-height:82vh;overflow:auto;
+ background:#fffdfb;border-radius:24px;padding:20px;
+ box-shadow:0 20px 60px #51465f33;position:relative;
+}
+.modal h2{margin:0 0 13px;font-size:19px;color:var(--purple-dark)}
+.modal p{font-size:13px;line-height:1.9;color:var(--muted)}
+.close{
+ position:absolute;top:12px;left:12px;width:30px;height:30px;
+ border-radius:10px;background:#f1ebf5;color:var(--text);font-size:18px;
+}
+.primary{
+ background:linear-gradient(135deg,#b59bdd,#9478c2);
+ color:white;border-radius:14px;padding:12px 17px;font-weight:800;
+ box-shadow:0 5px 15px #a58acb44;
+}
+.secondary{
+ background:#f0eaf7;color:#8064ae;border-radius:13px;
+ padding:10px 14px;font-weight:800;
+}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.shop-item,.rank-item,.achievement-item,.level-item{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:11px 10px;margin:7px 0;background:#f8f4fa;border-radius:13px;
+ font-size:12px;gap:10px;
+}
+.shop-item button,.level-item button{background:#e8def4;color:#8064ae;border-radius:10px;padding:8px 11px;font-weight:800}
+.shop-item button:disabled{opacity:.45}
+.language-select{
+ width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);
+ background:#faf7fb;color:var(--text);font-family:inherit;margin-top:8px;
+}
+.toast{
+ position:absolute;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);
+ opacity:0;pointer-events:none;z-index:30;background:#574b65;color:white;
+ border-radius:14px;padding:11px 17px;font-size:12px;white-space:nowrap;
+ transition:.25s;box-shadow:0 8px 25px #51465f44;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.win-icon{font-size:52px;text-align:center;margin:8px}
+.win-title{text-align:center;font-weight:900;font-size:23px;color:var(--mint-dark)}
+.win-desc{text-align:center}
+@media(max-height:700px){
+ .topbar{padding-top:7px}
+ .logo{width:34px;height:34px}
+ .level-row{padding:4px}
+ .bottom-area{padding-top:7px}
+ .action{min-height:55px;padding:6px 2px}
+ .stats{padding:7px;margin-bottom:7px}
 }
 </style>
 </head>
 
 <body>
-<div class="app">
+<div id="app">
+ <header class="topbar">
+  <div class="brand">
+   <div class="logo">◉</div>
+   <div>
+    <div class="brand-name">Color Escape 3D</div>
+    <div class="brand-sub">COLOR PUZZLE ADVENTURE</div>
+   </div>
+  </div>
+  <div class="top-actions">
+   <div class="pill">🪙 <span id="coinCount">100</span></div>
+   <button class="icon-btn" id="languageBtn" title="Language">🌐</button>
+   <button class="icon-btn" id="menuBtn" title="Menu">☰</button>
+  </div>
+ </header>
 
-<header class="header">
-<div class="logo">
-<div class="logoIcon">🧪</div>
-<div>COLOR ESCAPE <span style="color:#58b9ff">3D</span></div>
-</div>
-<div class="coins">🪙 <span id="coins">0</span></div>
-<div class="topBtns">
-<button class="smallBtn" onclick="openModal('settings')">⚙️</button>
-</div>
-</header>
+ <main>
+  <div class="level-row">
+   <div>
+    <div class="level-title" data-i="level">مرحله</div>
+    <div class="level-number" id="levelNumber" dir="ltr">LEVEL 1</div>
+   </div>
+   <div style="width:45%;max-width:190px">
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#a79cab">
+     <span data-i="progress">پیشرفت</span>
+     <span id="progressText" dir="ltr">0%</span>
+    </div>
+    <div class="progress-wrap"><div class="progress" id="progressBar"></div></div>
+   </div>
+  </div>
 
-<section class="stats">
-<div class="stat">
-<small data-i="level">مرحله</small>
-<strong id="level">1 / 500</strong>
-</div>
-<div class="stat">
-<small data-i="moves">حرکت‌ها</small>
-<strong id="moves">0</strong>
-</div>
-<div class="stat">
-<small data-i="best">بهترین رکورد</small>
-<strong id="best">0</strong>
-</div>
-</section>
+  <section class="game-card">
+   <div class="scene-tip" data-i="tip">توپ‌ها را مرتب کن تا هر بطری یک‌رنگ شود</div>
+   <canvas id="game3d"></canvas>
+  </section>
 
-<div class="progressBox">
-<div class="progress" id="progress"></div>
-</div>
+  <section class="bottom-area">
+   <div class="stats">
+    <div class="stat"><strong id="movesCount">0</strong><span data-i="moves">حرکت</span></div>
+    <div class="stat"><strong id="tubesCount">5</strong><span data-i="tubes">بطری‌ها</span></div>
+    <div class="stat"><strong id="bestCount">0</strong><span data-i="best">بهترین</span></div>
+    <div class="stat"><strong id="coinStat">100</strong><span data-i="coins">سکه</span></div>
+   </div>
 
-<section class="gamePanel">
-<div class="panelTop">
-<strong data-i="sort">🎨 توپ‌ها را مرتب کن</strong>
-<span id="levelName">LEVEL 1</span>
-</div>
-
-<div class="bottles" id="bottles"></div>
-</section>
-
-<div class="controls">
-<button class="action" onclick="undo()">
-<span class="ico">↩️</span><span data-i="undo">برگشت</span>
-</button>
-<button class="action primary" onclick="hint()">
-<span class="ico">💡</span><span data-i="hint">راهنما 15🪙</span>
-</button>
-<button class="action" onclick="restart()">
-<span class="ico">🔄</span><span data-i="restart">شروع مجدد</span>
-</button>
-<button class="action gold" onclick="skipLevel()">
-<span class="ico">⏭️</span><span data-i="skip">رد مرحله 30🪙</span>
-</button>
-</div>
-
-<div class="bottomGrid">
-<div class="menuCard" onclick="openModal('shop')">
-<div class="ico">🛍️</div>
-<strong data-i="shop">فروشگاه</strong>
-<small data-i="shopDesc">خرید امکانات</small>
-</div>
-<div class="menuCard" onclick="dailyReward()">
-<div class="ico">🎁</div>
-<strong data-i="daily">جایزه روزانه</strong>
-<small data-i="dailyDesc">هر روز جایزه بگیر</small>
-</div>
-<div class="menuCard" onclick="openModal('achievements')">
-<div class="ico">🏆</div>
-<strong data-i="achievements">دستاوردها</strong>
-<small data-i="achDesc">پیشرفت خودت</small>
-</div>
-<div class="menuCard" onclick="openModal('leaderboard')">
-<div class="ico">🥇</div>
-<strong data-i="leaderboard">جدول رتبه‌بندی</strong>
-<small data-i="rankDesc">بهترین بازیکنان</small>
-</div>
+   <div class="actions">
+    <button class="action primary-action" id="undoBtn"><span class="ico">↶</span><small data-i="undo">برگشت</small></button>
+    <button class="action mint-action" id="hintBtn"><span class="ico">💡</span><small data-i="hint">راهنما</small></button>
+    <button class="action pink-action" id="restartBtn"><span class="ico">⟳</span><small data-i="restart">شروع مجدد</small></button>
+    <button class="action" id="skipBtn"><span class="ico">⏭</span><small data-i="skip">رد مرحله</small></button>
+   </div>
+   <div class="footer">
+    <button id="shopBtn">🛍 <span data-i="shop">فروشگاه</span></button>
+    <button id="dailyBtn">🎁 <span data-i="daily">جایزه روزانه</span></button>
+    <button id="rankBtn">🏆 <span data-i="ranking">رتبه‌بندی</span></button>
+    <button id="achievementBtn">⭐ <span data-i="achievements">دستاوردها</span></button>
+   </div>
+  </section>
+ </main>
 </div>
 
-<div class="footer">COLOR ESCAPE 3D • 500 LEVELS</div>
+<div class="modal-backdrop" id="modalBackdrop">
+ <div class="modal" id="modal">
+  <button class="close" id="closeModal">×</button>
+  <div id="modalContent"></div>
+ </div>
 </div>
-
-<div class="overlay" id="overlay" onclick="outsideClose(event)">
-<div class="modal">
-<div class="modalHead">
-<h3 id="modalTitle"></h3>
-<button class="close" onclick="closeModal()">×</button>
-</div>
-<div id="modalBody"></div>
-</div>
-</div>
-
-<div class="notice" id="notice"></div>
+<div class="toast" id="toast"></div>
 
 <script>
+(() => {
 "use strict";
 
-/* =========================
-   CONFIGURATION
-========================= */
+const $ = id => document.getElementById(id);
+const tg = window.Telegram?.WebApp;
+try{tg?.ready();tg?.expand();}catch(e){}
 
-const TOTAL=500;
-const CAP=4;
-const COLORS=[
-"#ff536b","#35c9f5","#ffd34e","#9b72ff",
-"#40dc9c","#ff914d","#f16bd2","#80d65b",
-"#4779ff","#e9a6ff"
-];
-
-const tg=window.Telegram?.WebApp;
-try{
-if(tg){tg.ready();tg.expand();}
-}catch(e){}
-
-const $=id=>document.getElementById(id);
-
-const KEYS={
-coins:"ce_coins_v1",
-progress:"ce_progress_v1",
-best:"ce_best",
-rewards:"ce_rewards_v1",
-achievements:"ce_achievements_v1",
-daily:"ce_daily_reward_v1",
-gold:"ce_golden_skin_v1",
-language:"ce_language"
+const STORAGE = {
+ coins:"ce_coins_v1",
+ progress:"ce_progress_v1",
+ best:"ce_best",
+ rewards:"ce_rewards_v1",
+ achievements:"ce_achievements_v1",
+ daily:"ce_daily_reward_v1",
+ gold:"ce_golden_skin_v1",
+ language:"ce_language",
+ moves:"ce_total_moves"
 };
 
-function read(key,fallback){
-try{
-const value=localStorage.getItem(key);
-return value===null?fallback:JSON.parse(value);
-}catch(e){return fallback;}
-}
-function save(key,value){
-try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}
-}
+const read = (key, fallback) => {
+ try{
+  const value=localStorage.getItem(key);
+  return value===null?fallback:JSON.parse(value);
+ }catch(e){return fallback;}
+};
+const save = (key,value) => localStorage.setItem(key,JSON.stringify(value));
 
-let coins=read(KEYS.coins,50);
-let currentLevel=read(KEYS.progress,1);
-let best=read(KEYS.best,0);
-let completed=read(KEYS.rewards,[]);
-let achievements=read(KEYS.achievements,[]);
-let dailyDate=read(KEYS.daily,"");
-let golden=read(KEYS.gold,false);
-let language=read(KEYS.language,"fa");
-
-let tubes=[];
-let original=[];
-let selected=-1;
-let moves=0;
-let history=[];
-let locked=false;
-let hintMove=null;
-let gameStarted=Date.now();
+let coins=read(STORAGE.coins,100);
+let level=read(STORAGE.progress,1);
+let best=read(STORAGE.best,{});
+let totalMoves=read(STORAGE.moves,0);
+let rewards=read(STORAGE.rewards,{});
+let achievements=read(STORAGE.achievements,{});
+let golden=read(STORAGE.gold,false);
+let language=read(STORAGE.language,"fa");
 
 const translations={
-fa:{
-level:"مرحله",moves:"حرکت‌ها",best:"بهترین رکورد",
-sort:"🎨 توپ‌ها را مرتب کن",undo:"برگشت",
-hint:"راهنما 15🪙",restart:"شروع مجدد",
-skip:"رد مرحله 30🪙",shop:"فروشگاه",
-shopDesc:"خرید امکانات",daily:"جایزه روزانه",
-dailyDesc:"هر روز جایزه بگیر",
-achievements:"دستاوردها",achDesc:"پیشرفت خودت",
-leaderboard:"جدول رتبه‌بندی",rankDesc:"بهترین بازیکنان",
-settings:"تنظیمات",close:"بستن",
-language:"زبان بازی",sound:"صدا",
-gold:"پوسته طلایی",hintTitle:"راهنمای حرکت",
-notEnough:"سکه کافی نداری!",
-win:"آفرین! مرحله را تمام کردی 🎉",
-dailyDone:"جایزه امروز را قبلاً گرفتی",
-dailyWin:"جایزه روزانه دریافت شد!",
-shopTitle:"فروشگاه",achTitle:"دستاوردها",
-rankTitle:"جدول رتبه‌بندی",
-noRank:"هنوز اطلاعاتی موجود نیست",
-goldBuy:"خرید 40 سکه",hintBuy:"خرید راهنما 15 سکه",
-skipBuy:"رد مرحله 30 سکه",undoError:"حرکتی برای برگشت وجود ندارد",
-noHint:"حرکت مناسبی پیدا نشد",
-restartConfirm:"مرحله از اول شروع شد",
-congratulations:"تبریک! تمام مراحل را گذراندی",
-buy:"خرید",owned:"خریداری شده",
-completed:"تکمیل شده",reward:"جایزه",
-movesAch:"انجام 100 حرکت",levelsAch:"تکمیل 10 مرحله",
-coinsAch:"جمع‌آوری 500 سکه",goldDesc:"ظاهر طلایی بطری‌ها",
-undoDesc:"بازگشت به حرکت قبلی",
-skipDesc:"رفتن به مرحله بعد"
-},
-en:{
-level:"Level",moves:"Moves",best:"Best",
-sort:"🎨 Sort the balls",undo:"Undo",
-hint:"Hint 15🪙",restart:"Restart",
-skip:"Skip 30🪙",shop:"Shop",shopDesc:"Get items",
-daily:"Daily reward",dailyDesc:"Claim daily bonus",
-achievements:"Achievements",achDesc:"Your progress",
-leaderboard:"Leaderboard",rankDesc:"Top players",
-settings:"Settings",close:"Close",
-language:"Game language",sound:"Sound",
-gold:"Golden skin",hintTitle:"Suggested move",
-notEnough:"Not enough coins!",win:"Level completed! 🎉",
-dailyDone:"You already claimed today's reward",
-dailyWin:"Daily reward received!",
-shopTitle:"Shop",achTitle:"Achievements",
-rankTitle:"Leaderboard",noRank:"No data available",
-goldBuy:"Buy 40 coins",hintBuy:"Hint 15 coins",
-skipBuy:"Skip 30 coins",undoError:"Nothing to undo",
-noHint:"No available hint",restartConfirm:"Level restarted",
-congratulations:"You completed all levels!",
-buy:"Buy",owned:"Owned",completed:"Completed",
-reward:"Reward",movesAch:"Make 100 moves",
-levelsAch:"Complete 10 levels",coinsAch:"Collect 500 coins",
-goldDesc:"Golden bottle appearance",undoDesc:"Undo last move",
-skipDesc:"Go to next level"
-},
-ar:{
-level:"المرحلة",moves:"الحركات",best:"أفضل نتيجة",
-sort:"🎨 رتب الكرات",undo:"تراجع",hint:"مساعدة 15🪙",
-restart:"إعادة",skip:"تخطي 30🪙",shop:"المتجر",
-shopDesc:"شراء الأدوات",daily:"مكافأة يومية",
-dailyDesc:"احصل على مكافأتك",achievements:"الإنجازات",
-achDesc:"تقدمك",leaderboard:"لوحة المتصدرين",
-rankDesc:"أفضل اللاعبين",settings:"الإعدادات",
-close:"إغلاق",language:"لغة اللعبة",sound:"الصوت",
-gold:"مظهر ذهبي",hintTitle:"حركة مقترحة",
-notEnough:"لا توجد عملات كافية!",win:"أحسنت! 🎉",
-dailyDone:"حصلت على مكافأتك اليوم",dailyWin:"تم استلام المكافأة!",
-shopTitle:"المتجر",achTitle:"الإنجازات",
-rankTitle:"المتصدرون",noRank:"لا توجد بيانات",
-buy:"شراء",owned:"تم الشراء",completed:"مكتمل",
-reward:"مكافأة",undoError:"لا توجد حركة للتراجع",
-noHint:"لا توجد حركة مناسبة",restartConfirm:"تمت إعادة المرحلة",
-congratulations:"أكملت جميع المراحل!"
-},
-es:{
-level:"Nivel",moves:"Movimientos",best:"Récord",
-sort:"🎨 Ordena las bolas",undo:"Deshacer",
-hint:"Pista 15🪙",restart:"Reiniciar",
-skip:"Saltar 30🪙",shop:"Tienda",shopDesc:"Comprar objetos",
-daily:"Premio diario",dailyDesc:"Recoge tu premio",
-achievements:"Logros",achDesc:"Tu progreso",
-leaderboard:"Clasificación",rankDesc:"Mejores jugadores",
-settings:"Ajustes",close:"Cerrar",language:"Idioma",
-gold:"Aspecto dorado",notEnough:"Monedas insuficientes",
-win:"¡Nivel completado! 🎉",dailyDone:"Premio ya recibido",
-dailyWin:"¡Premio recibido!",shopTitle:"Tienda",
-achTitle:"Logros",rankTitle:"Clasificación",
-noRank:"Sin datos",buy:"Comprar",owned:"Comprado",
-completed:"Completado",reward:"Premio",
-undoError:"Nada que deshacer",noHint:"Sin pistas",
-restartConfirm:"Nivel reiniciado"
-},
-fr:{
-level:"Niveau",moves:"Coups",best:"Record",
-sort:"🎨 Trie les boules",undo:"Annuler",
-hint:"Indice 15🪙",restart:"Recommencer",
-skip:"Passer 30🪙",shop:"Boutique",
-shopDesc:"Acheter",daily:"Récompense quotidienne",
-dailyDesc:"Récupérer",achievements:"Succès",
-achDesc:"Progression",leaderboard:"Classement",
-rankDesc:"Meilleurs joueurs",settings:"Paramètres",
-close:"Fermer",language:"Langue",gold:"Apparence dorée",
-notEnough:"Pas assez de pièces",win:"Niveau terminé ! 🎉",
-dailyDone:"Récompense déjà reçue",dailyWin:"Récompense reçue !",
-shopTitle:"Boutique",achTitle:"Succès",
-rankTitle:"Classement",noRank:"Aucune donnée",
-buy:"Acheter",owned:"Acheté",completed:"Terminé",
-undoError:"Rien à annuler",noHint:"Aucun indice",
-restartConfirm:"Niveau redémarré"
-},
-de:{
-level:"Level",moves:"Züge",best:"Rekord",
-sort:"🎨 Sortiere die Kugeln",undo:"Rückgängig",
-hint:"Tipp 15🪙",restart:"Neustart",
-skip:"Überspringen 30🪙",shop:"Shop",
-shopDesc:"Gegenstände kaufen",daily:"Tägliche Belohnung",
-dailyDesc:"Bonus abholen",achievements:"Erfolge",
-achDesc:"Dein Fortschritt",leaderboard:"Bestenliste",
-rankDesc:"Top Spieler",settings:"Einstellungen",
-close:"Schließen",language:"Sprache",gold:"Goldener Stil",
-notEnough:"Nicht genug Münzen",win:"Level geschafft! 🎉",
-dailyDone:"Belohnung bereits erhalten",dailyWin:"Belohnung erhalten!",
-shopTitle:"Shop",achTitle:"Erfolge",rankTitle:"Bestenliste",
-noRank:"Keine Daten",buy:"Kaufen",owned:"Gekauft",
-completed:"Abgeschlossen",undoError:"Nichts rückgängig",
-noHint:"Kein Tipp verfügbar",restartConfirm:"Level neu gestartet"
-},
-ru:{
-level:"Уровень",moves:"Ходы",best:"Рекорд",
-sort:"🎨 Сортируй шары",undo:"Назад",
-hint:"Подсказка 15🪙",restart:"Заново",
-skip:"Пропустить 30🪙",shop:"Магазин",
-shopDesc:"Купить предметы",daily:"Ежедневная награда",
-dailyDesc:"Получить бонус",achievements:"Достижения",
-achDesc:"Твой прогресс",leaderboard:"Рейтинг",
-rankDesc:"Лучшие игроки",settings:"Настройки",
-close:"Закрыть",language:"Язык",gold:"Золотой стиль",
-notEnough:"Недостаточно монет",win:"Уровень пройден! 🎉",
-dailyDone:"Награда уже получена",dailyWin:"Награда получена!",
-shopTitle:"Магазин",achTitle:"Достижения",
-rankTitle:"Рейтинг",noRank:"Нет данных",
-buy:"Купить",owned:"Куплено",completed:"Завершено",
-undoError:"Нечего отменять",noHint:"Нет подсказки",
-restartConfirm:"Уровень перезапущен"
-}
+ fa:{
+  level:"مرحله",progress:"پیشرفت",tip:"توپ‌ها را مرتب کن تا هر بطری یک‌رنگ شود",
+  moves:"حرکت",tubes:"بطری‌ها",best:"بهترین",coins:"سکه",
+  undo:"برگشت",hint:"راهنما",restart:"شروع مجدد",skip:"رد مرحله",
+  shop:"فروشگاه",daily:"جایزه روزانه",ranking:"رتبه‌بندی",achievements:"دستاوردها",
+  win:"آفرین! مرحله کامل شد",winText:"همه توپ‌ها را با موفقیت مرتب کردی.",
+  next:"مرحله بعد",close:"بستن",notEnough:"سکه کافی نداری",
+  select:"ابتدا یک بطری انتخاب کن",invalid:"این حرکت امکان‌پذیر نیست",
+  hintText:"یک حرکت پیشنهادی مشخص شد",restartAsk:"مرحله از ابتدا شروع شود؟",
+  skipAsk:"با پرداخت ۳۰ سکه مرحله رد شود؟",yes:"بله",no:"خیر",
+  dailyTitle:"جایزه روزانه",dailyText:"جایزه امروزت آماده است!",
+  claimed:"جایزه امروز را قبلاً دریافت کرده‌ای.",claim:"دریافت ۵۰ سکه",
+  shopTitle:"فروشگاه",goldTitle:"پوسته طلایی",goldDesc:"ظاهر لوکس طلایی برای بطری‌ها",
+  buy:"خرید ۲۰۰ سکه",owned:"فعال شد",undoTitle:"برگشت حرکت",
+  hintTitle:"راهنمای بازی",hintDesc:"برای راهنمایی ۱۰ سکه پرداخت می‌شود.",
+  buyHint:"دریافت راهنما (۱۰ سکه)",rankingTitle:"جدول رتبه‌بندی",
+  rankLoading:"در حال دریافت اطلاعات...",rankError:"جدول رتبه‌بندی در دسترس نیست.",
+  achievementsTitle:"دستاوردها",firstWin:"اولین پیروزی",tenWins:"۱۰ مرحله موفق",
+  hundredMoves:"۱۰۰ حرکت",rich:"جمع‌آوری ۵۰۰ سکه",
+  languageTitle:"انتخاب زبان",restartTitle:"شروع مجدد",skipTitle:"رد مرحله",
+  levelSelect:"انتخاب مرحله",current:"مرحله فعلی",won:"تکمیل شده",
+  locked:"قفل",tap:"برای انتخاب بطری روی آن بزن",
+  noUndo:"حرکتی برای برگشت وجود ندارد",goldActive:"پوسته طلایی فعال است",
+  levelDone:"مرحله تکمیل شد",loading:"در حال بارگذاری...",
+  dailyAlready:"جایزه امروز را گرفته‌ای."
+ },
+ en:{
+  level:"Level",progress:"Progress",tip:"Sort the balls so every bottle has one color",
+  moves:"Moves",tubes:"Bottles",best:"Best",coins:"Coins",
+  undo:"Undo",hint:"Hint",restart:"Restart",skip:"Skip",
+  shop:"Shop",daily:"Daily gift",ranking:"Ranking",achievements:"Awards",
+  win:"Excellent! Level completed",winText:"You sorted all the balls successfully.",
+  next:"Next level",close:"Close",notEnough:"Not enough coins",
+  select:"Select a bottle first",invalid:"Invalid move",
+  hintText:"A suggested move is highlighted",restartAsk:"Restart this level?",
+  skipAsk:"Skip this level for 30 coins?",yes:"Yes",no:"No",
+  dailyTitle:"Daily reward",dailyText:"Your daily reward is ready!",
+  claimed:"You have already collected today's reward.",claim:"Collect 50 coins",
+  shopTitle:"Shop",goldTitle:"Golden skin",goldDesc:"A luxurious golden bottle appearance",
+  buy:"Buy for 200 coins",owned:"Activated",undoTitle:"Undo move",
+  hintTitle:"Game hint",hintDesc:"A hint costs 10 coins.",
+  buyHint:"Get hint (10 coins)",rankingTitle:"Leaderboard",
+  rankLoading:"Loading...",rankError:"Leaderboard is unavailable.",
+  achievementsTitle:"Achievements",firstWin:"First victory",tenWins:"10 levels completed",
+  hundredMoves:"100 moves",rich:"Collect 500 coins",
+  languageTitle:"Choose language",restartTitle:"Restart",skipTitle:"Skip level",
+  levelSelect:"Choose level",current:"Current level",won:"Completed",
+  locked:"Locked",tap:"Tap a bottle to select it",
+  noUndo:"Nothing to undo",goldActive:"Golden skin is active",
+  levelDone:"Level completed",loading:"Loading...",
+  dailyAlready:"Today's reward has been collected."
+ },
+ ar:{
+  level:"المرحلة",progress:"التقدم",tip:"رتب الكرات حتى يصبح كل أنبوب بلون واحد",
+  moves:"الحركات",tubes:"الأنابيب",best:"الأفضل",coins:"العملات",
+  undo:"تراجع",hint:"تلميح",restart:"إعادة",skip:"تخطي",
+  shop:"المتجر",daily:"هدية يومية",ranking:"الترتيب",achievements:"الإنجازات",
+  win:"ممتاز! اكتملت المرحلة",winText:"لقد رتبت جميع الكرات بنجاح.",
+  next:"المرحلة التالية",close:"إغلاق",notEnough:"عملات غير كافية",
+  select:"اختر أنبوباً أولاً",invalid:"حركة غير صالحة",
+  hintText:"تم تحديد حركة مقترحة",restartAsk:"إعادة المرحلة؟",
+  skipAsk:"تخطي المرحلة مقابل 30 عملة؟",yes:"نعم",no:"لا",
+  dailyTitle:"المكافأة اليومية",dailyText:"مكافأتك اليومية جاهزة!",
+  claimed:"لقد حصلت على مكافأة اليوم.",claim:"احصل على 50 عملة",
+  shopTitle:"المتجر",goldTitle:"المظهر الذهبي",goldDesc:"مظهر ذهبي فاخر للأنابيب",
+  buy:"شراء مقابل 200 عملة",owned:"تم التفعيل",undoTitle:"تراجع",
+  hintTitle:"تلميح",hintDesc:"تكلفة التلميح 10 عملات.",
+  buyHint:"تلميح (10 عملات)",rankingTitle:"قائمة المتصدرين",
+  rankLoading:"جار التحميل...",rankError:"الترتيب غير متاح.",
+  achievementsTitle:"الإنجازات",firstWin:"أول فوز",tenWins:"إكمال 10 مراحل",
+  hundredMoves:"100 حركة",rich:"جمع 500 عملة",
+  languageTitle:"اختر اللغة",restartTitle:"إعادة",skipTitle:"تخطي المرحلة",
+  levelSelect:"اختر المرحلة",current:"المرحلة الحالية",won:"مكتملة",
+  locked:"مقفلة",tap:"اضغط على الأنبوب لاختياره",
+  noUndo:"لا توجد حركة للتراجع",goldActive:"المظهر الذهبي مفعل",
+  levelDone:"اكتملت المرحلة",loading:"جار التحميل...",
+  dailyAlready:"حصلت على مكافأة اليوم."
+ },
+ es:{
+  level:"Nivel",progress:"Progreso",tip:"Ordena las bolas para que cada botella tenga un color",
+  moves:"Movimientos",tubes:"Botellas",best:"Mejor",coins:"Monedas",
+  undo:"Deshacer",hint:"Pista",restart:"Reiniciar",skip:"Saltar",
+  shop:"Tienda",daily:"Regalo diario",ranking:"Clasificación",achievements:"Logros",
+  win:"¡Excelente! Nivel completado",winText:"Has ordenado todas las bolas.",
+  next:"Siguiente nivel",close:"Cerrar",notEnough:"No tienes suficientes monedas",
+  select:"Selecciona una botella",invalid:"Movimiento no válido",
+  hintText:"Movimiento sugerido marcado",restartAsk:"¿Reiniciar el nivel?",
+  skipAsk:"¿Saltar por 30 monedas?",yes:"Sí",no:"No",
+  dailyTitle:"Recompensa diaria",dailyText:"¡Tu recompensa está lista!",
+  claimed:"Ya recibiste la recompensa de hoy.",claim:"Recibir 50 monedas",
+  shopTitle:"Tienda",goldTitle:"Aspecto dorado",goldDesc:"Botellas con estilo dorado",
+  buy:"Comprar por 200 monedas",owned:"Activado",undoTitle:"Deshacer",
+  hintTitle:"Pista",hintDesc:"Una pista cuesta 10 monedas.",
+  buyHint:"Pista (10 monedas)",rankingTitle:"Clasificación",
+  rankLoading:"Cargando...",rankError:"Clasificación no disponible.",
+  achievementsTitle:"Logros",firstWin:"Primera victoria",tenWins:"10 niveles",
+  hundredMoves:"100 movimientos",rich:"500 monedas",
+  languageTitle:"Idioma",restartTitle:"Reiniciar",skipTitle:"Saltar",
+  levelSelect:"Elegir nivel",current:"Nivel actual",won:"Completado",
+  locked:"Bloqueado",tap:"Toca una botella",
+  noUndo:"Nada que deshacer",goldActive:"Aspecto dorado activo",
+  levelDone:"Nivel completado",loading:"Cargando...",
+  dailyAlready:"Ya recibiste la recompensa."
+ },
+ fr:{
+  level:"Niveau",progress:"Progression",tip:"Trie les boules pour obtenir une couleur par bouteille",
+  moves:"Coups",tubes:"Bouteilles",best:"Record",coins:"Pièces",
+  undo:"Annuler",hint:"Indice",restart:"Recommencer",skip:"Passer",
+  shop:"Boutique",daily:"Cadeau quotidien",ranking:"Classement",achievements:"Succès",
+  win:"Bravo ! Niveau terminé",winText:"Toutes les boules sont triées.",
+  next:"Niveau suivant",close:"Fermer",notEnough:"Pas assez de pièces",
+  select:"Choisissez une bouteille",invalid:"Mouvement impossible",
+  hintText:"Un mouvement conseillé est indiqué",restartAsk:"Recommencer ce niveau ?",
+  skipAsk:"Passer ce niveau pour 30 pièces ?",yes:"Oui",no:"Non",
+  dailyTitle:"Récompense quotidienne",dailyText:"Votre cadeau est prêt !",
+  claimed:"Vous avez déjà reçu le cadeau du jour.",claim:"Recevoir 50 pièces",
+  shopTitle:"Boutique",goldTitle:"Style doré",goldDesc:"Un style doré pour les bouteilles",
+  buy:"Acheter pour 200 pièces",owned:"Activé",undoTitle:"Annuler",
+  hintTitle:"Indice",hintDesc:"Un indice coûte 10 pièces.",
+  buyHint:"Indice (10 pièces)",rankingTitle:"Classement",
+  rankLoading:"Chargement...",rankError:"Classement indisponible.",
+  achievementsTitle:"Succès",firstWin:"Première victoire",tenWins:"10 niveaux terminés",
+  hundredMoves:"100 mouvements",rich:"Collecter 500 pièces",
+  languageTitle:"Langue",restartTitle:"Recommencer",skipTitle:"Passer",
+  levelSelect:"Choisir le niveau",current:"Niveau actuel",won:"Terminé",
+  locked:"Verrouillé",tap:"Touchez une bouteille",
+  noUndo:"Aucun mouvement à annuler",goldActive:"Style doré activé",
+  levelDone:"Niveau terminé",loading:"Chargement..."
+ },
+ de:{
+  level:"Level",progress:"Fortschritt",tip:"Sortiere die Kugeln nach Farben",
+  moves:"Züge",tubes:"Flaschen",best:"Bestwert",coins:"Münzen",
+  undo:"Rückgängig",hint:"Tipp",restart:"Neustart",skip:"Überspringen",
+  shop:"Shop",daily:"Tagesgeschenk",ranking:"Rangliste",achievements:"Erfolge",
+  win:"Super! Level geschafft",winText:"Alle Kugeln wurden sortiert.",
+  next:"Nächstes Level",close:"Schließen",notEnough:"Nicht genug Münzen",
+  select:"Wähle zuerst eine Flasche",invalid:"Ungültiger Zug",
+  hintText:"Ein möglicher Zug ist markiert",restartAsk:"Level neu starten?",
+  skipAsk:"Level für 30 Münzen überspringen?",yes:"Ja",no:"Nein",
+  dailyTitle:"Tagesbelohnung",dailyText:"Deine Belohnung ist bereit!",
+  claimed:"Du hast die Belohnung bereits erhalten.",claim:"50 Münzen erhalten",
+  shopTitle:"Shop",goldTitle:"Goldener Stil",goldDesc:"Goldenes Aussehen für Flaschen",
+  buy:"Für 200 Münzen kaufen",owned:"Aktiviert",undoTitle:"Rückgängig",
+  hintTitle:"Tipp",hintDesc:"Ein Tipp kostet 10 Münzen.",
+  buyHint:"Tipp (10 Münzen)",rankingTitle:"Rangliste",
+  rankLoading:"Laden...",rankError:"Rangliste nicht verfügbar.",
+  achievementsTitle:"Erfolge",firstWin:"Erster Sieg",tenWins:"10 Level",
+  hundredMoves:"100 Züge",rich:"500 Münzen sammeln",
+  languageTitle:"Sprache",restartTitle:"Neustart",skipTitle:"Überspringen",
+  levelSelect:"Level wählen",current:"Aktuelles Level",won:"Abgeschlossen",
+  locked:"Gesperrt",tap:"Flasche antippen",
+  noUndo:"Nichts rückgängig zu machen",goldActive:"Goldener Stil aktiv",
+  levelDone:"Level abgeschlossen",loading:"Laden..."
+ },
+ ru:{
+  level:"Уровень",progress:"Прогресс",tip:"Собери шарики по цветам",
+  moves:"Ходы",tubes:"Бутылки",best:"Рекорд",coins:"Монеты",
+  undo:"Отмена",hint:"Подсказка",restart:"Заново",skip:"Пропустить",
+  shop:"Магазин",daily:"Ежедневный бонус",ranking:"Рейтинг",achievements:"Награды",
+  win:"Отлично! Уровень пройден",winText:"Все шарики отсортированы.",
+  next:"Следующий уровень",close:"Закрыть",notEnough:"Недостаточно монет",
+  select:"Сначала выберите бутылку",invalid:"Недопустимый ход",
+  hintText:"Подсказка выделена",restartAsk:"Начать уровень заново?",
+  skipAsk:"Пропустить уровень за 30 монет?",yes:"Да",no:"Нет",
+  dailyTitle:"Ежедневная награда",dailyText:"Ваша награда готова!",
+  claimed:"Вы уже получили награду сегодня.",claim:"Получить 50 монет",
+  shopTitle:"Магазин",goldTitle:"Золотой стиль",goldDesc:"Золотой вид бутылок",
+  buy:"Купить за 200 монет",owned:"Активировано",undoTitle:"Отмена",
+  hintTitle:"Подсказка",hintDesc:"Подсказка стоит 10 монет.",
+  buyHint:"Подсказка (10 монет)",rankingTitle:"Рейтинг",
+  rankLoading:"Загрузка...",rankError:"Рейтинг недоступен.",
+  achievementsTitle:"Награды",firstWin:"Первая победа",tenWins:"10 уровней",
+  hundredMoves:"100 ходов",rich:"Собрать 500 монет",
+  languageTitle:"Язык",restartTitle:"Заново",skipTitle:"Пропустить",
+  levelSelect:"Выбрать уровень",current:"Текущий уровень",won:"Завершено",
+  locked:"Закрыто",tap:"Нажмите на бутылку",
+  noUndo:"Нет ходов для отмены",goldActive:"Золотой стиль включён",
+  levelDone:"Уровень завершён",loading:"Загрузка..."
+ }
 };
 
-function t(key){
-return translations[language]?.[key]||
-translations.en[key]||key;
+const t = key => translations[language]?.[key] || translations.en[key] || key;
+const rtl = ["fa","ar"].includes(language);
+
+function applyLanguage(){
+ document.documentElement.lang=language;
+ document.documentElement.dir=rtl?"rtl":"ltr";
+ document.querySelectorAll("[data-i]").forEach(el=>{
+  el.textContent=t(el.dataset.i);
+ });
+ $("languageBtn").title=t("languageTitle");
+ $("levelNumber").textContent="LEVEL "+level;
+ $("levelNumber").dir="ltr";
+ $("levelNumber").style.direction="ltr";
+ $("levelNumber").style.unicodeBidi="isolate";
+ updateUI();
 }
 
-function translate(){
-document.documentElement.lang=language;
-document.documentElement.dir=
-["fa","ar"].includes(language)?"rtl":"ltr";
-
-document.querySelectorAll("[data-i]").forEach(el=>{
-el.textContent=t(el.dataset.i);
-});
+function updateUI(){
+ $("coinCount").textContent=coins;
+ $("coinStat").textContent=coins;
+ $("levelNumber").textContent="LEVEL "+level;
+ $("movesCount").textContent=moves;
+ $("tubesCount").textContent=tubes.length;
+ $("bestCount").textContent=best[level]||0;
+ const pct=Math.min(100,Math.round((level-1)/499*100));
+ $("progressText").textContent=pct+"%";
+ $("progressBar").style.width=pct+"%";
 }
 
-function notify(message){
-const el=$("notice");
-el.textContent=message;
-el.classList.add("show");
-clearTimeout(notify.timer);
-notify.timer=setTimeout(()=>el.classList.remove("show"),2200);
+function saveAll(){
+ save(STORAGE.coins,coins);
+ save(STORAGE.progress,level);
+ save(STORAGE.best,best);
+ save(STORAGE.moves,totalMoves);
+ save(STORAGE.rewards,rewards);
+ save(STORAGE.achievements,achievements);
+ save(STORAGE.gold,golden);
+ save(STORAGE.language,language);
 }
 
-function updateStats(){
-$("coins").textContent=coins;
-$("level").textContent=currentLevel+" / "+TOTAL;
-$("moves").textContent=moves;
-$("best").textContent=best;
-$("progress").style.width=
-((currentLevel-1)/TOTAL*100)+"%";
-$("levelName").textContent="LEVEL "+currentLevel;
+const pastel=[
+ "#f5a9bb","#9ed8c4","#b7a0e0","#f4d58d",
+ "#91c9e8","#e9a9d5","#b9d58c","#f0b99b",
+ "#a7b5ec","#d6b1a0"
+];
+const goldColors=["#f6d783","#d6a948","#ffe6a3","#b9822e"];
+
+let tubes=[];
+let initialState=[];
+let history=[];
+let selected=-1;
+let moves=0;
+let hintPair=null;
+let won=false;
+let scene, camera, renderer, raycaster, pointer;
+let tubeGroups=[];
+let ballMeshes=[];
+let resizeObserver;
+let toastTimer;
+
+function randomShuffle(a){
+ for(let i=a.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
 }
 
-function addCoins(amount){
-coins+=amount;
-save(KEYS.coins,coins);
-updateStats();
-}
+function createLevel(lvl){
+ const colorCount=Math.min(3+Math.floor((lvl-1)/12),8);
+ const capacity=4;
+ const all=[];
+ for(let c=0;c<colorCount;c++){
+  for(let i=0;i<capacity;i++)all.push(c);
+ }
+ randomShuffle(all);
 
-/* =========================
-   LEVEL GENERATOR
-========================= */
+ const tubeCount=colorCount+2;
+ const result=Array.from({length:tubeCount},()=>[]);
+ all.forEach((color,index)=>{
+  result[Math.floor(index/capacity)].push(color);
+ });
 
-function shuffle(array){
-for(let i=array.length-1;i>0;i--){
-const j=Math.floor(Math.random()*(i+1));
-[array[i],array[j]]=[array[j],array[i]];
-}
-return array;
-}
+ // توزيع عشوائي إضافي بين الأنابيب مع الحفاظ على السعة
+ let flat=result.flat();
+ randomShuffle(flat);
+ const distributed=Array.from({length:tubeCount},()=>[]);
+ flat.forEach((color,index)=>{
+  distributed[Math.floor(index/capacity)].push(color);
+ });
 
-function generateLevel(level){
-const colorCount=Math.min(3+Math.floor((level-1)/8),8);
-let balls=[];
-
-for(let c=0;c<colorCount;c++){
-for(let i=0;i<CAP;i++)balls.push(c);
-}
-
-shuffle(balls);
-
-const result=[];
-for(let i=0;i<colorCount;i++){
-result.push(balls.slice(i*CAP,(i+1)*CAP));
-}
-
-result.push([]);
-result.push([]);
-
-return result;
-}
-
-function clone(value){
-return JSON.parse(JSON.stringify(value));
+ return distributed;
 }
 
 function loadLevel(){
-if(currentLevel>TOTAL){
-currentLevel=TOTAL;
-notify(t("congratulations"));
-}
-tubes=generateLevel(currentLevel);
-original=clone(tubes);
-moves=0;
-history=[];
-selected=-1;
-locked=false;
-hintMove=null;
-gameStarted=Date.now();
-render();
-updateStats();
+ tubes=createLevel(level);
+ initialState=tubes.map(a=>[...a]);
+ history=[];
+ selected=-1;
+ moves=0;
+ won=false;
+ hintPair=null;
+ updateUI();
+ renderScene();
 }
 
-function render(){
-const container=$("bottles");
-container.innerHTML="";
-
-tubes.forEach((tube,index)=>{
-const bottle=document.createElement("div");
-bottle.className="bottle";
-if(selected===index)bottle.classList.add("selected");
-if(golden)bottle.style.borderColor="#ffc857";
-
-const balls=document.createElement("div");
-balls.className="balls";
-
-tube.forEach(color=>{
-const ball=document.createElement("div");
-ball.className="ball";
-ball.style.background=
-golden?
-"linear-gradient(145deg,#fff2a3,#d69b22 55%,#7d5110)":
-`linear-gradient(145deg,${COLORS[color]},${shade(COLORS[color],-35)})`;
-balls.appendChild(ball);
-});
-
-bottle.appendChild(balls);
-bottle.addEventListener("click",()=>tapBottle(index));
-container.appendChild(bottle);
-});
+function cloneTubes(){
+ return tubes.map(tube=>[...tube]);
 }
-
-function shade(hex,amount){
-let c=hex.replace("#","");
-let n=parseInt(c,16);
-let r=Math.max(0,Math.min(255,(n>>16)+amount));
-let g=Math.max(0,Math.min(255,((n>>8)&255)+amount));
-let b=Math.max(0,Math.min(255,(n&255)+amount));
-return "#"+(r<<16|g<<8|b).toString(16).padStart(6,"0");
-}
-
-/* =========================
-   GAME LOGIC
-========================= */
 
 function canMove(from,to){
-if(from===to)return false;
-const a=tubes[from];
-const b=tubes[to];
-
-if(!a.length||b.length>=CAP)return false;
-if(!b.length)return true;
-
-return a[a.length-1]===b[b.length-1];
-}
-
-function tapBottle(index){
-if(locked)return;
-
-if(selected===-1){
-if(!tubes[index].length)return;
-selected=index;
-render();
-return;
-}
-
-if(selected===index){
-selected=-1;
-render();
-return;
-}
-
-if(canMove(selected,index)){
-moveBall(selected,index);
-return;
-}
-
-if(tubes[index].length){
-selected=index;
-}else{
-selected=-1;
-}
-render();
+ if(from===to||from<0||to<0)return false;
+ const a=tubes[from],b=tubes[to];
+ if(!a||!b||a.length===0||b.length>=4)return false;
+ return b.length===0||b[b.length-1]===a[a.length-1];
 }
 
 function moveBall(from,to){
-history.push({
-tubes:clone(tubes),
-moves
-});
-
-const ball=tubes[from].pop();
-tubes[to].push(ball);
-
-moves++;
-selected=-1;
-hintMove=null;
-render();
-updateStats();
-
-if(isWon())completeLevel();
+ if(!canMove(from,to)){
+  showToast(t("invalid"));
+  return false;
+ }
+ history.push(cloneTubes());
+ const color=tubes[from].pop();
+ tubes[to].push(color);
+ moves++;
+ totalMoves++;
+ selected=-1;
+ hintPair=null;
+ saveAll();
+ updateUI();
+ renderScene();
+ checkWin();
+ return true;
 }
 
-function isWon(){
-return tubes.every(tube=>
-tube.length===0||
-(tube.length===CAP&&tube.every(c=>c===tube[0]))
-);
+function checkWin(){
+ const colorCount=Math.min(3+Math.floor((level-1)/12),8);
+ const complete=tubes.every(tube=>
+  tube.length===0 ||
+  (tube.length===4 && tube.every(c=>c===tube[0]))
+ );
+ const completedColors=tubes.filter(tube=>tube.length===4).length;
+ if(complete&&completedColors===colorCount){
+  won=true;
+  coins+=20;
+  best[level]=moves;
+  if(level===1)achievements.first=true;
+  if(level>=10)achievements.ten=true;
+  if(totalMoves>=100)achievements.moves=true;
+  if(coins>=500)achievements.rich=true;
+  saveAll();
+  updateUI();
+  setTimeout(showWin,350);
+  sendScore();
+ }
 }
 
-function undo(){
-if(!history.length){
-notify(t("undoError"));
-return;
-}
-const previous=history.pop();
-tubes=previous.tubes;
-moves=previous.moves;
-selected=-1;
-render();
-updateStats();
+function showWin(){
+ openModal(`
+  <div class="win-icon">🎉</div>
+  <div class="win-title">${t("win")}</div>
+  <p class="win-desc">${t("winText")}</p>
+  <p class="win-desc">+20 🪙</p>
+  <div class="modal-actions" style="justify-content:center">
+   <button class="primary" id="nextLevelBtn">${t("next")}</button>
+  </div>
+ `);
+ $("nextLevelBtn").onclick=()=>{
+  closeModal();
+  if(level<500)level++;
+  saveAll();
+  loadLevel();
+ };
 }
 
-function restart(){
-tubes=clone(original);
-moves=0;
-history=[];
-selected=-1;
-render();
-updateStats();
-notify(t("restartConfirm"));
+function undoMove(){
+ if(!history.length){showToast(t("noUndo"));return;}
+ tubes=history.pop();
+ selected=-1;
+ hintPair=null;
+ moves=Math.max(0,moves-1);
+ saveAll();
+ updateUI();
+ renderScene();
+}
+
+function restartLevel(){
+ tubes=initialState.map(a=>[...a]);
+ history=[];
+ selected=-1;
+ moves=0;
+ hintPair=null;
+ won=false;
+ updateUI();
+ renderScene();
 }
 
 function findHint(){
-for(let i=0;i<tubes.length;i++){
-for(let j=0;j<tubes.length;j++){
-if(canMove(i,j))return [i,j];
-}
-}
-return null;
+ for(let i=0;i<tubes.length;i++){
+  for(let j=0;j<tubes.length;j++){
+   if(canMove(i,j)){
+    if(tubes[j].length===0){
+     const other=tubes.some((tube,k)=>k!==i&&k!==j&&tube.length>0&&tube[tube.length-1]===tubes[i][tubes[i].length-1]);
+     if(other)return [i,j];
+    }else{
+     return [i,j];
+    }
+   }
+  }
+ }
+ return null;
 }
 
-function hint(){
-if(coins<15){
-notify(t("notEnough"));
-return;
-}
-const result=findHint();
-if(!result){
-notify(t("noHint"));
-return;
-}
-addCoins(-15);
-hintMove=result;
-selected=result[0];
-render();
-const bottles=document.querySelectorAll(".bottle");
-bottles[result[1]]?.classList.add("selected");
-notify(t("hintTitle")+": "+(result[0]+1)+" → "+(result[1]+1));
+function useHint(){
+ if(coins<10){showToast(t("notEnough"));return;}
+ const pair=findHint();
+ if(!pair){showToast(t("hintText"));return;}
+ coins-=10;
+ hintPair=pair;
+ selected=pair[0];
+ saveAll();
+ updateUI();
+ renderScene();
+ showToast(t("hintText"));
 }
 
 function skipLevel(){
-if(coins<30){
-notify(t("notEnough"));
-return;
-}
-addCoins(-30);
-completeLevel(true);
-}
-
-/* =========================
-   COMPLETION AND SAVING
-========================= */
-
-function completeLevel(skipped=false){
-if(locked)return;
-locked=true;
-
-const earned=20;
-addCoins(earned);
-
-if(!completed.includes(currentLevel)){
-completed.push(currentLevel);
-save(KEYS.rewards,completed);
+ if(coins<30){showToast(t("notEnough"));return;}
+ coins-=30;
+ if(level<500)level++;
+ saveAll();
+ loadLevel();
+ closeModal();
 }
 
-best=Math.max(best,currentLevel);
-save(KEYS.best,best);
-
-checkAchievements();
-sendScore();
-
-setTimeout(()=>{
-if(currentLevel<TOTAL){
-currentLevel++;
-save(KEYS.progress,currentLevel);
-notify(t("win")+" +"+earned+" 🪙");
-loadLevel();
-}else{
-notify(t("congratulations"));
-updateStats();
+function openModal(html){
+ $("modalContent").innerHTML=html;
+ $("modalBackdrop").classList.add("show");
 }
-},skipped?100:500);
-}
-
-function sendScore(){
-if(!tg?.initData)return;
-
-fetch("/score",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-initData:tg.initData,
-level:currentLevel,
-completed:true
-})
-}).catch(()=>{});
-}
-
-/* =========================
-   ACHIEVEMENTS
-========================= */
-
-function checkAchievements(){
-const totalMoves=read("ce_total_moves",0)+moves;
-save("ce_total_moves",totalMoves);
-
-const checks=[
-{id:"first",condition:completed.length>=1,reward:30},
-{id:"ten",condition:completed.length>=10,reward:75},
-{id:"fifty",condition:completed.length>=50,reward:150},
-{id:"hundred",condition:completed.length>=100,reward:300},
-{id:"moves",condition:totalMoves>=100,reward:50},
-{id:"coins",condition:coins>=500,reward:100}
-];
-
-checks.forEach(item=>{
-if(item.condition&&!achievements.includes(item.id)){
-achievements.push(item.id);
-addCoins(item.reward);
-notify("🏆 "+item.id+" +"+item.reward);
-}
+function closeModal(){$("modalBackdrop").classList.remove("show");}
+$("closeModal").onclick=closeModal;
+$("modalBackdrop").addEventListener("click",e=>{
+ if(e.target===$("modalBackdrop"))closeModal();
 });
 
-save(KEYS.achievements,achievements);
+function showToast(message){
+ const el=$("toast");
+ el.textContent=message;
+ el.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>el.classList.remove("show"),2200);
 }
-
-/* =========================
-   DAILY REWARD
-========================= */
 
 function dailyReward(){
-const today=new Date().toLocaleDateString("en-CA");
-
-if(dailyDate===today){
-notify(t("dailyDone"));
-return;
+ const today=new Date().toISOString().slice(0,10);
+ if(read(STORAGE.daily,"")===today){
+  openModal(`<h2>${t("dailyTitle")}</h2><p>${t("dailyAlready")}</p>`);
+  return;
+ }
+ openModal(`
+  <h2>${t("dailyTitle")}</h2>
+  <p>${t("dailyText")}</p>
+  <div class="win-icon">🎁</div>
+  <div class="modal-actions">
+   <button class="primary" id="claimDaily">${t("claim")}</button>
+  </div>
+ `);
+ $("claimDaily").onclick=()=>{
+  coins+=50;
+  save(STORAGE.daily,today);
+  saveAll();
+  updateUI();
+  closeModal();
+  showToast("+50 🪙");
+ };
 }
 
-const reward=50+Math.floor(Math.random()*51);
-dailyDate=today;
-save(KEYS.daily,dailyDate);
-addCoins(reward);
-notify(t("dailyWin")+" +"+reward+" 🪙");
+function showShop(){
+ openModal(`
+  <h2>${t("shopTitle")}</h2>
+  <div class="shop-item">
+   <div><strong>✨ ${t("goldTitle")}</strong><br><small>${t("goldDesc")}</small></div>
+   <button id="goldBuy">${golden?t("owned"):t("buy")}</button>
+  </div>
+  <div class="shop-item">
+   <div><strong>💡 ${t("hintTitle")}</strong><br><small>${t("hintDesc")}</small></div>
+   <button id="shopHint">${t("buyHint")}</button>
+  </div>
+ `);
+ $("goldBuy").disabled=golden;
+ $("goldBuy").onclick=()=>{
+  if(golden)return;
+  if(coins<200){showToast(t("notEnough"));return;}
+  coins-=200;golden=true;saveAll();updateUI();showShop();
+ };
+ $("shopHint").onclick=()=>{closeModal();useHint();};
 }
 
-/* =========================
-   MODALS
-========================= */
-
-function openModal(type){
-const overlay=$("overlay");
-const title=$("modalTitle");
-const body=$("modalBody");
-
-overlay.classList.add("show");
-body.innerHTML="";
-
-if(type==="settings"){
-title.textContent=t("settings");
-
-body.innerHTML=`
-<div class="item">
-<span>${t("language")}</span>
-<select id="languageSelect">
-<option value="fa">فارسی</option>
-<option value="en">English</option>
-<option value="ar">العربية</option>
-<option value="es">Español</option>
-<option value="fr">Français</option>
-<option value="de">Deutsch</option>
-<option value="ru">Русский</option>
-</select>
-</div>
-<div class="item">
-<span>${t("gold")}</span>
-<span>${golden?t("owned"):"40 🪙"}</span>
-</div>
-`;
-$("languageSelect").value=language;
-$("languageSelect").onchange=e=>{
-language=e.target.value;
-save(KEYS.language,language);
-translate();
-closeModal();
-render();
-};
+function showAchievements(){
+ const list=[
+  ["first","🏅",t("firstWin")],
+  ["ten","🏆",t("tenWins")],
+  ["moves","🎯",t("hundredMoves")],
+  ["rich","💰",t("rich")]
+ ];
+ openModal(`<h2>${t("achievementsTitle")}</h2>`+
+ list.map(a=>`<div class="achievement-item"><span>${a[1]} ${a[2]}</span><strong>${achievements[a[0]]?"✓":"🔒"}</strong></div>`).join(""));
 }
 
-if(type==="shop"){
-title.textContent=t("shopTitle");
-body.innerHTML=`
-<div class="item">
-<div>💡 ${t("hintBuy")}</div>
-<button onclick="buyHint()">${t("buy")}</button>
-</div>
-<div class="item">
-<div>⏭️ ${t("skipBuy")}</div>
-<button onclick="closeModal();skipLevel()">${t("buy")}</button>
-</div>
-<div class="item">
-<div>✨ ${t("goldDesc")}</div>
-<button onclick="buyGold()">${golden?t("owned"):t("goldBuy")}</button>
-</div>
-`;
-}
-
-if(type==="achievements"){
-title.textContent=t("achTitle");
-
-const items=[
-["first","🥉","Complete first level",30],
-["ten","🥈",t("levelsAch"),75],
-["fifty","🥇","Complete 50 levels",150],
-["hundred","🏆","Complete 100 levels",300],
-["moves","🚶",t("movesAch"),50],
-["coins","💰",t("coinsAch"),100]
-];
-
-body.innerHTML=items.map(item=>`
-<div class="item">
-<div>
-<div>${item[1]} ${item[2]}</div>
-<small style="color:#9aabc4">${item[3]} 🪙</small>
-</div>
-<strong>${achievements.includes(item[0])?"✅":"🔒"}</strong>
-</div>
-`).join("");
-}
-
-if(type==="leaderboard"){
-title.textContent=t("rankTitle");
-body.innerHTML="<div style='text-align:center;padding:25px'>⏳</div>";
-
-fetch("/leaderboard")
-.then(r=>r.json())
-.then(data=>{
-let list=Array.isArray(data)?data:
-(data.leaderboard||data.data||[]);
-
-if(!list.length){
-body.innerHTML=`<div style="text-align:center;padding:25px">${t("noRank")}</div>`;
-return;
-}
-
-body.innerHTML=list.slice(0,50).map((user,i)=>`
-<div class="item">
-<div>
-<strong>${i+1}. ${escapeHTML(user.name||user.display_name||"Player")}</strong>
-</div>
-<strong>🏆 ${Number(user.level||0)}</strong>
-</div>
-`).join("");
-})
-.catch(()=>{
-body.innerHTML=`<div style="text-align:center;padding:25px">${t("noRank")}</div>`;
-});
-}
+async function showLeaderboard(){
+ openModal(`<h2>${t("rankingTitle")}</h2><p>${t("rankLoading")}</p>`);
+ try{
+  const response=await fetch("/leaderboard",{method:"GET"});
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const data=await response.json();
+  const rows=Array.isArray(data)?data:(data.players||data.leaderboard||[]);
+  $("modalContent").innerHTML=`<h2>${t("rankingTitle")}</h2>`+
+   (rows.length?rows.slice(0,20).map((r,i)=>
+    `<div class="rank-item"><span>${i+1}. ${escapeHTML(r.name||r.display_name||"Player")}</span><strong>${Number(r.level)||0}</strong></div>`
+   ).join(""):`<p>${t("rankError")}</p>`);
+ }catch(e){
+  $("modalContent").innerHTML=`<h2>${t("rankingTitle")}</h2><p>${t("rankError")}</p>`;
+ }
 }
 
 function escapeHTML(value){
-return String(value).replace(/[&<>"']/g,c=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[c]));
+ return String(value).replace(/[&<>"']/g,ch=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[ch]));
 }
 
-function closeModal(){
-$("overlay").classList.remove("show");
+function showLanguage(){
+ openModal(`<h2>${t("languageTitle")}</h2>
+ <select class="language-select" id="languageSelect">
+  <option value="fa">فارسی</option>
+  <option value="en">English</option>
+  <option value="ar">العربية</option>
+  <option value="es">Español</option>
+  <option value="fr">Français</option>
+  <option value="de">Deutsch</option>
+  <option value="ru">Русский</option>
+ </select>
+ <div class="modal-actions"><button class="primary" id="saveLanguage">${t("close")}</button></div>`);
+ $("languageSelect").value=language;
+ $("saveLanguage").onclick=()=>{
+  language=$("languageSelect").value;
+  save(STORAGE.language,language);
+  applyLanguage();
+  closeModal();
+ };
 }
 
-function outsideClose(e){
-if(e.target===$("overlay"))closeModal();
+function showMenu(){
+ openModal(`
+  <h2>Color Escape 3D</h2>
+  <div class="shop-item"><span>📍 ${t("levelSelect")}</span><button id="levelsBtn">1–500</button></div>
+  <div class="shop-item"><span>🌐 ${t("languageTitle")}</span><button id="langMenuBtn">🌐</button></div>
+  <div class="shop-item"><span>🏆 ${t("rankingTitle")}</span><button id="rankMenuBtn">🏆</button></div>
+  <div class="shop-item"><span>⭐ ${t("achievementsTitle")}</span><button id="achMenuBtn">⭐</button></div>
+ `);
+ $("levelsBtn").onclick=showLevels;
+ $("langMenuBtn").onclick=showLanguage;
+ $("rankMenuBtn").onclick=showLeaderboard;
+ $("achMenuBtn").onclick=showAchievements;
 }
 
-function buyHint(){
-if(coins<15){
-notify(t("notEnough"));
-return;
-}
-closeModal();
-hint();
-}
-
-function buyGold(){
-if(golden)return;
-if(coins<40){
-notify(t("notEnough"));
-return;
-}
-addCoins(-40);
-golden=true;
-save(KEYS.gold,true);
-closeModal();
-render();
-notify("✨ "+t("owned"));
+function showLevels(){
+ let html=`<h2>${t("levelSelect")}</h2><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">`;
+ for(let i=1;i<=500;i++){
+  const unlocked=i<=level;
+  html+=`<button data-level="${i}" ${unlocked?"":"disabled"} style="padding:10px 2px;border-radius:10px;background:${i===level?"#b9a0df":unlocked?"#e8f5ef":"#eeeaf0"};color:${i===level?"white":"#71647e"};font-weight:800">${i}</button>`;
+ }
+ html+="</div>";
+ openModal(html);
+ $("modalContent").querySelectorAll("[data-level]").forEach(btn=>{
+  btn.onclick=()=>{
+   level=Number(btn.dataset.level);
+   saveAll();loadLevel();closeModal();
+  };
+ });
 }
 
-/* =========================
-   STARTUP
-========================= */
+async function sendScore(){
+ try{
+  const initData=tg?.initData||"";
+  const user=tg?.initDataUnsafe?.user;
+  const displayName=user?.username||user?.first_name||"Player";
+  await fetch("/score",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    initData,
+    name:displayName,
+    level,
+    completed:true
+   })
+  });
+ }catch(e){
+  console.warn("Score sync failed:",e);
+ }
+}
 
-function init(){
-currentLevel=Math.max(1,Math.min(TOTAL,currentLevel));
-coins=Math.max(0,coins);
-translate();
-updateStats();
+/* ---------------- THREE.JS 3D ENGINE ---------------- */
+
+const canvas=$("game3d");
+const gameCard=document.querySelector(".game-card");
+
+function init3D(){
+ if(!window.THREE){
+  gameCard.innerHTML='<div style="padding:30px;text-align:center;color:#8064ae">برای نمایش سه‌بعدی، اتصال اینترنت و بارگذاری Three.js لازم است.</div>';
+  return;
+ }
+
+ try{
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color("#f7f3ed");
+
+  camera=new THREE.PerspectiveCamera(36,1,.1,100);
+  camera.position.set(0,5.7,10.8);
+  camera.lookAt(0,1.05,0);
+
+  renderer=new THREE.WebGLRenderer({
+   canvas,
+   antialias:true,
+   alpha:false,
+   powerPreference:"high-performance"
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.15;
+
+  scene.add(new THREE.HemisphereLight(0xffffff,0xd8cbe3,2.0));
+
+  const keyLight=new THREE.DirectionalLight(0xffffff,2.6);
+  keyLight.position.set(-4,8,6);
+  keyLight.castShadow=true;
+  keyLight.shadow.mapSize.set(1024,1024);
+  scene.add(keyLight);
+
+  const fillLight=new THREE.PointLight(0xd9c6ff,1.5,18);
+  fillLight.position.set(4,4,3);
+  scene.add(fillLight);
+
+  const ground=new THREE.Mesh(
+   new THREE.PlaneGeometry(30,30),
+   new THREE.MeshStandardMaterial({color:"#f4eff7",roughness:.9})
+  );
+  ground.rotation.x=-Math.PI/2;
+  ground.position.y=-.12;
+  ground.receiveShadow=true;
+  scene.add(ground);
+
+  raycaster=new THREE.Raycaster();
+  pointer=new THREE.Vector2();
+
+  resizeObserver=new ResizeObserver(resize3D);
+  resizeObserver.observe(gameCard);
+  resize3D();
+
+  canvas.addEventListener("pointerdown",onCanvasPointer);
+  animate3D();
+ }catch(error){
+  console.error(error);
+  showToast("خطا در راه‌اندازی موتور سه‌بعدی");
+ }
+}
+
+function resize3D(){
+ if(!renderer||!camera)return;
+ const w=gameCard.clientWidth;
+ const h=gameCard.clientHeight;
+ if(!w||!h)return;
+ renderer.setSize(w,h,false);
+ camera.aspect=w/h;
+ camera.updateProjectionMatrix();
+ positionCamera();
+}
+
+function positionCamera(){
+ if(!camera)return;
+ const count=tubes.length||5;
+ const cols=count<=5?count:Math.ceil(count/2);
+ const rows=Math.ceil(count/cols);
+ const width=cols*1.15;
+ const height=rows*1.1;
+ camera.position.set(0,Math.max(5.1,height+3.4),Math.max(9.5,width*.9+5));
+ camera.lookAt(0,1.05,0);
+}
+
+function makeMaterial(color,roughness=.22,metalness=.05){
+ return new THREE.MeshPhysicalMaterial({
+  color,
+  roughness,
+  metalness,
+  clearcoat:.9,
+  clearcoatRoughness:.12
+ });
+}
+
+function createTube(index,x,z){
+ const group=new THREE.Group();
+ group.position.set(x,0,z);
+ group.userData.index=index;
+ scene.add(group);
+
+ const glassMat=new THREE.MeshPhysicalMaterial({
+  color:golden?0xf0d18c:0xffffff,
+  metalness:golden?.55:.02,
+  roughness:golden?.22:.12,
+  transmission:golden?0:.32,
+  transparent:true,
+  opacity:golden?.92:.27,
+  thickness:.35,
+  side:THREE.DoubleSide,
+  clearcoat:1
+ });
+
+ const tubeBody=new THREE.Mesh(
+  new THREE.CylinderGeometry(.37,.37,2.45,40,1,true),
+  glassMat
+ );
+ tubeBody.position.y=1.25;
+ tubeBody.castShadow=true;
+ tubeBody.receiveShadow=true;
+ group.add(tubeBody);
+
+ const bottomMat=makeMaterial(golden?"#d7ad52":"#e7dff0",.28,.15);
+ const bottom=new THREE.Mesh(
+  new THREE.CylinderGeometry(.38,.38,.12,40),
+  bottomMat
+ );
+ bottom.position.y=.07;
+ bottom.castShadow=true;
+ group.add(bottom);
+
+ const rim=new THREE.Mesh(
+  new THREE.TorusGeometry(.37,.045,12,48),
+  makeMaterial(golden?"#f5d27b":"#ffffff",.18,.1)
+ );
+ rim.rotation.x=Math.PI/2;
+ rim.position.y=2.48;
+ group.add(rim);
+
+ const ring=new THREE.Mesh(
+  new THREE.TorusGeometry(.38,.025,10,48),
+  makeMaterial("#d8cce6",.3)
+ );
+ ring.rotation.x=Math.PI/2;
+ ring.position.y=.16;
+ group.add(ring);
+
+ const glow=new THREE.Mesh(
+  new THREE.CylinderGeometry(.43,.43,2.55,32,1,true),
+  new THREE.MeshBasicMaterial({
+   color:golden?0xe9bd5d:0xc6b1e3,
+   transparent:true,opacity:.055,side:THREE.DoubleSide
+  })
+ );
+ glow.position.y=1.25;
+ group.add(glow);
+
+ tubeGroups.push(group);
+ return group;
+}
+
+function createBall(color,x,y,z,index){
+ const colors=golden?goldColors:pastel;
+ const mesh=new THREE.Mesh(
+  new THREE.SphereGeometry(.305,32,24),
+  makeMaterial(colors[color%colors.length],.19,.08)
+ );
+ mesh.position.set(x,y,z);
+ mesh.castShadow=true;
+ mesh.receiveShadow=true;
+ mesh.userData={tube:index,color};
+ scene.add(mesh);
+
+ const shine=new THREE.Mesh(
+  new THREE.SphereGeometry(.07,12,12),
+  new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.55})
+ );
+ shine.position.set(-.09,.12,.25);
+ mesh.add(shine);
+
+ ballMeshes.push(mesh);
+}
+
+function renderScene(){
+ if(!scene||!renderer)return;
+
+ tubeGroups.forEach(g=>scene.remove(g));
+ ballMeshes.forEach(m=>scene.remove(m));
+ tubeGroups=[];
+ ballMeshes=[];
+
+ const count=tubes.length;
+ const cols=count<=5?count:Math.ceil(count/2);
+ const rows=Math.ceil(count/cols);
+ const spacing=1.12;
+ const totalW=(cols-1)*spacing;
+ const totalD=(rows-1)*1.05;
+
+ tubes.forEach((tube,index)=>{
+  const row=Math.floor(index/cols);
+  const col=index%cols;
+  const x=-totalW/2+col*spacing;
+  const z=-totalD/2+row*1.05;
+  const group=createTube(index,x,z);
+
+  if(index===selected){
+   group.position.y=.16;
+   group.children.forEach(child=>{
+    if(child.material&&child.material.emissive){
+     child.material.emissive.set("#b9a0df");
+     child.material.emissiveIntensity=.25;
+    }
+   });
+  }
+  if(hintPair&&hintPair.includes(index)){
+   group.position.y=.1;
+  }
+
+  tube.forEach((color,ballIndex)=>{
+   const y=.34+ballIndex*.51;
+   createBall(color,x,y,z,index);
+  });
+ });
+
+ positionCamera();
+}
+
+function onCanvasPointer(event){
+ if(!renderer||!camera)return;
+ const rect=canvas.getBoundingClientRect();
+ pointer.x=((event.clientX-rect.left)/rect.width)*2-1;
+ pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
+ raycaster.setFromCamera(pointer,camera);
+
+ const targets=[...tubeGroups];
+ const hits=raycaster.intersectObjects(targets,true);
+ if(!hits.length)return;
+
+ let obj=hits[0].object;
+ while(obj&&!Number.isInteger(obj.userData.index))obj=obj.parent;
+ if(!obj)return;
+ handleTubeTap(obj.userData.index);
+}
+
+function handleTubeTap(index){
+ if(won)return;
+ if(selected===-1){
+  if(tubes[index].length===0){showToast(t("select"));return;}
+  selected=index;
+  renderScene();
+  return;
+ }
+ if(selected===index){
+  selected=-1;renderScene();return;
+ }
+ if(canMove(selected,index)){
+  moveBall(selected,index);
+ }else if(tubes[index].length>0){
+  selected=index;renderScene();
+ }else{
+  showToast(t("invalid"));
+ }
+}
+
+function animate3D(){
+ requestAnimationFrame(animate3D);
+ if(!renderer||!scene||!camera)return;
+ const time=performance.now()*.001;
+ tubeGroups.forEach((group,index)=>{
+  if(index===selected){
+   group.position.y=.12+Math.sin(time*4)*.025;
+  }
+ });
+ renderer.render(scene,camera);
+}
+
+/* ---------------- UI EVENTS ---------------- */
+
+$("undoBtn").onclick=undoMove;
+$("hintBtn").onclick=useHint;
+$("restartBtn").onclick=()=>{
+ openModal(`<h2>${t("restartTitle")}</h2><p>${t("restartAsk")}</p>
+ <div class="modal-actions"><button class="primary" id="confirmRestart">${t("yes")}</button><button class="secondary" id="cancelRestart">${t("no")}</button></div>`);
+ $("confirmRestart").onclick=()=>{restartLevel();closeModal();};
+ $("cancelRestart").onclick=closeModal;
+};
+$("skipBtn").onclick=()=>{
+ openModal(`<h2>${t("skipTitle")}</h2><p>${t("skipAsk")}</p>
+ <div class="modal-actions"><button class="primary" id="confirmSkip">${t("yes")}</button><button class="secondary" id="cancelSkip">${t("no")}</button></div>`);
+ $("confirmSkip").onclick=skipLevel;
+ $("cancelSkip").onclick=closeModal;
+};
+$("shopBtn").onclick=showShop;
+$("dailyBtn").onclick=dailyReward;
+$("rankBtn").onclick=showLeaderboard;
+$("achievementBtn").onclick=showAchievements;
+$("languageBtn").onclick=showLanguage;
+$("menuBtn").onclick=showMenu;
+
+window.addEventListener("resize",resize3D);
+
+applyLanguage();
+init3D();
 loadLevel();
-}
+updateUI();
 
-init();
+})();
 </script>
 </body>
 </html>
