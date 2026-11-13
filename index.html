@@ -406,6 +406,7 @@ button:active{transform:scale(.96)}
 const MAX_LEVEL=500;
 const CAPACITY=4;
 const SAVE_KEY="colorEscapeUltimateV5";
+const TON_DONATION_ADDRESS="UQCpT9QSPYMMqDvGkcgdtU6K0NzWPgfvQdk-lVz1l5sYFCJV";
 
 const COLORS=[
  "#ff6688","#45c9ed","#ffd45f","#a68bff",
@@ -1015,9 +1016,10 @@ function openModal(type){
    <div class="resultText">${connected?"کیف پول متصل است":"اتصال Tonkeeper"}</div>
    <div class="resultSub">${connected?`آدرس: ${escapeHTML(address.slice(0,8)+"…"+address.slice(-8))}`:"برای اتصال امن از TON Connect استفاده می‌شود."}</div>
    ${connected
-    ? `<button class="primaryButton" onclick="disconnectTonWallet()">قطع اتصال</button>`
+    ? `<button class="primaryButton" onclick="disconnectTonWallet()">قطع اتصال</button>
+       <button class="primaryButton" onclick="sendTonDonation(0.01)">حمایت با ۰٫۰۱ TON</button>`
     : `<button class="primaryButton" onclick="connectTonWallet()">اتصال Tonkeeper / TON Wallet</button>`}
-   <div class="resultSub">در این مرحله هیچ تراکنش یا پرداختی ارسال نمی‌شود.</div>
+   <div class="resultSub">با زدن دکمه، درخواست تراکنش در Tonkeeper باز می‌شود و فقط با تأیید خودت ارسال خواهد شد.</div>
   `;
  }
 
@@ -1124,6 +1126,28 @@ async function disconnectTonWallet(){
   await window.tonConnectUI?.disconnect();
   openModal("wallet");
  }catch(e){showToast("قطع اتصال ناموفق بود")}
+}
+
+async function sendTonDonation(amountTon){
+ if(!window.tonConnectUI?.account){
+  showToast("ابتدا کیف پول را متصل کن");
+  return;
+ }
+ const amount=Math.round(Number(amountTon)*1_000_000_000);
+ if(!Number.isSafeInteger(amount)||amount<=0){
+  showToast("مبلغ تراکنش نامعتبر است");
+  return;
+ }
+ try{
+  await window.tonConnectUI.sendTransaction({
+   validUntil:Math.floor(Date.now()/1000)+300,
+   network:"-239",
+   messages:[{address:TON_DONATION_ADDRESS,amount:String(amount)}]
+  });
+  showToast("درخواست تراکنش ارسال شد");
+ }catch(e){
+  showToast("تراکنش لغو شد یا ناموفق بود");
+ }
 }
 
 async function loadReferralLink(){
