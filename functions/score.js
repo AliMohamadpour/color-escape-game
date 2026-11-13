@@ -181,9 +181,48 @@ export async function onRequestPost({ request, env }) {
       telegramId
     ).run();
 
+    let referralReward = null;
+    if (completed >= 1) {
+      const referralUpdate = await env.DB.prepare(`
+        UPDATE referrals
+        SET status = 'completed',
+            inviter_rewarded = 1,
+            invited_rewarded = 1,
+            completed_at = unixepoch()
+        WHERE invited_id = ? AND status = 'pending'
+      `).bind(telegramId).run();
+
+      if (Number(referralUpdate.meta?.changes || 0) === 1) {
+        const referral = await env.DB.prepare(`
+          SELECT inviter_id
+          FROM referrals
+          WHERE invited_id = ? AND status = 'completed'
+          ORDER BY completed_at DESC
+          LIMIT 1
+        `).bind(telegramId).first();
+
+        if (referral?.inviter_id) {
+          await env.DB.batch([
+            env.DB.prepare(`
+              UPDATE players
+              SET coins = coins + 20, updated_at = CURRENT_TIMESTAMP
+              WHERE telegram_id = ?
+            `).bind(String(referral.inviter_id)),
+            env.DB.prepare(`
+              UPDATE players
+              SET coins = coins + 10, updated_at = CURRENT_TIMESTAMP
+              WHERE telegram_id = ?
+            `).bind(telegramId)
+          ]);
+          referralReward = { inviterCoins: 20, invitedCoins: 10 };
+        }
+      }
+    }
+
     return json({
       success: true,
       message: "Score saved",
+      referralReward,
       player: {
         id: telegramId,
         name,
