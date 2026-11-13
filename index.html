@@ -377,6 +377,7 @@ button:active{transform:scale(.96)}
  <button class="action" onclick="openModal('daily')"><span>🎁</span>جایزه روزانه</button>
  <button class="action" onclick="openModal('achievements')"><span>🏅</span>دستاوردها</button>
  <button class="action" onclick="openModal('leaderboard')"><span>🌍</span>جدول جهانی</button>
+ <button class="action" onclick="openModal('referral')"><span>👥</span>دعوت از دوستان</button>
 </div>
 
 <div class="bottomNote">COLOR ESCAPE • 500 LEVELS • HAVE FUN</div>
@@ -432,13 +433,13 @@ const languages={
 };
 
 const uiText={
- fa:{subtitle:"معمای مرتب‌سازی رنگ",coins:"🪙 سکه‌ها",level:"⭐ مرحله",moves:"👣 حرکات",progress:"پیشرفت بازی",sortTitle:"مرتب‌سازی رنگ‌ها",sortSub:"توپ‌های هم‌رنگ را کنار هم قرار بده",undo:"بازگشت",restart:"شروع مجدد",hint:"راهنما",skip:"رد مرحله",shop:"فروشگاه",daily:"جایزه روزانه",achievements:"دستاوردها",leaderboard:"جدول جهانی",footer:"COLOR ESCAPE • ۵۰۰ مرحله • لذت ببر"},
- en:{subtitle:"COLOR SORT PUZZLE",coins:"🪙 Coins",level:"⭐ Level",moves:"👣 Moves",progress:"Game progress",sortTitle:"Sort the colors",sortSub:"Group balls with the same color",undo:"Undo",restart:"Restart",hint:"Hint",skip:"Skip level",shop:"Shop",daily:"Daily reward",achievements:"Achievements",leaderboard:"Global leaderboard",footer:"COLOR ESCAPE • 500 LEVELS • HAVE FUN"},
- ar:{subtitle:"لغز ترتيب الألوان",coins:"🪙 العملات",level:"⭐ المستوى",moves:"👣 الحركات",progress:"تقدم اللعبة",sortTitle:"ترتيب الألوان",sortSub:"اجمع الكرات من اللون نفسه",undo:"تراجع",restart:"إعادة البدء",hint:"تلميح",skip:"تخطي المرحلة",shop:"المتجر",daily:"الجائزة اليومية",achievements:"الإنجازات",leaderboard:"لوحة المتصدرين",footer:"COLOR ESCAPE • ٥٠٠ مرحلة • استمتع"},
- tr:{subtitle:"RENK SIRALAMA BULMACASI",coins:"🪙 Jetonlar",level:"⭐ Seviye",moves:"👣 Hamleler",progress:"Oyun ilerlemesi",sortTitle:"Renkleri sırala",sortSub:"Aynı renkteki topları birleştir",undo:"Geri al",restart:"Yeniden başlat",hint:"İpucu",skip:"Bölümü geç",shop:"Mağaza",daily:"Günlük ödül",achievements:"Başarılar",leaderboard:"Genel sıralama",footer:"COLOR ESCAPE • 500 BÖLÜM • İYİ EĞLENCELER"},
- es:{subtitle:"ROMPECABEZAS DE COLORES",coins:"🪙 Monedas",level:"⭐ Nivel",moves:"👣 Movimientos",progress:"Progreso del juego",sortTitle:"Ordena los colores",sortSub:"Agrupa las bolas del mismo color",undo:"Deshacer",restart:"Reiniciar",hint:"Pista",skip:"Saltar nivel",shop:"Tienda",daily:"Recompensa diaria",achievements:"Logros",leaderboard:"Clasificación global",footer:"COLOR ESCAPE • 500 NIVELES • DIVIÉRTETE"},
- ru:{subtitle:"ГОЛОВОЛОМКА ЦВЕТОВ",coins:"🪙 Монеты",level:"⭐ Уровень",moves:"👣 Ходы",progress:"Прогресс игры",sortTitle:"Сортировка цветов",sortSub:"Собирайте шары одного цвета",undo:"Отменить",restart:"Заново",hint:"Подсказка",skip:"Пропустить уровень",shop:"Магазин",daily:"Ежедневная награда",achievements:"Достижения",leaderboard:"Таблица лидеров",footer:"COLOR ESCAPE • 500 УРОВНЕЙ • УДАЧИ"},
- fr:{subtitle:"PUZZLE DE TRI DES COULEURS",coins:"🪙 Pièces",level:"⭐ Niveau",moves:"👣 Coups",progress:"Progression du jeu",sortTitle:"Trie les couleurs",sortSub:"Regroupe les boules de même couleur",undo:"Annuler",restart:"Recommencer",hint:"Indice",skip:"Passer le niveau",shop:"Boutique",daily:"Récompense quotidienne",achievements:"Succès",leaderboard:"Classement mondial",footer:"COLOR ESCAPE • 500 NIVEAUX • AMUSE-TOI"}
+ fa:{subtitle:"معمای مرتب‌سازی رنگ",coins:"🪙 سکه‌ها",level:"⭐ مرحله",moves:"👣 حرکات",progress:"پیشرفت بازی",sortTitle:"مرتب‌سازی رنگ‌ها",sortSub:"توپ‌های هم‌رنگ را کنار هم قرار بده",undo:"بازگشت",restart:"شروع مجدد",hint:"راهنما",skip:"رد مرحله",shop:"فروشگاه",daily:"جایزه روزانه",achievements:"دستاوردها",leaderboard:"جدول جهانی",referral:"دعوت از دوستان",footer:"COLOR ESCAPE • ۵۰۰ مرحله • لذت ببر"},
+ en:{subtitle:"COLOR SORT PUZZLE",coins:"🪙 Coins",level:"⭐ Level",moves:"👣 Moves",progress:"Game progress",sortTitle:"Sort the colors",sortSub:"Group balls with the same color",undo:"Undo",restart:"Restart",hint:"Hint",skip:"Skip level",shop:"Shop",daily:"Daily reward",achievements:"Achievements",leaderboard:"Global leaderboard",referral:"Invite friends",footer:"COLOR ESCAPE • 500 LEVELS • HAVE FUN"},
+ ar:{subtitle:"لغز ترتيب الألوان",coins:"🪙 العملات",level:"⭐ المستوى",moves:"👣 الحركات",progress:"تقدم اللعبة",sortTitle:"ترتيب الألوان",sortSub:"اجمع الكرات من اللون نفسه",undo:"تراجع",restart:"إعادة البدء",hint:"تلميح",skip:"تخطي المرحلة",shop:"المتجر",daily:"الجائزة اليومية",achievements:"الإنجازات",leaderboard:"لوحة المتصدرين",referral:"دعوة الأصدقاء",footer:"COLOR ESCAPE • ٥٠٠ مرحلة • استمتع"},
+ tr:{subtitle:"RENK SIRALAMA BULMACASI",coins:"🪙 Jetonlar",level:"⭐ Seviye",moves:"👣 Hamleler",progress:"Oyun ilerlemesi",sortTitle:"Renkleri sırala",sortSub:"Aynı renkteki topları birleştir",undo:"Geri al",restart:"Yeniden başlat",hint:"İpucu",skip:"Bölümü geç",shop:"Mağaza",daily:"Günlük ödül",achievements:"Başarılar",leaderboard:"Genel sıralama",referral:"Arkadaşlarını davet et",footer:"COLOR ESCAPE • 500 BÖLÜM • İYİ EĞLENCELER"},
+ es:{subtitle:"ROMPECABEZAS DE COLORES",coins:"🪙 Monedas",level:"⭐ Nivel",moves:"👣 Movimientos",progress:"Progreso del juego",sortTitle:"Ordena los colores",sortSub:"Agrupa las bolas del mismo color",undo:"Deshacer",restart:"Reiniciar",hint:"Pista",skip:"Saltar nivel",shop:"Tienda",daily:"Recompensa diaria",achievements:"Logros",leaderboard:"Clasificación global",referral:"Invitar amigos",footer:"COLOR ESCAPE • 500 NIVELES • DIVIÉRTETE"},
+ ru:{subtitle:"ГОЛОВОЛОМКА ЦВЕТОВ",coins:"🪙 Монеты",level:"⭐ Уровень",moves:"👣 Ходы",progress:"Прогресс игры",sortTitle:"Сортировка цветов",sortSub:"Собирайте шары одного цвета",undo:"Отменить",restart:"Заново",hint:"Подсказка",skip:"Пропустить уровень",shop:"Магазин",daily:"Ежедневная награда",achievements:"Достижения",leaderboard:"Таблица лидеров",referral:"Пригласить друзей",footer:"COLOR ESCAPE • 500 УРОВНЕЙ • УДАЧИ"},
+ fr:{subtitle:"PUZZLE DE TRI DES COULEURS",coins:"🪙 Pièces",level:"⭐ Niveau",moves:"👣 Coups",progress:"Progression du jeu",sortTitle:"Trie les couleurs",sortSub:"Regroupe les boules de même couleur",undo:"Annuler",restart:"Recommencer",hint:"Indice",skip:"Passer le niveau",shop:"Boutique",daily:"Récompense quotidienne",achievements:"Succès",leaderboard:"Classement mondial",referral:"Inviter des amis",footer:"COLOR ESCAPE • 500 NIVEAUX • AMUSE-TOI"}
 };
 
 const settingsText={
@@ -465,7 +466,7 @@ function applyLanguage(){
  const controls=document.querySelectorAll(".control");
  [["↶",t.undo],["⟳",t.restart],["💡",t.hint],["⏭",t.skip]].forEach((item,i)=>{if(controls[i])controls[i].innerHTML=`<b>${item[0]}</b>${item[1]}`});
  const actions=document.querySelectorAll(".actionGrid .action");
- [["🛍️",t.shop],["🎁",t.daily],["🏅",t.achievements],["🌍",t.leaderboard]].forEach((item,i)=>{if(actions[i])actions[i].innerHTML=`<span>${item[0]}</span>${item[1]}`});
+ [["🛍️",t.shop],["🎁",t.daily],["🏅",t.achievements],["🌍",t.leaderboard],["👥",t.referral]].forEach((item,i)=>{if(actions[i])actions[i].innerHTML=`<span>${item[0]}</span>${item[1]}`});
  document.querySelector(".bottomNote").textContent=t.footer;
 }
 
@@ -986,6 +987,20 @@ function openModal(type){
   `).join("");
  }
 
+ if(type==="referral"){
+  title.textContent="👥 دعوت از دوستان";
+  content.innerHTML=`
+   <div class="resultIcon">🎁</div>
+   <div class="resultText">دوستت را دعوت کن!</div>
+   <div class="resultSub">لینک اختصاصی خودت را بساز و برای دوستانت بفرست.</div>
+   <div class="shopItem" id="referralResult" style="display:none;flex-direction:column;align-items:stretch;gap:9px">
+    <small id="referralUrl" style="word-break:break-all;color:var(--cyan)"></small>
+    <button class="buy" onclick="copyReferralLink()">📋 کپی لینک</button>
+   </div>
+   <button class="primaryButton" id="referralButton" onclick="loadReferralLink()">ساخت لینک دعوت</button>
+  `;
+ }
+
  if(type==="settings"){
   title.textContent=st("title");
   content.innerHTML=`
@@ -1018,6 +1033,50 @@ function openLanguages(){
    ${languages[k].name} ${language===k?"✓":""}
   </button>
  `).join("");
+}
+
+let referralLink="";
+
+async function loadReferralLink(){
+ if(!tg?.initData){
+  showToast("این قابلیت باید داخل Telegram باز شود");
+  return;
+ }
+ const button=document.getElementById("referralButton");
+ if(button){button.disabled=true;button.textContent="در حال ساخت لینک...";}
+ try{
+  const response=await fetch("/api/referral",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({initData:tg.initData})
+  });
+  const data=await response.json();
+  if(!response.ok||!data.success)throw new Error(data.error||"Referral error");
+  referralLink=data.url;
+  document.getElementById("referralResult").style.display="flex";
+  document.getElementById("referralUrl").textContent=referralLink;
+  if(button){button.textContent="اشتراک‌گذاری در Telegram";button.onclick=shareReferralLink;}
+ }catch(e){
+  showToast("ساخت لینک دعوت ناموفق بود");
+  if(button){button.disabled=false;button.textContent="تلاش دوباره";}
+ }
+}
+
+async function copyReferralLink(){
+ if(!referralLink)return;
+ try{
+  await navigator.clipboard.writeText(referralLink);
+  showToast("لینک دعوت کپی شد");
+ }catch{
+  showToast("کپی لینک انجام نشد");
+ }
+}
+
+function shareReferralLink(){
+ if(!referralLink)return;
+ const text=encodeURIComponent("بیا Color Escape را بازی کنیم!");
+ const url=`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${text}`;
+ try{tg.openTelegramLink(url)}catch{window.open(url,"_blank")}
 }
 
 function setLanguage(k){
