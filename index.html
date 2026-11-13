@@ -1055,7 +1055,7 @@ async function loadReferralLink(){
   referralLink=data.url;
   document.getElementById("referralResult").style.display="flex";
   document.getElementById("referralUrl").textContent=referralLink;
-  if(button){button.textContent="اشتراک‌گذاری در Telegram";button.onclick=shareReferralLink;}
+  if(button){button.disabled=false;button.textContent="اشتراک‌گذاری در Telegram";button.onclick=shareReferralLink;}
  }catch(e){
   showToast("ساخت لینک دعوت ناموفق بود");
   if(button){button.disabled=false;button.textContent="تلاش دوباره";}
