@@ -1139,12 +1139,20 @@ async function sendTonDonation(amountTon){
   return;
  }
  try{
+  const orderResponse=await fetch("/api/ton-donation",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({initData:tg?.initData||""})
+  });
+  const order=await orderResponse.json();
+  if(!orderResponse.ok||!order.success)throw new Error(order.error||"Donation order error");
+  if(Number(order.amountNano)!==amount||order.destination!==TON_DONATION_ADDRESS)throw new Error("Donation order mismatch");
   await window.tonConnectUI.sendTransaction({
    validUntil:Math.floor(Date.now()/1000)+300,
    network:"-239",
    messages:[{address:TON_DONATION_ADDRESS,amount:String(amount)}]
   });
-  showToast("درخواست تراکنش ارسال شد");
+  showToast("درخواست تراکنش ارسال شد؛ شناسه: "+order.orderId.slice(-8));
  }catch(e){
   showToast("تراکنش لغو شد یا ناموفق بود");
  }
