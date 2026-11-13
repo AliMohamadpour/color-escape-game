@@ -1152,10 +1152,30 @@ async function sendTonDonation(amountTon){
    network:"-239",
    messages:[{address:TON_DONATION_ADDRESS,amount:String(amount)}]
   });
-  showToast("درخواست تراکنش ارسال شد؛ شناسه: "+order.orderId.slice(-8));
+  showToast("تراکنش ارسال شد؛ در حال بررسی شبکه...");
+  await verifyTonDonation(order.orderId,window.tonConnectUI.account.address);
  }catch(e){
   showToast("تراکنش لغو شد یا ناموفق بود");
  }
+}
+
+async function verifyTonDonation(orderId,senderAddress){
+ for(let attempt=0;attempt<5;attempt++){
+  try{
+   const response=await fetch("/api/ton-donation-verify",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({initData:tg?.initData||"",orderId,senderAddress})
+   });
+   const data=await response.json();
+   if(data.status==="confirmed"){
+    showToast("Donation با موفقیت در شبکه تأیید شد");
+    return;
+   }
+  }catch(e){}
+  await new Promise(resolve=>setTimeout(resolve,3000));
+ }
+ showToast("تراکنش ارسال شد؛ تأیید شبکه کمی زمان می‌برد");
 }
 
 async function loadReferralLink(){
