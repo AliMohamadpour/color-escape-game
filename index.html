@@ -228,98 +228,98 @@ button:active{transform:scale(.96)}
  white-space:nowrap
 }
 .toast.show{opacity:1;bottom:40px}
-	@media(max-width:360px){
-	 .tube{width:43px;height:145px}
-	 .ball{width:28px;height:28px;flex-basis:28px}
-	 #board{gap:13px 9px}
-	}
+    @media(max-width:360px){
+     .tube{width:43px;height:145px}
+     .ball{width:28px;height:28px;flex-basis:28px}
+     #board{gap:13px 9px}
+    }
 
-	/* =========================
-	   AURORA ARCADE REDESIGN
-	========================= */
-	:root{
-	 --bg:#081225;
-	 --panel:#101f3b;
-	 --panel2:#162b4c;
-	 --cyan:#4ff1d2;
-	 --blue:#5d8dff;
-	 --purple:#b58cff;
-	 --pink:#ff79b8;
-	 --yellow:#ffd76d;
-	 --text:#f7fbff;
-	 --muted:#91a8ca;
-	 --line:rgba(184,220,255,.15);
-	}
-	body{
-	 background:
-	  radial-gradient(circle at 8% 0%,#1d4d78 0,transparent 30%),
-	  radial-gradient(circle at 96% 22%,#38215f 0,transparent 31%),
-	  radial-gradient(circle at 50% 110%,#112e52 0,transparent 42%),
-	  var(--bg);
-	 font-family:Tahoma,"Segoe UI",Arial,sans-serif;
-	}
-	body:before{
-	 content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;
-	 background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);
-	 background-size:34px 34px;
-	 mask-image:linear-gradient(to bottom,#000,transparent 75%);
-	}
-	.app{position:relative;padding:18px 14px 34px}
-	.top{margin-bottom:18px;align-items:flex-start}
-	.logo{gap:11px}
-	.logoIcon{
-	 width:48px;height:48px;border-radius:17px;font-size:25px;
-	 background:linear-gradient(145deg,#54f1d3 0%,#5f8bff 55%,#b177ff 100%);
-	 box-shadow:0 8px 30px #4ff1d255, inset 0 1px 0 #ffffff99;
-	 transform:rotate(-4deg);
-	}
-	.logo h1{letter-spacing:.08em;font-size:20px;line-height:1.1}
-	.logo small{letter-spacing:.18em;color:#afc3e4;font-size:9px}
-	.iconBtn{
-	 width:42px;height:42px;border-radius:14px;background:#ffffff0d;
-	 backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 #ffffff1c;
-	 transition:transform .2s,background .2s,border-color .2s;
-	}
-	.iconBtn:hover,.action:hover,.control:hover,.menuButton:hover{transform:translateY(-2px);background:#ffffff18;border-color:#ffffff38}
-	.stats{gap:9px;margin-bottom:12px}
-	.stat{
-	 position:relative;overflow:hidden;padding:12px 7px 11px;border-radius:17px;
-	 background:linear-gradient(145deg,#19345a99,#0e1d38cc);
-	 backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 #ffffff20,0 8px 24px #0002;
-	}
-	.stat:after{content:"";position:absolute;width:44px;height:44px;border-radius:50%;right:-18px;top:-22px;background:#4ff1d226}
-	.stat:nth-child(2):after{background:#b58cff2b}.stat:nth-child(3):after{background:#ff79b82b}
-	.stat span{font-size:10px;letter-spacing:.02em}.stat strong{font-size:19px;color:#fff}
-	.progressBox{
-	 padding:13px 14px;border-radius:18px;margin-bottom:14px;
-	 background:#0d1d36bb;backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 #ffffff16;
-	}
-	.progressHead{font-size:11px}.progressHead span:last-child{color:var(--cyan);font-weight:bold}
-	.progressTrack{height:8px;background:#061126aa;box-shadow:inset 0 1px 3px #0008}
-	.progressFill{background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));box-shadow:0 0 13px #4ff1d280}
-	.gamePanel{
-	 position:relative;overflow:hidden;padding:17px 11px 18px;border-radius:26px;
-	 background:linear-gradient(150deg,#1c3c67e8 0%,#102542ee 52%,#101d39f2 100%);
-	 box-shadow:0 22px 55px #0005,inset 0 1px 0 #ffffff22;
-	}
-	.gamePanel:before{content:"";position:absolute;width:180px;height:180px;right:-80px;top:-90px;border-radius:50%;background:#5d8dff1c;filter:blur(2px)}
-	.gameHead{position:relative;padding:0 6px 14px}.gameHead h2{font-size:17px;letter-spacing:-.02em}.gameHead small{color:#a5b9d8}
-	.levelTag{font-weight:bold;letter-spacing:.08em;background:#4ff1d21c;box-shadow:0 0 18px #4ff1d21a}
-	#board{position:relative;min-height:290px;padding:14px 3px 19px;gap:16px 13px}
-	.tube{width:51px;height:161px;border-color:#b9dfff99;background:linear-gradient(90deg,#ffffff06,#ffffff1c 45%,#ffffff08);box-shadow:inset 5px 0 9px #ffffff16,inset -5px 0 9px #ffffff0f,0 11px 18px #0005}
-	.tube:hover{border-color:#ffffffdd;filter:drop-shadow(0 0 8px #7bb7ff55)}
-	.tube.selected{border-color:var(--yellow);filter:drop-shadow(0 0 12px #ffd36ebb);transform:translateY(-11px) scale(1.02)}
-	.tube.complete{border-color:var(--cyan);filter:drop-shadow(0 0 10px #43e4d088)}
-	.ball{border-color:#ffffff70;box-shadow:inset -5px -7px 9px #0003,inset 4px 4px 8px #ffffff88,0 4px 7px #0005}
-	.controls{gap:9px;margin-top:16px}.control{padding:12px 4px;border-radius:15px;background:#ffffff0d;box-shadow:inset 0 1px 0 #ffffff18;transition:transform .2s,background .2s,border-color .2s}.control b{font-size:20px}.control.primary{box-shadow:0 8px 20px #4b9fff40,inset 0 1px 0 #ffffff66}
-	.actionGrid{gap:10px;margin-top:15px}.action{padding:14px 10px;border-radius:16px;background:#102442c9;backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 #ffffff18,0 8px 22px #0002;transition:transform .2s,background .2s,border-color .2s}.action span{font-size:15px}
-	.bottomNote{margin-top:17px;color:#7189ad;letter-spacing:.12em;font-size:9px}
-	.modal{background:#020817d9}.modalBox{background:linear-gradient(150deg,#203c67f5,#101e39f8);box-shadow:0 25px 80px #000b,inset 0 1px 0 #ffffff22}.primaryButton{box-shadow:0 9px 22px #4b9fff3d}
-	.toast{background:#1b3459ee;box-shadow:0 12px 30px #0007,inset 0 1px 0 #ffffff22}
-	@keyframes floatLogo{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-3px)}}
-	.logoIcon{animation:floatLogo 4s ease-in-out infinite}
-	@media(max-width:360px){.app{padding-left:10px;padding-right:10px}.tube{width:44px;height:147px}.ball{width:28px;height:28px;flex-basis:28px}#board{gap:13px 9px}}
-	</style>
+    /* =========================
+       AURORA ARCADE REDESIGN
+    ========================= */
+    :root{
+     --bg:#081225;
+     --panel:#101f3b;
+     --panel2:#162b4c;
+     --cyan:#4ff1d2;
+     --blue:#5d8dff;
+     --purple:#b58cff;
+     --pink:#ff79b8;
+     --yellow:#ffd76d;
+     --text:#f7fbff;
+     --muted:#91a8ca;
+     --line:rgba(184,220,255,.15);
+    }
+    body{
+     background:
+      radial-gradient(circle at 8% 0%,#1d4d78 0,transparent 30%),
+      radial-gradient(circle at 96% 22%,#38215f 0,transparent 31%),
+      radial-gradient(circle at 50% 110%,#112e52 0,transparent 42%),
+      var(--bg);
+     font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+    }
+    body:before{
+     content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;
+     background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);
+     background-size:34px 34px;
+     mask-image:linear-gradient(to bottom,#000,transparent 75%);
+    }
+    .app{position:relative;padding:18px 14px 34px}
+    .top{margin-bottom:18px;align-items:flex-start}
+    .logo{gap:11px}
+    .logoIcon{
+     width:48px;height:48px;border-radius:17px;font-size:25px;
+     background:linear-gradient(145deg,#54f1d3 0%,#5f8bff 55%,#b177ff 100%);
+     box-shadow:0 8px 30px #4ff1d255, inset 0 1px 0 #ffffff99;
+     transform:rotate(-4deg);
+    }
+    .logo h1{letter-spacing:.08em;font-size:20px;line-height:1.1}
+    .logo small{letter-spacing:.18em;color:#afc3e4;font-size:9px}
+    .iconBtn{
+     width:42px;height:42px;border-radius:14px;background:#ffffff0d;
+     backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 #ffffff1c;
+     transition:transform .2s,background .2s,border-color .2s;
+    }
+    .iconBtn:hover,.action:hover,.control:hover,.menuButton:hover{transform:translateY(-2px);background:#ffffff18;border-color:#ffffff38}
+    .stats{gap:9px;margin-bottom:12px}
+    .stat{
+     position:relative;overflow:hidden;padding:12px 7px 11px;border-radius:17px;
+     background:linear-gradient(145deg,#19345a99,#0e1d38cc);
+     backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 #ffffff20,0 8px 24px #0002;
+    }
+    .stat:after{content:"";position:absolute;width:44px;height:44px;border-radius:50%;right:-18px;top:-22px;background:#4ff1d226}
+    .stat:nth-child(2):after{background:#b58cff2b}.stat:nth-child(3):after{background:#ff79b82b}
+    .stat span{font-size:10px;letter-spacing:.02em}.stat strong{font-size:19px;color:#fff}
+    .progressBox{
+     padding:13px 14px;border-radius:18px;margin-bottom:14px;
+     background:#0d1d36bb;backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 #ffffff16;
+    }
+    .progressHead{font-size:11px}.progressHead span:last-child{color:var(--cyan);font-weight:bold}
+    .progressTrack{height:8px;background:#061126aa;box-shadow:inset 0 1px 3px #0008}
+    .progressFill{background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));box-shadow:0 0 13px #4ff1d280}
+    .gamePanel{
+     position:relative;overflow:hidden;padding:17px 11px 18px;border-radius:26px;
+     background:linear-gradient(150deg,#1c3c67e8 0%,#102542ee 52%,#101d39f2 100%);
+     box-shadow:0 22px 55px #0005,inset 0 1px 0 #ffffff22;
+    }
+    .gamePanel:before{content:"";position:absolute;width:180px;height:180px;right:-80px;top:-90px;border-radius:50%;background:#5d8dff1c;filter:blur(2px)}
+    .gameHead{position:relative;padding:0 6px 14px}.gameHead h2{font-size:17px;letter-spacing:-.02em}.gameHead small{color:#a5b9d8}
+    .levelTag{font-weight:bold;letter-spacing:.08em;background:#4ff1d21c;box-shadow:0 0 18px #4ff1d21a}
+    #board{position:relative;min-height:290px;padding:14px 3px 19px;gap:16px 13px}
+    .tube{width:51px;height:161px;border-color:#b9dfff99;background:linear-gradient(90deg,#ffffff06,#ffffff1c 45%,#ffffff08);box-shadow:inset 5px 0 9px #ffffff16,inset -5px 0 9px #ffffff0f,0 11px 18px #0005}
+    .tube:hover{border-color:#ffffffdd;filter:drop-shadow(0 0 8px #7bb7ff55)}
+    .tube.selected{border-color:var(--yellow);filter:drop-shadow(0 0 12px #ffd36ebb);transform:translateY(-11px) scale(1.02)}
+    .tube.complete{border-color:var(--cyan);filter:drop-shadow(0 0 10px #43e4d088)}
+    .ball{border-color:#ffffff70;box-shadow:inset -5px -7px 9px #0003,inset 4px 4px 8px #ffffff88,0 4px 7px #0005}
+    .controls{gap:9px;margin-top:16px}.control{padding:12px 4px;border-radius:15px;background:#ffffff0d;box-shadow:inset 0 1px 0 #ffffff18;transition:transform .2s,background .2s,border-color .2s}.control b{font-size:20px}.control.primary{box-shadow:0 8px 20px #4b9fff40,inset 0 1px 0 #ffffff66}
+    .actionGrid{gap:10px;margin-top:15px}.action{padding:14px 10px;border-radius:16px;background:#102442c9;backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 #ffffff18,0 8px 22px #0002;transition:transform .2s,background .2s,border-color .2s}.action span{font-size:15px}
+    .bottomNote{margin-top:17px;color:#7189ad;letter-spacing:.12em;font-size:9px}
+    .modal{background:#020817d9}.modalBox{background:linear-gradient(150deg,#203c67f5,#101e39f8);box-shadow:0 25px 80px #000b,inset 0 1px 0 #ffffff22}.primaryButton{box-shadow:0 9px 22px #4b9fff3d}
+    .toast{background:#1b3459ee;box-shadow:0 12px 30px #0007,inset 0 1px 0 #ffffff22}
+    @keyframes floatLogo{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-3px)}}
+    .logoIcon{animation:floatLogo 4s ease-in-out infinite}
+    @media(max-width:360px){.app{padding-left:10px;padding-right:10px}.tube{width:44px;height:147px}.ball{width:28px;height:28px;flex-basis:28px}#board{gap:13px 9px}}
+    </style>
 </head>
 
 <body>
@@ -430,6 +430,46 @@ const languages={
  ru:{name:"Русский",dir:"ltr"},
  fr:{name:"Français",dir:"ltr"}
 };
+
+const uiText={
+ fa:{subtitle:"معمای مرتب‌سازی رنگ",coins:"🪙 سکه‌ها",level:"⭐ مرحله",moves:"👣 حرکات",progress:"پیشرفت بازی",sortTitle:"مرتب‌سازی رنگ‌ها",sortSub:"توپ‌های هم‌رنگ را کنار هم قرار بده",undo:"بازگشت",restart:"شروع مجدد",hint:"راهنما",skip:"رد مرحله",shop:"فروشگاه",daily:"جایزه روزانه",achievements:"دستاوردها",leaderboard:"جدول جهانی",footer:"COLOR ESCAPE • ۵۰۰ مرحله • لذت ببر"},
+ en:{subtitle:"COLOR SORT PUZZLE",coins:"🪙 Coins",level:"⭐ Level",moves:"👣 Moves",progress:"Game progress",sortTitle:"Sort the colors",sortSub:"Group balls with the same color",undo:"Undo",restart:"Restart",hint:"Hint",skip:"Skip level",shop:"Shop",daily:"Daily reward",achievements:"Achievements",leaderboard:"Global leaderboard",footer:"COLOR ESCAPE • 500 LEVELS • HAVE FUN"},
+ ar:{subtitle:"لغز ترتيب الألوان",coins:"🪙 العملات",level:"⭐ المستوى",moves:"👣 الحركات",progress:"تقدم اللعبة",sortTitle:"ترتيب الألوان",sortSub:"اجمع الكرات من اللون نفسه",undo:"تراجع",restart:"إعادة البدء",hint:"تلميح",skip:"تخطي المرحلة",shop:"المتجر",daily:"الجائزة اليومية",achievements:"الإنجازات",leaderboard:"لوحة المتصدرين",footer:"COLOR ESCAPE • ٥٠٠ مرحلة • استمتع"},
+ tr:{subtitle:"RENK SIRALAMA BULMACASI",coins:"🪙 Jetonlar",level:"⭐ Seviye",moves:"👣 Hamleler",progress:"Oyun ilerlemesi",sortTitle:"Renkleri sırala",sortSub:"Aynı renkteki topları birleştir",undo:"Geri al",restart:"Yeniden başlat",hint:"İpucu",skip:"Bölümü geç",shop:"Mağaza",daily:"Günlük ödül",achievements:"Başarılar",leaderboard:"Genel sıralama",footer:"COLOR ESCAPE • 500 BÖLÜM • İYİ EĞLENCELER"},
+ es:{subtitle:"ROMPECABEZAS DE COLORES",coins:"🪙 Monedas",level:"⭐ Nivel",moves:"👣 Movimientos",progress:"Progreso del juego",sortTitle:"Ordena los colores",sortSub:"Agrupa las bolas del mismo color",undo:"Deshacer",restart:"Reiniciar",hint:"Pista",skip:"Saltar nivel",shop:"Tienda",daily:"Recompensa diaria",achievements:"Logros",leaderboard:"Clasificación global",footer:"COLOR ESCAPE • 500 NIVELES • DIVIÉRTETE"},
+ ru:{subtitle:"ГОЛОВОЛОМКА ЦВЕТОВ",coins:"🪙 Монеты",level:"⭐ Уровень",moves:"👣 Ходы",progress:"Прогресс игры",sortTitle:"Сортировка цветов",sortSub:"Собирайте шары одного цвета",undo:"Отменить",restart:"Заново",hint:"Подсказка",skip:"Пропустить уровень",shop:"Магазин",daily:"Ежедневная награда",achievements:"Достижения",leaderboard:"Таблица лидеров",footer:"COLOR ESCAPE • 500 УРОВНЕЙ • УДАЧИ"},
+ fr:{subtitle:"PUZZLE DE TRI DES COULEURS",coins:"🪙 Pièces",level:"⭐ Niveau",moves:"👣 Coups",progress:"Progression du jeu",sortTitle:"Trie les couleurs",sortSub:"Regroupe les boules de même couleur",undo:"Annuler",restart:"Recommencer",hint:"Indice",skip:"Passer le niveau",shop:"Boutique",daily:"Récompense quotidienne",achievements:"Succès",leaderboard:"Classement mondial",footer:"COLOR ESCAPE • 500 NIVEAUX • AMUSE-TOI"}
+};
+
+const settingsText={
+ fa:{title:"⚙️ تنظیمات",soundOn:"🔊 صدا: روشن",soundOff:"🔇 صدا: خاموش",language:"🌐 تغییر زبان",about:"ℹ️ درباره بازی",clear:"🗑️ پاک کردن اطلاعات بازی",languageTitle:"🌐 زبان بازی"},
+ en:{title:"⚙️ Settings",soundOn:"🔊 Sound: On",soundOff:"🔇 Sound: Off",language:"🌐 Change language",about:"ℹ️ About the game",clear:"🗑️ Clear game data",languageTitle:"🌐 Game language"},
+ ar:{title:"⚙️ الإعدادات",soundOn:"🔊 الصوت: تشغيل",soundOff:"🔇 الصوت: إيقاف",language:"🌐 تغيير اللغة",about:"ℹ️ حول اللعبة",clear:"🗑️ حذف بيانات اللعبة",languageTitle:"🌐 لغة اللعبة"},
+ tr:{title:"⚙️ Ayarlar",soundOn:"🔊 Ses: Açık",soundOff:"🔇 Ses: Kapalı",language:"🌐 Dili değiştir",about:"ℹ️ Oyun hakkında",clear:"🗑️ Oyun verilerini sil",languageTitle:"🌐 Oyun dili"},
+ es:{title:"⚙️ Ajustes",soundOn:"🔊 Sonido: Activado",soundOff:"🔇 Sonido: Desactivado",language:"🌐 Cambiar idioma",about:"ℹ️ Sobre el juego",clear:"🗑️ Borrar datos del juego",languageTitle:"🌐 Idioma del juego"},
+ ru:{title:"⚙️ Настройки",soundOn:"🔊 Звук: Вкл.",soundOff:"🔇 Звук: Выкл.",language:"🌐 Изменить язык",about:"ℹ️ Об игре",clear:"🗑️ Очистить данные игры",languageTitle:"🌐 Язык игры"},
+ fr:{title:"⚙️ Réglages",soundOn:"🔊 Son: activé",soundOff:"🔇 Son: désactivé",language:"🌐 Changer de langue",about:"ℹ️ À propos du jeu",clear:"🗑️ Effacer les données",languageTitle:"🌐 Langue du jeu"}
+};
+
+function applyLanguage(){
+ const t=uiText[language]||uiText.fa;
+ document.documentElement.lang=language;
+ document.documentElement.dir=languages[language].dir;
+ document.querySelector(".logo small").textContent=t.subtitle;
+ document.querySelector(".stat:nth-child(1) span").textContent=t.coins;
+ document.querySelector(".stat:nth-child(2) span").textContent=t.level;
+ document.querySelector(".stat:nth-child(3) span").textContent=t.moves;
+ document.querySelector(".progressHead span:first-child").textContent=t.progress;
+ document.querySelector(".gameHead h2").textContent=t.sortTitle;
+ document.querySelector(".gameHead small").textContent=t.sortSub;
+ const controls=document.querySelectorAll(".control");
+ [["↶",t.undo],["⟳",t.restart],["💡",t.hint],["⏭",t.skip]].forEach((item,i)=>{if(controls[i])controls[i].innerHTML=`<b>${item[0]}</b>${item[1]}`});
+ const actions=document.querySelectorAll(".actionGrid .action");
+ [["🛍️",t.shop],["🎁",t.daily],["🏅",t.achievements],["🌍",t.leaderboard]].forEach((item,i)=>{if(actions[i])actions[i].innerHTML=`<span>${item[0]}</span>${item[1]}`});
+ document.querySelector(".bottomNote").textContent=t.footer;
+}
+
+function st(key){return (settingsText[language]||settingsText.fa)[key]}
 
 let language="fa";
 let level=1,coins=100,moves=0;
@@ -947,12 +987,12 @@ function openModal(type){
  }
 
  if(type==="settings"){
-  title.textContent="⚙️ تنظیمات";
+  title.textContent=st("title");
   content.innerHTML=`
-   <button class="menuButton" onclick="toggleSound()">🔊 صدا: ${soundEnabled?"روشن":"خاموش"}</button>
-   <button class="menuButton" onclick="openLanguages()">🌐 تغییر زبان: ${languages[language].name}</button>
-   <button class="menuButton" onclick="showToast('Color Escape v5.0')">ℹ️ درباره بازی</button>
-   <button class="menuButton" onclick="if(confirm('همه اطلاعات محلی پاک شود؟'))resetGame()">🗑️ پاک کردن اطلاعات بازی</button>
+   <button class="menuButton" onclick="toggleSound()">${soundEnabled?st("soundOn"):st("soundOff")}</button>
+   <button class="menuButton" onclick="openLanguages()">${st("language")}: ${languages[language].name}</button>
+   <button class="menuButton" onclick="showToast('Color Escape v5.0')">${st("about")}</button>
+   <button class="menuButton" onclick="if(confirm('Clear local game data?'))resetGame()">${st("clear")}</button>
   `;
  }
 
@@ -971,7 +1011,7 @@ function openModal(type){
 }
 
 function openLanguages(){
- document.getElementById("modalTitle").textContent="🌐 زبان بازی";
+ document.getElementById("modalTitle").textContent=st("languageTitle");
  document.getElementById("modalContent").innerHTML=
  Object.keys(languages).map(k=>`
   <button class="menuButton" onclick="setLanguage('${k}')">
@@ -982,8 +1022,7 @@ function openLanguages(){
 
 function setLanguage(k){
  language=k;
- document.documentElement.lang=k;
- document.documentElement.dir=languages[k].dir;
+ applyLanguage();
  save();closeModal();
  showToast("زبان انتخاب شد: "+languages[k].name);
 }
@@ -1130,9 +1169,7 @@ document.addEventListener("keydown",e=>{
 
 function startGame(){
  loadSave();
-
- document.documentElement.lang=language;
- document.documentElement.dir=languages[language].dir;
+ applyLanguage();
 
  newLevel();
  adminMode();
@@ -1153,4 +1190,3 @@ startGame();
 </script>
 </body>
 </html>
- 
