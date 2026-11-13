@@ -4,397 +4,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#211916">
-<meta name="description" content="Color Escape - Premium Color Puzzle">
+<meta name="theme-color" content="#101a35">
+<meta name="description" content="Color Escape - 500 Color Sorting Levels">
 <title>Color Escape</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-:root{
- --bg:#211916;
- --bg2:#2b201c;
- --panel:#352720;
- --panel2:#45332a;
- --panel3:#594234;
- --cream:#f5e8d5;
- --muted:#c5ad98;
- --gold:#e5b875;
- --gold2:#bd8750;
- --border:#765642;
- --shadow:0 12px 30px #100b09a8;
-
- --c1:#ee9caa;
- --c2:#8fd1ad;
- --c3:#b7a0e4;
- --c4:#f1ce79;
- --c5:#83c8df;
- --c6:#e8a5d1;
- --c7:#b7d58b;
- --c8:#e9a77e;
- --c9:#93a9e8;
- --c10:#c7a18a;
-}
-
 *{box-sizing:border-box}
-html,body{
- margin:0;min-height:100%;
- background:var(--bg);color:var(--cream);
- font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+:root{
+ --bg:#101a35;
+ --panel:#192747;
+ --panel2:#213456;
+ --cyan:#43e4d0;
+ --blue:#4b9fff;
+ --purple:#a68aff;
+ --pink:#ff7cae;
+ --yellow:#ffd36e;
+ --text:#f4f7ff;
+ --muted:#9cacc9;
+ --line:rgba(255,255,255,.10);
 }
 body{
- background:
- radial-gradient(ellipse at 50% -15%,#70503a 0,transparent 55%),
- linear-gradient(160deg,#2e211c,#1d1513 72%);
- display:flex;justify-content:center;
-}
-button,select{font:inherit}
-button{cursor:pointer}
-button:disabled{opacity:.35;cursor:not-allowed}
-.app{
- width:min(100%,560px);
+ margin:0;
  min-height:100vh;
- padding:13px 13px 26px;
- display:flex;flex-direction:column;
+ background:
+ radial-gradient(ellipse at 15% 10%,#243e71 0,transparent 38%),
+ radial-gradient(ellipse at 90% 65%,#29245c 0,transparent 38%),
+ var(--bg);
+ color:var(--text);
+ font-family:Tahoma,Arial,sans-serif;
+ overflow-x:hidden;
 }
-header{
- display:flex;align-items:center;
- justify-content:space-between;gap:10px;
+button{font-family:inherit;cursor:pointer}
+button:active{transform:scale(.96)}
+.app{max-width:540px;margin:auto;padding:14px 13px 30px}
+.top{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:8px;margin-bottom:17px
 }
-.brand{
- font-size:24px;font-weight:1000;
- letter-spacing:1px;color:#f5e5d0;
- text-shadow:0 3px 12px #0008;
+.logo{display:flex;align-items:center;gap:9px}
+.logoIcon{
+ width:43px;height:43px;border-radius:15px;
+ background:linear-gradient(145deg,#42e5d0,#568bff);
+ display:grid;place-items:center;font-size:24px;
+ box-shadow:0 6px 22px #43e4d044
 }
-.brand span{color:var(--gold)}
-.brand small{
- display:block;font-size:8px;
- letter-spacing:4px;color:#bda18a;
- margin-top:-3px;
+.logo h1{font-size:19px;margin:0;font-weight:900}
+.logo small{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+.topBtns{display:flex;gap:7px}
+.iconBtn{
+ border:1px solid var(--line);background:#ffffff0c;
+ color:white;border-radius:12px;width:39px;height:39px;font-size:18px
 }
-.lang-select{
- max-width:118px;padding:8px 9px;
- color:#f8ead8;background:#382921;
- border:1px solid var(--border);
- border-radius:12px;font-size:12px;
- outline:none;
-}
-.top-tools{display:flex;align-items:center;gap:7px}
-
 .stats{
- display:grid;grid-template-columns:repeat(4,1fr);
- gap:7px;margin:15px 0 8px;
+ display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px
 }
 .stat{
- min-width:0;text-align:center;
- padding:9px 3px 8px;
- border-radius:15px;
- background:linear-gradient(145deg,#503b2e,#30231e);
- border:1px solid #775840;
- box-shadow:inset 0 1px #ffffff12,0 5px 13px #0003;
+ background:linear-gradient(145deg,#26395d,#192746);
+ border:1px solid var(--line);border-radius:15px;
+ padding:10px 7px;text-align:center
 }
-.stat small{
- display:block;font-size:10px;
- color:#d2b99e;white-space:nowrap;
+.stat span{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}
+.stat strong{font-size:17px}
+.progressBox{
+ background:#ffffff0b;border:1px solid var(--line);
+ padding:12px;border-radius:16px;margin-bottom:13px
 }
-.stat strong{
- display:block;font-size:18px;
- color:#fff0db;margin-top:3px;
- font-variant-numeric:tabular-nums;
+.progressHead{display:flex;justify-content:space-between;font-size:12px;margin-bottom:9px}
+.progressTrack{height:7px;background:#ffffff15;border-radius:10px;overflow:hidden}
+.progressFill{
+ height:100%;width:0%;border-radius:10px;
+ background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));
+ transition:width .3s
 }
-.message{
- min-height:34px;text-align:center;
- color:#e7c9a6;font-size:12px;
- padding:7px 4px;
+.gamePanel{
+ background:linear-gradient(155deg,#21385e,#182747);
+ border:1px solid #ffffff17;border-radius:23px;
+ padding:15px 10px 17px;box-shadow:0 16px 45px #0003;
 }
-
-/* Main game table */
-.game-stage{
- position:relative;
- width:100%;
- min-height:450px;
- height:clamp(450px,118vw,590px);
- overflow:hidden;
- border-radius:26px;
- border:1px solid #8c6848;
- background:
- radial-gradient(ellipse at 50% 5%,#6e5945 0,#51402f 37%,transparent 75%),
- linear-gradient(155deg,#49382c 0%,#382a22 45%,#2b211c 100%);
- box-shadow:
- inset 0 2px 2px #ffffff20,
- inset 0 -25px 45px #130c09a0,
- 0 16px 38px #0008;
+.gameHead{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:0 5px 15px
 }
-.game-stage:before{
- content:"";position:absolute;inset:0;
- pointer-events:none;opacity:.18;
- background:
- repeating-linear-gradient(0deg,transparent 0 54px,#d7b58a12 55px,#0000 57px),
- linear-gradient(110deg,#fff0 20%,#fff2 48%,#fff0 70%);
+.gameHead h2{font-size:16px;margin:0}
+.gameHead small{font-size:10px;color:var(--muted)}
+.levelTag{
+ background:#43e4d01c;color:var(--cyan);
+ border:1px solid #43e4d044;border-radius:10px;
+ padding:7px 11px;font-size:12px
 }
-.game-stage:after{
- content:"";position:absolute;
- left:8%;right:8%;bottom:18px;height:24px;
- border-radius:50%;
- background:#130b08;
- filter:blur(18px);opacity:.55;
- pointer-events:none;
-}
-.stage-top{
- position:absolute;top:13px;left:14px;right:14px;
- display:flex;justify-content:space-between;
- align-items:center;z-index:2;
- pointer-events:none;
-}
-.stage-label{
- border:1px solid #c49a6a77;
- background:#211713a8;
- color:#f3d7b5;
- border-radius:20px;padding:6px 10px;
- font-size:10px;letter-spacing:.5px;
-}
-.stage-level{
- font-size:11px;color:#f3d7b5;
- background:#211713a8;border-radius:20px;
- padding:6px 10px;
-}
-.play-area{
- position:absolute;inset:58px 9px 42px;
- display:grid;
- grid-template-columns:repeat(4,minmax(0,1fr));
- grid-auto-rows:1fr;
- align-items:center;justify-items:center;
- align-content:center;
- gap:15px 5px;
- z-index:1;
-}
-.play-area.count-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.play-area.count-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.play-area.count-5{grid-template-columns:repeat(3,minmax(0,1fr))}
-.play-area.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}
-.play-area.count-7{grid-template-columns:repeat(4,minmax(0,1fr))}
-.play-area.count-8{grid-template-columns:repeat(4,minmax(0,1fr))}
-.play-area.count-9{grid-template-columns:repeat(3,minmax(0,1fr))}
-.play-area.count-10{grid-template-columns:repeat(4,minmax(0,1fr))}
-
-.tube-wrap{
- width:100%;height:100%;
- min-height:165px;
- display:flex;align-items:center;
- justify-content:center;
- position:relative;
+#board{
+ display:flex;flex-wrap:wrap;justify-content:center;
+ align-items:flex-end;gap:15px 12px;
+ min-height:290px;padding:12px 3px 18px;
+ perspective:800px;
 }
 .tube{
- position:relative;
- width:min(67px,100%);
- height:174px;
- max-height:100%;
- min-height:145px;
- padding:8px 6px 9px;
- border:0;background:transparent;
- border-radius:0 0 23px 23px;
+ position:relative;width:49px;height:158px;
+ border:3px solid rgba(195,231,255,.7);
+ border-top:0;
+ border-radius:0 0 18px 18px;
+ background:linear-gradient(90deg,#ffffff08,#ffffff19 45%,#ffffff06);
+ box-shadow:
+ inset 4px 0 8px #ffffff15,
+ inset -4px 0 8px #ffffff12,
+ 0 9px 15px #0003;
  display:flex;flex-direction:column-reverse;
  align-items:center;justify-content:flex-start;
- gap:3px;
- overflow:visible;
- transform:translateY(0);
- transition:transform .22s ease,filter .22s ease;
- filter:drop-shadow(0 9px 5px #100a0870);
- isolation:isolate;
+ padding:5px 3px 7px;gap:2px;
+ transform:rotateX(2deg);
+ cursor:pointer;
+ transition:transform .2s,border-color .2s,filter .2s;
+ overflow:hidden;
 }
 .tube:before{
- content:"";position:absolute;
- inset:0;
- border:2px solid #d9eff0b9;
- border-top:0;
- border-radius:0 0 21px 21px;
- background:linear-gradient(90deg,#d8f4f52a,#ffffff0b 23%,#ffffff18 73%,#d8f4f52c);
- box-shadow:
- inset 5px 0 8px #ffffff25,
- inset -4px 0 8px #b7dce51a,
- 0 0 0 1px #a6c9d344;
- z-index:4;pointer-events:none;
-}
-.tube:after{
- content:"";position:absolute;
- top:-5px;left:-4px;right:-4px;height:8px;
- border:2px solid #e2f5f1d9;
- border-radius:8px;
- background:linear-gradient(180deg,#e7ffff7a,#b4d5d766);
- box-shadow:0 2px 5px #0005;
- z-index:5;
+ content:"";position:absolute;top:0;left:-3px;right:-3px;
+ height:5px;border-radius:5px;
+ background:linear-gradient(90deg,#c9edff,#fff,#8cb7e5);
+ box-shadow:0 2px 5px #0004;
 }
 .tube.selected{
- transform:translateY(-12px);
- filter:drop-shadow(0 14px 8px #0008) drop-shadow(0 0 7px #e9bd72a0);
+ border-color:var(--yellow);
+ filter:drop-shadow(0 0 8px #ffd36e99);
+ transform:translateY(-9px);
 }
-.tube.selected:before{border-color:#f0c57d}
-.tube:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
-
-.tube-base{
- position:absolute;bottom:-3px;left:5px;right:5px;
- height:9px;border-radius:50%;
- background:linear-gradient(180deg,#d6f4f1aa,#86b2b9aa);
- border:1px solid #e6ffffa0;
- z-index:6;pointer-events:none;
-}
-.tube-shine{
- position:absolute;z-index:5;
- top:12px;bottom:12px;left:8px;width:4px;
- border-radius:10px;
- background:linear-gradient(180deg,#fff9,#fff2,transparent);
- pointer-events:none;
-}
-.tube-shine.second{
- left:auto;right:8px;width:2px;opacity:.45;
+.tube.complete{
+ border-color:var(--cyan);
+ filter:drop-shadow(0 0 7px #43e4d055);
 }
 .ball{
- flex:0 0 24%;
- width:88%;max-height:34px;
- min-height:20px;
+ flex:0 0 32px;width:32px;height:32px;border-radius:50%;
  position:relative;
- border-radius:50%;
- z-index:2;
- background:
- radial-gradient(ellipse at 31% 22%,#ffffffc9 0 5%,#ffffff52 13%,transparent 32%),
- radial-gradient(ellipse at 68% 78%,#0002,transparent 49%),
- var(--ball-color);
+ border:1px solid #ffffff55;
  box-shadow:
- inset 0 3px 5px #ffffff85,
- inset 0 -5px 7px #0002,
- 0 2px 4px #0005;
- animation:ballAppear .25s ease both;
+ inset -5px -7px 9px #0003,
+ inset 4px 4px 8px #ffffff75,
+ 0 3px 5px #0004;
+ animation:ballIn .2s ease;
 }
 .ball:after{
- content:"";position:absolute;
- top:15%;left:19%;width:25%;height:12%;
- border-radius:50%;background:#ffffff99;
- filter:blur(1px);transform:rotate(-25deg);
+ content:"";position:absolute;width:9px;height:5px;
+ border-radius:50%;background:#ffffffa0;
+ top:5px;left:6px;transform:rotate(-35deg);
 }
-@keyframes ballAppear{
- from{opacity:.5;transform:translateY(-9px) scale(.82)}
- to{opacity:1;transform:translateY(0) scale(1)}
+@keyframes ballIn{
+ from{transform:translateY(-12px) scale(.8);opacity:.4}
+ to{transform:translateY(0) scale(1);opacity:1}
 }
-.tube.empty .tube-base{opacity:.55}
-
-.stage-caption{
- position:absolute;bottom:12px;left:0;right:0;
- z-index:3;text-align:center;
- color:#d6b99b;font-size:10px;
- pointer-events:none;
-}
-.progress-wrap{
- height:5px;background:#1b110e;
- border-radius:20px;overflow:hidden;
- margin:11px 3px 0;
- border:1px solid #6b4c36;
-}
-.progress-fill{
- height:100%;width:0%;
- background:linear-gradient(90deg,#c28b50,#f4d18f);
- border-radius:20px;
- transition:width .3s ease;
-}
-
 .controls{
- display:grid;grid-template-columns:repeat(3,1fr);
- gap:8px;margin-top:13px;
+ display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:15px
 }
-.btn{
- min-height:45px;padding:9px 5px;
- border-radius:14px;border:1px solid #9b744e;
- background:linear-gradient(145deg,#e6c18d,#b98552);
- color:#352218;font-size:12px;font-weight:850;
- box-shadow:0 5px 12px #0004,inset 0 1px #fff7;
- transition:transform .12s,filter .12s;
+.control{
+ border:1px solid var(--line);background:#ffffff0d;
+ color:white;border-radius:13px;padding:11px 4px;
+ font-size:11px;display:flex;flex-direction:column;
+ gap:5px;align-items:center
 }
-.btn:active{transform:scale(.96);filter:brightness(1.1)}
-.btn.secondary{
- color:#f5e6d4;
- background:linear-gradient(145deg,#594234,#382a23);
- border-color:#806047;
- box-shadow:inset 0 1px #ffffff12,0 4px 10px #0003;
+.control b{font-size:19px}
+.control.primary{
+ background:linear-gradient(135deg,#40cfc1,#408fff);
+ color:#07182e;border:0;font-weight:bold
 }
-.btn.wide{grid-column:1/-1}
-.footer{
- text-align:center;color:#92765e;
- font-size:9px;letter-spacing:2px;
- margin-top:17px;
+.actionGrid{
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:9px;margin-top:14px
 }
-
-/* Dialogs */
-.overlay{
- position:fixed;inset:0;z-index:20;
+.action{
+ border:1px solid var(--line);background:#ffffff0c;
+ color:white;padding:13px;border-radius:14px;
+ font-size:12px;font-weight:bold
+}
+.action span{margin-left:7px}
+.bottomNote{text-align:center;color:var(--muted);font-size:10px;margin-top:14px}
+.modal{
+ position:fixed;inset:0;background:#050b18c9;
  display:none;align-items:center;justify-content:center;
- padding:17px;background:#100b09d9;
- backdrop-filter:blur(9px);
+ padding:17px;z-index:50;backdrop-filter:blur(8px)
 }
-.overlay.show{display:flex}
-.dialog{
- width:min(100%,390px);max-height:88vh;
- overflow:auto;text-align:center;
- padding:22px 18px;
- border-radius:24px;
- border:1px solid #a47a51;
- background:linear-gradient(145deg,#594233,#2c211d);
- box-shadow:0 25px 80px #000b,inset 0 1px #fff2;
+.modal.show{display:flex}
+.modalBox{
+ width:100%;max-width:420px;max-height:85vh;overflow:auto;
+ background:linear-gradient(150deg,#263e65,#172643);
+ border:1px solid #ffffff25;border-radius:23px;
+ padding:19px;box-shadow:0 20px 70px #0008;
 }
-.dialog h2{margin:0 0 9px;font-size:22px;color:#f9e8d2}
-.dialog p{font-size:13px;line-height:1.7;color:#d9c1a8}
-.dialog .btn{width:100%;margin-top:9px}
-.dialog .btn.secondary{margin-top:8px}
-.shop-grid{display:grid;gap:10px;margin-top:15px}
-.shop-item,.achievement,.leader-row{
- border:1px solid #76583f;
- background:linear-gradient(145deg,#49352b,#352720);
- border-radius:15px;padding:12px;text-align:start;
+.modalTitle{
+ display:flex;justify-content:space-between;align-items:center;
+ font-size:18px;font-weight:bold;margin-bottom:17px
 }
-.shop-item strong,.achievement strong{display:block;color:#f7dfbf}
-.shop-item p{margin:5px 0;font-size:11px}
-.daily-info{
- margin:15px 0;padding:18px;
- border:1px solid #8b6847;border-radius:17px;
- background:linear-gradient(145deg,#503b2e,#30231e);
+.close{
+ border:0;background:#ffffff13;color:white;
+ border-radius:10px;width:33px;height:33px;font-size:18px
 }
-.daily-info strong{
- display:block;font-size:33px;color:#f3c77e;margin:6px;
+.shopItem{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:13px;background:#ffffff0b;border:1px solid var(--line);
+ border-radius:14px;margin-bottom:9px;gap:10px
 }
-.achievement-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px 0}
-.achievement small{display:block;font-size:10px;color:#cbb39a;margin-top:5px}
-.leaderboard-list{display:grid;gap:8px;margin:12px 0;max-height:45vh;overflow:auto}
-.leader-row{
- display:grid;grid-template-columns:34px 1fr auto;
- gap:8px;align-items:center;
+.shopItem small{display:block;color:var(--muted);margin-top:5px;font-size:10px}
+.buy{
+ background:linear-gradient(135deg,#44dfce,#4b9fff);
+ border:0;color:#09213a;border-radius:10px;
+ padding:9px 12px;font-weight:bold;white-space:nowrap
 }
-.leader-rank{color:#efc879;font-weight:900}
-.leader-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.leader-meta{font-size:10px;color:#c8ad92}
+.menuButton{
+ width:100%;padding:13px;border-radius:13px;
+ border:1px solid var(--line);background:#ffffff0d;
+ color:white;margin-bottom:8px;text-align:right
+}
+.resultIcon{text-align:center;font-size:55px;margin:10px}
+.resultText{text-align:center;font-size:20px;font-weight:bold}
+.resultSub{text-align:center;color:var(--muted);font-size:12px;margin:10px}
+.primaryButton{
+ width:100%;padding:14px;border:0;border-radius:13px;
+ background:linear-gradient(110deg,var(--cyan),var(--blue));
+ color:#07172d;font-weight:900;font-size:14px;margin-top:13px
+}
 .toast{
- position:fixed;z-index:40;bottom:22px;left:50%;
- transform:translate(-50%,20px);
- opacity:0;pointer-events:none;
- background:#f1d2a7;color:#332219;
- padding:11px 17px;border-radius:30px;
- font-size:12px;font-weight:800;
- box-shadow:0 8px 25px #0008;
- transition:.25s;
- max-width:90%;text-align:center;
+ position:fixed;bottom:25px;left:50%;transform:translateX(-50%);
+ background:#263e65;border:1px solid #ffffff25;
+ padding:12px 18px;border-radius:13px;font-size:12px;
+ opacity:0;pointer-events:none;transition:.25s;z-index:100;
+ white-space:nowrap
 }
-.toast.show{opacity:1;transform:translate(-50%,0)}
-body.golden .tube:before{border-color:#ffe0a5c9}
-body.golden .ball{filter:saturate(1.12)}
-@media(max-width:390px){
- .app{padding:10px 9px 20px}
- .brand{font-size:21px}
- .game-stage{height:490px;min-height:490px}
- .play-area{inset:57px 6px 43px;gap:12px 2px}
- .tube{width:59px;height:160px}
- .ball{min-height:18px}
- .controls{gap:6px}
- .btn{font-size:11px}
-}
-@media(max-height:700px){
- .game-stage{height:430px;min-height:430px}
- .tube{height:145px;min-height:130px}
+.toast.show{opacity:1;bottom:40px}
+@media(max-width:360px){
+ .tube{width:43px;height:145px}
+ .ball{width:28px;height:28px;flex-basis:28px}
+ #board{gap:13px 9px}
 }
 </style>
 </head>
@@ -402,1142 +239,826 @@ body.golden .ball{filter:saturate(1.12)}
 <body>
 <div class="app">
 
-<header>
- <div class="brand">COLOR <span>ESCAPE</span><small>PREMIUM PUZZLE</small></div>
- <div class="top-tools">
-  <select id="language" class="lang-select">
-   <option value="fa">🇮🇷 فارسی</option>
-   <option value="en">🇬🇧 English</option>
-   <option value="ar">🇸🇦 العربية</option>
-   <option value="es">🇪🇸 Español</option>
-   <option value="fr">🇫🇷 Français</option>
-   <option value="de">🇩🇪 Deutsch</option>
-   <option value="ru">🇷🇺 Русский</option>
-  </select>
+<header class="top">
+ <div class="logo">
+  <div class="logoIcon">🎨</div>
+  <div>
+   <h1>COLOR ESCAPE</h1>
+   <small>COLOR SORT PUZZLE</small>
+  </div>
+ </div>
+ <div class="topBtns">
+  <button class="iconBtn" onclick="openModal('settings')">⚙️</button>
+  <button class="iconBtn" onclick="openModal('leaderboard')">🏆</button>
  </div>
 </header>
 
 <section class="stats">
- <div class="stat"><small data-i="level">مرحله</small><strong id="level">1 / 500</strong></div>
- <div class="stat"><small data-i="moves">حرکت</small><strong id="moves">0</strong></div>
- <div class="stat"><small data-i="best">بهترین</small><strong id="best">—</strong></div>
- <div class="stat"><small data-i="coins">🪙 سکه</small><strong id="coins">0</strong></div>
+ <div class="stat"><span>🪙 سکه‌ها</span><strong id="coins">100</strong></div>
+ <div class="stat"><span>⭐ مرحله</span><strong id="levelStat">1 / 500</strong></div>
+ <div class="stat"><span>👣 حرکات</span><strong id="moves">0</strong></div>
 </section>
 
-<div class="message" id="message">رنگ‌ها را مرتب کن و همه لوله‌ها را کامل کن!</div>
+<section class="progressBox">
+ <div class="progressHead">
+  <span>پیشرفت بازی</span>
+  <span id="progressText">0%</span>
+ </div>
+ <div class="progressTrack"><div class="progressFill" id="progressFill"></div></div>
+</section>
 
-<main class="game-stage">
- <div class="stage-top">
-  <span class="stage-label">✦ COLOR SORT</span>
-  <span class="stage-level" id="stageLevel">LEVEL 01</span>
+<main class="gamePanel">
+ <div class="gameHead">
+  <div>
+   <h2>مرتب‌سازی رنگ‌ها</h2>
+   <small>توپ‌های هم‌رنگ را کنار هم قرار بده</small>
+  </div>
+  <div class="levelTag" id="levelTag">LEVEL 01</div>
  </div>
 
- <div class="play-area" id="playArea"></div>
+ <div id="board"></div>
 
- <div class="stage-caption" data-i="tap">برای انتقال توپ‌ها روی بطری‌ها بزن</div>
+ <div class="controls">
+  <button class="control" onclick="undo()"><b>↶</b>بازگشت</button>
+  <button class="control" onclick="restart()"><b>⟳</b>شروع مجدد</button>
+  <button class="control primary" onclick="hint()"><b>💡</b>راهنما</button>
+  <button class="control" onclick="skipLevel()"><b>⏭</b>رد مرحله</button>
+ </div>
 </main>
 
-<div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+<div class="actionGrid">
+ <button class="action" onclick="openModal('shop')"><span>🛍️</span>فروشگاه</button>
+ <button class="action" onclick="openModal('daily')"><span>🎁</span>جایزه روزانه</button>
+ <button class="action" onclick="openModal('achievements')"><span>🏅</span>دستاوردها</button>
+ <button class="action" onclick="openModal('leaderboard')"><span>🌍</span>جدول جهانی</button>
+</div>
 
-<section class="controls">
- <button class="btn secondary" id="undo" data-i="undo">↶ برگشت</button>
- <button class="btn secondary" id="restart" data-i="restart">⟲ شروع مجدد</button>
- <button class="btn" id="next" disabled data-i="next">مرحله بعد ←</button>
+<div class="bottomNote">COLOR ESCAPE • 500 LEVELS • HAVE FUN</div>
+</div>
 
- <button class="btn secondary" id="skip" data-i="skip">⏭ رد کردن · ۳۰ 🪙</button>
- <button class="btn secondary" id="hint" data-i="hintButton">💡 راهنما · ۱۵ 🪙</button>
- <button class="btn secondary" id="openShop" data-i="shop">🛍️ فروشگاه</button>
-
- <button class="btn secondary" id="dailyOpen" data-i="daily">🎁 جایزه روزانه</button>
- <button class="btn secondary" id="openAchievements" data-i="achievements">🏆 دستاوردها</button>
- <button class="btn secondary" id="openLeaderboard" data-i="leaderboard">🥇 رتبه‌بندی</button>
-</section>
-
-<button class="btn secondary wide" id="soundToggle" style="margin-top:9px">🔊 صدا روشن</button>
-<div class="footer">COLOR ESCAPE · SORT YOUR WORLD</div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+ <div class="modalBox">
+  <div class="modalTitle">
+   <span id="modalTitle">منو</span>
+   <button class="close" onclick="closeModal()">×</button>
+  </div>
+  <div id="modalContent"></div>
+ </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Win -->
-<div class="overlay" id="win">
- <div class="dialog">
-  <h2 data-i="won">مرحله کامل شد! 🎉</h2>
-  <p id="winText"></p>
-  <button class="btn" id="continue" data-i="continue">ادامه</button>
- </div>
-</div>
-
-<!-- Shop -->
-<div class="overlay" id="shopModal">
- <div class="dialog">
-  <h2 data-i="shopTitle">🛍️ فروشگاه بازی</h2>
-  <p data-i="shopDesc">با سکه‌هایت امکانات بازی را بخر.</p>
-  <div class="shop-grid">
-   <div class="shop-item">
-    <strong data-i="hintTitle">💡 راهنمای حرکت</strong>
-    <p data-i="hintDesc">یک حرکت قانونی پیشنهاد می‌دهد.</p>
-    <button class="btn" id="buyHint">۱۵ 🪙</button>
-   </div>
-   <div class="shop-item">
-    <strong data-i="skinTitle">✨ پوسته طلایی</strong>
-    <p data-i="skinDesc">ظاهر طلایی بازی را فعال کن.</p>
-    <button class="btn" id="buySkin">۴۰ 🪙</button>
-   </div>
-  </div>
-  <p id="shopMessage"></p>
-  <button class="btn secondary" id="closeShop" data-i="close">بستن</button>
- </div>
-</div>
-
-<!-- Daily -->
-<div class="overlay" id="dailyModal">
- <div class="dialog">
-  <h2 data-i="dailyTitle">🎁 جایزه روزانه</h2>
-  <p data-i="dailyDesc">هر روز وارد بازی شو و جایزه بگیر.</p>
-  <div class="daily-info">
-   <span data-i="todayReward">جایزه امروز</span>
-   <strong id="dailyReward">۱۰ 🪙</strong>
-   <span id="dailyStreak"></span>
-  </div>
-  <p id="dailyMessage"></p>
-  <button class="btn" id="claimDaily" data-i="claim">دریافت جایزه</button>
-  <button class="btn secondary" id="closeDaily" data-i="close">بستن</button>
- </div>
-</div>
-
-<!-- Leaderboard -->
-<div class="overlay" id="leaderboardModal">
- <div class="dialog">
-  <h2 data-i="leaderboardTitle">🥇 جدول رتبه‌بندی</h2>
-  <div id="leaderboardList" class="leaderboard-list"></div>
-  <p id="leaderboardMessage"></p>
-  <button class="btn" id="refreshLeaderboard" data-i="refresh">بروزرسانی</button>
-  <button class="btn secondary" id="closeLeaderboard" data-i="close">بستن</button>
- </div>
-</div>
-
-<!-- Achievements -->
-<div class="overlay" id="achievementsModal">
- <div class="dialog">
-  <h2 data-i="achievementsTitle">🏆 دستاوردها</h2>
-  <p id="achievementSummary"></p>
-  <div class="achievement-list" id="achievementList"></div>
-  <button class="btn secondary" id="closeAchievements" data-i="close">بستن</button>
- </div>
-</div>
-
 <script>
-(()=>{
 "use strict";
 
-/* ---------------- CONFIG ---------------- */
+/* =========================
+   CONFIGURATION
+========================= */
 
-const TOTAL=500;
-const CAP=4;
+const MAX_LEVEL=500;
+const CAPACITY=4;
+const SAVE_KEY="colorEscapeUltimateV5";
 
 const COLORS=[
- "#ee9caa","#8fd1ad","#b7a0e4","#f1ce79",
- "#83c8df","#e8a5d1","#b7d58b","#e9a77e",
- "#93a9e8","#c7a18a"
+ "#ff6688","#45c9ed","#ffd45f","#a68bff",
+ "#53dfa5","#ff9c50","#ed75d5","#8bdcfa",
+ "#b5e56b","#ff8068"
 ];
 
-const $=id=>document.getElementById(id);
-
 const tg=window.Telegram?.WebApp;
-if(tg){
+try{
+ if(tg){tg.ready();tg.expand();}
+}catch(e){}
+
+let userName="Player";
+try{
+ userName=tg?.initDataUnsafe?.user?.first_name || "Player";
+}catch(e){}
+
+const languages={
+ fa:{name:"فارسی",dir:"rtl"},
+ en:{name:"English",dir:"ltr"},
+ ar:{name:"العربية",dir:"rtl"},
+ tr:{name:"Türkçe",dir:"ltr"},
+ es:{name:"Español",dir:"ltr"},
+ ru:{name:"Русский",dir:"ltr"},
+ fr:{name:"Français",dir:"ltr"}
+};
+
+let language="fa";
+let level=1,coins=100,moves=0;
+let board=[],initialBoard=[],history=[];
+let selected=-1,gameWon=false;
+let soundEnabled=true,goldenSkin=false;
+let hintOwned=false;
+let dailyStreak=0,lastDaily="";
+let achievements={};
+let totalMoves=0;
+let completed=0;
+let bestMoves={};
+let unlocked=1;
+let toastTimer=null;
+
+/* =========================
+   STORAGE
+========================= */
+
+function loadSave(){
  try{
-  tg.ready();tg.expand();
-  tg.setHeaderColor("#352720");
-  tg.setBackgroundColor("#211916");
+  const d=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
+  level=Math.min(MAX_LEVEL,Math.max(1,d.level||1));
+  coins=Math.max(0,d.coins??100);
+  unlocked=Math.max(1,d.unlocked||level);
+  completed=d.completed||0;
+  dailyStreak=d.dailyStreak||0;
+  lastDaily=d.lastDaily||"";
+  achievements=d.achievements||{};
+  totalMoves=d.totalMoves||0;
+  bestMoves=d.bestMoves||{};
+  goldenSkin=!!d.goldenSkin;
+  language=d.language||"fa";
+  soundEnabled=d.soundEnabled!==false;
+  if(!languages[language])language="fa";
  }catch(e){}
 }
 
-/* ---------------- TRANSLATIONS ---------------- */
-
-const T={
- fa:{
-  level:"مرحله",moves:"حرکت",best:"بهترین",coins:"🪙 سکه",
-  tap:"برای انتقال توپ‌ها روی بطری‌ها بزن",
-  undo:"↶ برگشت",restart:"⟲ شروع مجدد",next:"مرحله بعد ←",
-  skip:"⏭ رد کردن · ۳۰ 🪙",hintButton:"💡 راهنما · ۱۵ 🪙",
-  shop:"🛍️ فروشگاه",daily:"🎁 جایزه روزانه",
-  achievements:"🏆 دستاوردها",leaderboard:"🥇 رتبه‌بندی",
-  won:"مرحله کامل شد! 🎉",continue:"ادامه",
-  shopTitle:"🛍️ فروشگاه بازی",shopDesc:"با سکه‌هایت امکانات بازی را بخر.",
-  hintTitle:"💡 راهنمای حرکت",hintDesc:"یک حرکت قانونی پیشنهاد می‌دهد.",
-  skinTitle:"✨ پوسته طلایی",skinDesc:"ظاهر طلایی بازی را فعال کن.",
-  close:"بستن",dailyTitle:"🎁 جایزه روزانه",
-  dailyDesc:"هر روز وارد بازی شو و جایزه بگیر.",
-  todayReward:"جایزه امروز",claim:"دریافت جایزه",
-  leaderboardTitle:"🥇 جدول رتبه‌بندی",refresh:"بروزرسانی",
-  achievementsTitle:"🏆 دستاوردها",
-  start:"رنگ‌ها را مرتب کن و همه بطری‌ها را کامل کن!",
-  selectSource:"ابتدا یک بطری دارای توپ انتخاب کن.",
-  selectTarget:"حالا بطری مقصد را انتخاب کن.",
-  invalid:"فقط رنگ مشابه یا بطری خالی را انتخاب کن.",
-  solved:"عالی! همه رنگ‌ها مرتب شدند.",
-  noHint:"حرکت پیشنهادی پیدا نشد.",
-  noCoins:"سکه کافی نداری!",
-  dailyDone:"جایزه امروز را دریافت کرده‌ای!",
-  claimSuccess:"جایزه دریافت شد!",
-  skinBought:"پوسته طلایی فعال شد!",
-  noPlayers:"هنوز بازیکنی ثبت نشده است.",
-  serverError:"ارتباط با سرور برقرار نشد.",
-  completed:"مرحله تکمیل‌شده",streak:"روز زنجیره ورود",
-  locked:"قفل است",unlocked:"باز شده ✓",
-  achievementSummary:"دستاورد باز شده",
-  first:"اولین پیروزی",five:"پنج مرحله",ten:"قهرمان کوچک",
-  twentyfive:"استاد رنگ‌ها",fifty:"قهرمان رنگ‌ها",
-  hundred:"قهرمان بزرگ",twofifty:"افسانه رنگ‌ها",
-  fivehundred:"افسانه Color Escape",
-  allDone:"تمام ۵۰۰ مرحله را تمام کردی! 👑",
-  hintFrom:"از بطری",hintTo:"به بطری",
-  dailyDay:"روز",skinActive:"پوسته طلایی فعال است ✓",
-  soundOn:"🔊 صدا روشن",soundOff:"🔇 صدا خاموش",
-  loading:"در حال دریافت..."
- },
- en:{
-  level:"Level",moves:"Moves",best:"Best",coins:"🪙 Coins",
-  tap:"Tap a bottle to move the balls",
-  undo:"↶ Undo",restart:"⟲ Restart",next:"Next Level →",
-  skip:"⏭ Skip · 30 🪙",hintButton:"💡 Hint · 15 🪙",
-  shop:"🛍️ Shop",daily:"🎁 Daily Reward",
-  achievements:"🏆 Achievements",leaderboard:"🥇 Leaderboard",
-  won:"Level Complete! 🎉",continue:"Continue",
-  shopTitle:"🛍️ Game Shop",shopDesc:"Buy features with coins.",
-  hintTitle:"💡 Move Hint",hintDesc:"Suggests a legal move.",
-  skinTitle:"✨ Golden Skin",skinDesc:"Unlock the golden appearance.",
-  close:"Close",dailyTitle:"🎁 Daily Reward",
-  dailyDesc:"Come back every day for free coins.",
-  todayReward:"Today's reward",claim:"Claim Reward",
-  leaderboardTitle:"🥇 Leaderboard",refresh:"Refresh",
-  achievementsTitle:"🏆 Achievements",
-  start:"Sort the colors and complete every bottle!",
-  selectSource:"Select a bottle containing balls.",
-  selectTarget:"Now select the target bottle.",
-  invalid:"Choose a matching color or an empty bottle.",
-  solved:"Amazing! All colors are sorted.",
-  noHint:"No suggested move found.",
-  noCoins:"Not enough coins!",
-  dailyDone:"Today's reward already claimed.",
-  claimSuccess:"Reward claimed!",
-  skinBought:"Golden skin activated!",
-  noPlayers:"No players yet.",
-  serverError:"Could not connect to server.",
-  completed:"Completed levels",streak:"Day streak",
-  locked:"Locked",unlocked:"Unlocked ✓",
-  achievementSummary:"Achievements unlocked",
-  first:"First Victory",five:"Five Levels",ten:"Little Champion",
-  twentyfive:"Color Master",fifty:"Color Champion",
-  hundred:"Big Champion",twofifty:"Color Legend",
-  fivehundred:"Color Escape Legend",
-  allDone:"You completed all 500 levels! 👑",
-  hintFrom:"From bottle",hintTo:"to bottle",
-  dailyDay:"Day",skinActive:"Golden skin active ✓",
-  soundOn:"🔊 Sound On",soundOff:"🔇 Sound Off",
-  loading:"Loading..."
- },
- ar:{
-  level:"المرحلة",moves:"الحركات",best:"الأفضل",coins:"🪙 العملات",
-  tap:"اضغط على الزجاجات لنقل الكرات",
-  undo:"↶ تراجع",restart:"⟲ إعادة",next:"المرحلة التالية",
-  skip:"⏭ تخطي · 30 🪙",hintButton:"💡 تلميح · 15 🪙",
-  shop:"🛍️ المتجر",daily:"🎁 المكافأة اليومية",
-  achievements:"🏆 الإنجازات",leaderboard:"🥇 الترتيب",
-  won:"اكتملت المرحلة! 🎉",continue:"متابعة",
-  shopTitle:"🛍️ متجر اللعبة",shopDesc:"اشترِ الميزات باستخدام العملات.",
-  hintTitle:"💡 تلميح الحركة",hintDesc:"يقترح حركة قانونية.",
-  skinTitle:"✨ المظهر الذهبي",skinDesc:"افتح المظهر الذهبي.",
-  close:"إغلاق",dailyTitle:"🎁 المكافأة اليومية",
-  dailyDesc:"عد كل يوم للحصول على العملات.",
-  todayReward:"مكافأة اليوم",claim:"استلام المكافأة",
-  leaderboardTitle:"🥇 قائمة الترتيب",refresh:"تحديث",
-  achievementsTitle:"🏆 الإنجازات",
-  start:"رتب الألوان وأكمل جميع الزجاجات!",
-  selectSource:"اختر زجاجة تحتوي على كرات.",
-  selectTarget:"اختر زجاجة الوجهة.",
-  invalid:"اختر لوناً مطابقاً أو زجاجة فارغة.",
-  solved:"رائع! تم ترتيب جميع الألوان.",
-  noHint:"لم يتم العثور على حركة.",
-  noCoins:"العملات غير كافية!",
-  dailyDone:"لقد استلمت مكافأة اليوم.",
-  claimSuccess:"تم استلام المكافأة!",
-  skinBought:"تم تفعيل المظهر الذهبي!",
-  noPlayers:"لا يوجد لاعبون بعد.",
-  serverError:"تعذر الاتصال بالخادم.",
-  completed:"المراحل المكتملة",streak:"أيام متتالية",
-  locked:"مغلق",unlocked:"مفتوح ✓",
-  achievementSummary:"الإنجازات المفتوحة",
-  first:"الفوز الأول",five:"خمسة مستويات",ten:"بطل صغير",
-  twentyfive:"خبير الألوان",fifty:"بطل الألوان",
-  hundred:"البطل الكبير",twofifty:"أسطورة الألوان",
-  fivehundred:"أسطورة Color Escape",
-  allDone:"لقد أكملت جميع المراحل الـ500! 👑",
-  hintFrom:"من الزجاجة",hintTo:"إلى الزجاجة",
-  dailyDay:"اليوم",skinActive:"المظهر الذهبي مفعل ✓",
-  soundOn:"🔊 الصوت يعمل",soundOff:"🔇 الصوت مغلق",
-  loading:"جار التحميل..."
- },
- es:{
-  level:"Nivel",moves:"Movimientos",best:"Mejor",coins:"🪙 Monedas",
-  tap:"Toca una botella para mover las bolas",
-  undo:"↶ Deshacer",restart:"⟲ Reiniciar",next:"Siguiente nivel →",
-  skip:"⏭ Saltar · 30 🪙",hintButton:"💡 Pista · 15 🪙",
-  shop:"🛍️ Tienda",daily:"🎁 Premio diario",
-  achievements:"🏆 Logros",leaderboard:"🥇 Clasificación",
-  won:"¡Nivel completado! 🎉",continue:"Continuar",
-  shopTitle:"🛍️ Tienda",shopDesc:"Compra funciones con monedas.",
-  hintTitle:"💡 Pista",hintDesc:"Sugiere un movimiento válido.",
-  skinTitle:"✨ Tema dorado",skinDesc:"Activa el aspecto dorado.",
-  close:"Cerrar",dailyTitle:"🎁 Premio diario",
-  dailyDesc:"Vuelve cada día para ganar monedas.",
-  todayReward:"Premio de hoy",claim:"Reclamar",
-  leaderboardTitle:"🥇 Clasificación",refresh:"Actualizar",
-  achievementsTitle:"🏆 Logros",
-  start:"¡Ordena los colores!",
-  selectSource:"Selecciona una botella con bolas.",
-  selectTarget:"Selecciona la botella de destino.",
-  invalid:"Elige un color igual o una botella vacía.",
-  solved:"¡Genial! Todos los colores están ordenados.",
-  noHint:"No se encontró ningún movimiento.",
-  noCoins:"¡No tienes suficientes monedas!",
-  dailyDone:"Ya has recibido el premio de hoy.",
-  claimSuccess:"¡Premio recibido!",skinBought:"¡Tema dorado activado!",
-  noPlayers:"Todavía no hay jugadores.",
-  serverError:"No se pudo conectar al servidor.",
-  completed:"Niveles completados",streak:"Días consecutivos",
-  locked:"Bloqueado",unlocked:"Desbloqueado ✓",
-  achievementSummary:"Logros desbloqueados",
-  first:"Primera victoria",five:"Cinco niveles",ten:"Pequeño campeón",
-  twentyfive:"Maestro del color",fifty:"Campeón del color",
-  hundred:"Gran campeón",twofifty:"Leyenda del color",
-  fivehundred:"Leyenda Color Escape",
-  allDone:"¡Has completado los 500 niveles! 👑",
-  hintFrom:"De botella",hintTo:"a botella",
-  dailyDay:"Día",skinActive:"Tema dorado activo ✓",
-  soundOn:"🔊 Sonido activado",soundOff:"🔇 Sonido desactivado",
-  loading:"Cargando..."
- },
- fr:{
-  level:"Niveau",moves:"Coups",best:"Record",coins:"🪙 Pièces",
-  tap:"Touchez une bouteille pour déplacer les boules",
-  undo:"↶ Annuler",restart:"⟲ Recommencer",next:"Niveau suivant →",
-  skip:"⏭ Passer · 30 🪙",hintButton:"💡 Indice · 15 🪙",
-  shop:"🛍️ Boutique",daily:"🎁 Récompense quotidienne",
-  achievements:"🏆 Succès",leaderboard:"🥇 Classement",
-  won:"Niveau terminé ! 🎉",continue:"Continuer",
-  shopTitle:"🛍️ Boutique",shopDesc:"Achetez avec vos pièces.",
-  hintTitle:"💡 Indice",hintDesc:"Propose un mouvement valide.",
-  skinTitle:"✨ Thème doré",skinDesc:"Activez le thème doré.",
-  close:"Fermer",dailyTitle:"🎁 Récompense quotidienne",
-  dailyDesc:"Revenez chaque jour pour gagner des pièces.",
-  todayReward:"Récompense du jour",claim:"Récupérer",
-  leaderboardTitle:"🥇 Classement",refresh:"Actualiser",
-  achievementsTitle:"🏆 Succès",
-  start:"Triez les couleurs !",
-  selectSource:"Choisissez une bouteille avec des boules.",
-  selectTarget:"Choisissez la bouteille cible.",
-  invalid:"Choisissez une couleur identique ou vide.",
-  solved:"Bravo ! Toutes les couleurs sont triées.",
-  noHint:"Aucun mouvement trouvé.",noCoins:"Pas assez de pièces !",
-  dailyDone:"Récompense du jour déjà récupérée.",
-  claimSuccess:"Récompense récupérée !",skinBought:"Thème doré activé !",
-  noPlayers:"Aucun joueur pour le moment.",
-  serverError:"Connexion au serveur impossible.",
-  completed:"Niveaux terminés",streak:"Jours consécutifs",
-  locked:"Verrouillé",unlocked:"Débloqué ✓",
-  achievementSummary:"Succès débloqués",
-  first:"Première victoire",five:"Cinq niveaux",ten:"Petit champion",
-  twentyfive:"Maître des couleurs",fifty:"Champion des couleurs",
-  hundred:"Grand champion",twofifty:"Légende des couleurs",
-  fivehundred:"Légende Color Escape",
-  allDone:"Vous avez terminé les 500 niveaux ! 👑",
-  hintFrom:"De la bouteille",hintTo:"à la bouteille",
-  dailyDay:"Jour",skinActive:"Thème doré activé ✓",
-  soundOn:"🔊 Son activé",soundOff:"🔇 Son désactivé",
-  loading:"Chargement..."
- },
- de:{
-  level:"Level",moves:"Züge",best:"Bestwert",coins:"🪙 Münzen",
-  tap:"Tippe auf eine Flasche, um Kugeln zu bewegen",
-  undo:"↶ Zurück",restart:"⟲ Neustart",next:"Nächstes Level →",
-  skip:"⏭ Überspringen · 30 🪙",hintButton:"💡 Tipp · 15 🪙",
-  shop:"🛍️ Shop",daily:"🎁 Tagesbelohnung",
-  achievements:"🏆 Erfolge",leaderboard:"🥇 Rangliste",
-  won:"Level geschafft! 🎉",continue:"Weiter",
-  shopTitle:"🛍️ Shop",shopDesc:"Kaufe Funktionen mit Münzen.",
-  hintTitle:"💡 Zug-Hinweis",hintDesc:"Schlägt einen gültigen Zug vor.",
-  skinTitle:"✨ Gold-Design",skinDesc:"Aktiviere das goldene Design.",
-  close:"Schließen",dailyTitle:"🎁 Tagesbelohnung",
-  dailyDesc:"Komme täglich zurück und erhalte Münzen.",
-  todayReward:"Heutige Belohnung",claim:"Abholen",
-  leaderboardTitle:"🥇 Rangliste",refresh:"Aktualisieren",
-  achievementsTitle:"🏆 Erfolge",
-  start:"Sortiere die Farben!",
-  selectSource:"Wähle eine Flasche mit Kugeln.",
-  selectTarget:"Wähle die Zielflasche.",
-  invalid:"Wähle eine gleiche Farbe oder eine leere Flasche.",
-  solved:"Super! Alle Farben sind sortiert.",
-  noHint:"Kein Zug gefunden.",noCoins:"Nicht genug Münzen!",
-  dailyDone:"Tagesbelohnung bereits abgeholt.",
-  claimSuccess:"Belohnung abgeholt!",skinBought:"Gold-Design aktiviert!",
-  noPlayers:"Noch keine Spieler.",
-  serverError:"Serververbindung fehlgeschlagen.",
-  completed:"Abgeschlossene Level",streak:"Tage in Folge",
-  locked:"Gesperrt",unlocked:"Freigeschaltet ✓",
-  achievementSummary:"Freigeschaltete Erfolge",
-  first:"Erster Sieg",five:"Fünf Level",ten:"Kleiner Champion",
-  twentyfive:"Farbenmeister",fifty:"Farben-Champion",
-  hundred:"Großer Champion",twofifty:"Farbenlegende",
-  fivehundred:"Color Escape Legende",
-  allDone:"Du hast alle 500 Level geschafft! 👑",
-  hintFrom:"Von Flasche",hintTo:"zu Flasche",
-  dailyDay:"Tag",skinActive:"Gold-Design aktiv ✓",
-  soundOn:"🔊 Ton an",soundOff:"🔇 Ton aus",
-  loading:"Wird geladen..."
- },
- ru:{
-  level:"Уровень",moves:"Ходы",best:"Рекорд",coins:"🪙 Монеты",
-  tap:"Нажмите на бутылку, чтобы переместить шарики",
-  undo:"↶ Отмена",restart:"⟲ Заново",next:"Следующий уровень →",
-  skip:"⏭ Пропустить · 30 🪙",hintButton:"💡 Подсказка · 15 🪙",
-  shop:"🛍️ Магазин",daily:"🎁 Ежедневная награда",
-  achievements:"🏆 Достижения",leaderboard:"🥇 Рейтинг",
-  won:"Уровень пройден! 🎉",continue:"Продолжить",
-  shopTitle:"🛍️ Магазин",shopDesc:"Покупайте возможности за монеты.",
-  hintTitle:"💡 Подсказка",hintDesc:"Предлагает допустимый ход.",
-  skinTitle:"✨ Золотая тема",skinDesc:"Включите золотое оформление.",
-  close:"Закрыть",dailyTitle:"🎁 Ежедневная награда",
-  dailyDesc:"Заходите каждый день и получайте монеты.",
-  todayReward:"Награда сегодня",claim:"Получить",
-  leaderboardTitle:"🥇 Таблица лидеров",refresh:"Обновить",
-  achievementsTitle:"🏆 Достижения",
-  start:"Сортируйте цвета!",
-  selectSource:"Выберите бутылку с шариками.",
-  selectTarget:"Выберите целевую бутылку.",
-  invalid:"Выберите такой же цвет или пустую бутылку.",
-  solved:"Отлично! Все цвета отсортированы.",
-  noHint:"Подходящий ход не найден.",
-  noCoins:"Недостаточно монет!",
-  dailyDone:"Награда за сегодня уже получена.",
-  claimSuccess:"Награда получена!",skinBought:"Золотая тема активирована!",
-  noPlayers:"Пока нет игроков.",
-  serverError:"Нет соединения с сервером.",
-  completed:"Пройденные уровни",streak:"Дней подряд",
-  locked:"Закрыто",unlocked:"Открыто ✓",
-  achievementSummary:"Открытые достижения",
-  first:"Первая победа",five:"Пять уровней",ten:"Маленький чемпион",
-  twentyfive:"Мастер цветов",fifty:"Чемпион цветов",
-  hundred:"Большой чемпион",twofifty:"Легенда цветов",
-  fivehundred:"Легенда Color Escape",
-  allDone:"Вы прошли все 500 уровней! 👑",
-  hintFrom:"Из бутылки",hintTo:"в бутылку",
-  dailyDay:"День",skinActive:"Золотая тема включена ✓",
-  soundOn:"🔊 Звук включён",soundOff:"🔇 Звук выключен",
-  loading:"Загрузка..."
- }
-};
-
-let lang=localStorage.getItem("ce_language")||"fa";
-if(!T[lang])lang="fa";
-const tr=k=>T[lang][k]||T.fa[k]||k;
-
-/* ---------------- GAME STATE ---------------- */
-
-let level=1;
-let tubes=[];
-let selected=-1;
-let moves=0;
-let history=[];
-let best={};
-let coins=Math.max(0,Number(localStorage.getItem("ce_coins_v1"))||0);
-let claimed=[];
-let unlockedAchievements=[];
-let dailyData={lastClaim:"",streak:0};
-let goldenSkin=localStorage.getItem("ce_golden_skin_v1")==="1";
-let muted=false;
-let audio=null;
-let leaderboardSentLevel=0;
-let toastTimer=null;
-
-try{
- claimed=JSON.parse(localStorage.getItem("ce_rewards_v1")||"[]");
- if(!Array.isArray(claimed))claimed=[];
-}catch(e){claimed=[]}
-
-try{
- unlockedAchievements=JSON.parse(localStorage.getItem("ce_achievements_v1")||"[]");
- if(!Array.isArray(unlockedAchievements))unlockedAchievements=[];
-}catch(e){unlockedAchievements=[]}
-
-try{
- dailyData=JSON.parse(localStorage.getItem("ce_daily_reward_v1")||'{"lastClaim":"","streak":0}');
-}catch(e){dailyData={lastClaim:"",streak:0}}
-
-try{
- best=JSON.parse(localStorage.getItem("ce_best")||"{}")||{};
-}catch(e){best={}}
-
-if(goldenSkin)document.body.classList.add("golden");
-
-/* ---------------- STORAGE ---------------- */
-
-function saveCoins(){
- localStorage.setItem("ce_coins_v1",String(coins));
-}
-function saveProgress(){
+function save(){
  try{
-  localStorage.setItem("ce_progress_v1",JSON.stringify({
-   level,tubes,moves
+  localStorage.setItem(SAVE_KEY,JSON.stringify({
+   level,coins,unlocked,completed,dailyStreak,lastDaily,
+   achievements,totalMoves,bestMoves,goldenSkin,
+   language,soundEnabled
   }));
  }catch(e){}
 }
-function toast(message){
- const el=$("toast");
+
+function updateStats(){
+ document.getElementById("coins").textContent=coins;
+ document.getElementById("levelStat").textContent=level+" / "+MAX_LEVEL;
+ document.getElementById("levelTag").textContent="LEVEL "+String(level).padStart(2,"0");
+ document.getElementById("moves").textContent=moves;
+ let p=Math.floor(completed/MAX_LEVEL*100);
+ document.getElementById("progressText").textContent=p+"%";
+ document.getElementById("progressFill").style.width=p+"%";
+}
+
+/* =========================
+   LEVEL GENERATION
+========================= */
+
+function seededRandom(seed){
+ let x=seed|0;
+ return function(){
+  x+=0x6D2B79F5;
+  let t=x;
+  t=Math.imul(t^t>>>15,t|1);
+  t^=t+Math.imul(t^t>>>7,t|61);
+  return ((t^t>>>14)>>>0)/4294967296;
+ };
+}
+
+function shuffle(a,rng){
+ for(let i=a.length-1;i>0;i--){
+  let j=Math.floor(rng()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
+}
+
+function generateLevel(n){
+ /*
+   تعداد رنگ و شیشه‌ها به تدریج افزایش می‌یابد.
+   الگوی ثابت هر مرحله باعث می‌شود Restart همان
+   چیدمان قبلی را برگرداند.
+ */
+ const colorCount=Math.min(6,3+Math.floor((n-1)/80));
+ const rng=seededRandom(n*9173+321);
+
+ let colors=COLORS.slice(0,colorCount);
+ let balls=[];
+
+ for(let c=0;c<colorCount;c++){
+  for(let j=0;j<CAPACITY;j++)balls.push(c);
+ }
+
+ shuffle(balls,rng);
+
+ let tubes=[];
+ let tubeCount=colorCount+2;
+
+ for(let i=0;i<colorCount;i++){
+  tubes.push(balls.slice(i*CAPACITY,(i+1)*CAPACITY));
+ }
+ for(let i=colorCount;i<tubeCount;i++)tubes.push([]);
+
+ /*
+   اگر اتفاقاً یک لوله کامل باشد، توپ‌های آن
+   جابه‌جا می‌شوند تا مرحله از حالت حل‌شده خارج شود.
+ */
+ for(let i=0;i<tubes.length;i++){
+  if(tubes[i].length===4 && tubes[i].every(v=>v===tubes[i][0])){
+   let j=(i+1)%colorCount;
+   let temp=tubes[i][0];
+   let k=tubes[j].findIndex(v=>v!==temp);
+   if(k>=0){
+    [tubes[i][0],tubes[j][k]]=[tubes[j][k],tubes[i][0]];
+   }
+  }
+ }
+
+ return tubes;
+}
+
+function cloneBoard(b){return b.map(t=>t.slice())}
+
+function newLevel(){
+ board=generateLevel(level);
+ initialBoard=cloneBoard(board);
+ moves=0;history=[];selected=-1;gameWon=false;
+ render();
+ updateStats();
+ save();
+}
+
+function restart(){
+ if(gameWon)return;
+ board=cloneBoard(initialBoard);
+ history=[];moves=0;selected=-1;
+ render();updateStats();
+ showToast("مرحله از نو شروع شد");
+}
+
+/* =========================
+   GAME RENDERING
+========================= */
+
+function render(){
+ const root=document.getElementById("board");
+ root.innerHTML="";
+
+ const completeTubes=board.map((t,i)=>isTubeComplete(t)?i:-1);
+
+ board.forEach((tube,index)=>{
+  const el=document.createElement("div");
+  el.className="tube";
+  el.dataset.index=index;
+
+  if(selected===index)el.classList.add("selected");
+  if(completeTubes.includes(index))el.classList.add("complete");
+
+  tube.forEach(color=>{
+   const ball=document.createElement("div");
+   ball.className="ball";
+   ball.style.background=goldenSkin
+    ? "linear-gradient(135deg,#fff3a3,#e5a92d,#a96a13)"
+    : `linear-gradient(135deg,${lighten(COLORS[color])},${COLORS[color]} 55%,${darken(COLORS[color])})`;
+   el.appendChild(ball);
+  });
+
+  el.addEventListener("click",()=>selectTube(index));
+  root.appendChild(el);
+ });
+}
+
+function lighten(hex){
+ let n=parseInt(hex.slice(1),16);
+ let r=Math.min(255,((n>>16)&255)+55);
+ let g=Math.min(255,((n>>8)&255)+55);
+ let b=Math.min(255,(n&255)+55);
+ return `rgb(${r},${g},${b})`;
+}
+function darken(hex){
+ let n=parseInt(hex.slice(1),16);
+ let r=Math.max(0,((n>>16)&255)-55);
+ let g=Math.max(0,((n>>8)&255)-55);
+ let b=Math.max(0,(n&255)-55);
+ return `rgb(${r},${g},${b})`;
+}
+
+function isTubeComplete(t){
+ return t.length===CAPACITY && t.every(v=>v===t[0]);
+}
+
+/* =========================
+   GAME RULES
+========================= */
+
+function selectTube(i){
+ if(gameWon)return;
+
+ if(selected===-1){
+  if(board[i].length===0){
+   showToast("ابتدا یک شیشه دارای توپ انتخاب کن");
+   return;
+  }
+  selected=i;render();return;
+ }
+
+ if(selected===i){
+  selected=-1;render();return;
+ }
+
+ const from=board[selected];
+ const to=board[i];
+
+ if(from.length===0){
+  selected=-1;render();return;
+ }
+
+ const color=from[from.length-1];
+
+ if(to.length>=CAPACITY){
+  showToast("این شیشه پر است");
+  selected=-1;render();return;
+ }
+
+ if(to.length>0 && to[to.length-1]!==color){
+  if(from.length>0){
+   selected=i;
+   render();
+   showToast("فقط توپ‌های هم‌رنگ را روی هم قرار بده");
+   return;
+  }
+ }
+
+ history.push({
+  board:cloneBoard(board),
+  moves
+ });
+
+ let count=0;
+ while(from.length>0 && from[from.length-1]===color && to.length<CAPACITY){
+  to.push(from.pop());
+  count++;
+ }
+
+ moves++;
+ totalMoves++;
+ selected=-1;
+
+ playSound(520,.06);
+ render();updateStats();save();
+
+ if(checkWin())winLevel();
+}
+
+function checkWin(){
+ return board.every(t=>
+  t.length===0 || isTubeComplete(t)
+ );
+}
+
+function undo(){
+ if(!history.length || gameWon){
+  showToast("حرکتی برای بازگشت وجود ندارد");
+  return;
+ }
+ let previous=history.pop();
+ board=cloneBoard(previous.board);
+ moves=previous.moves;
+ selected=-1;
+ render();updateStats();save();
+ playSound(320,.07);
+}
+
+function hasLegalMove(){
+ for(let i=0;i<board.length;i++){
+  if(!board[i].length)continue;
+  for(let j=0;j<board.length;j++){
+   if(i===j || board[j].length>=CAPACITY)continue;
+   let c=board[i][board[i].length-1];
+   if(!board[j].length || board[j][board[j].length-1]===c)return true;
+  }
+ }
+ return false;
+}
+
+/* =========================
+   HINT
+========================= */
+
+function findHint(){
+ for(let i=0;i<board.length;i++){
+  if(!board[i].length)continue;
+  const color=board[i][board[i].length-1];
+
+  if(isTubeComplete(board[i]))continue;
+
+  for(let j=0;j<board.length;j++){
+   if(i===j || board[j].length>=CAPACITY)continue;
+
+   if(!board[j].length || board[j][board[j].length-1]===color){
+    if(board[j].length===0 && board[i].length===1)continue;
+    return [i,j];
+   }
+  }
+ }
+ return null;
+}
+
+function hint(){
+ if(gameWon)return;
+
+ if(coins<15){
+  showToast("برای راهنما ۱۵ سکه لازم داری");
+  return;
+ }
+
+ const h=findHint();
+ if(!h){
+  showToast("حرکت مناسبی پیدا نشد؛ مرحله را بررسی کن");
+  return;
+ }
+
+ coins-=15;
+ selected=h[0];
+ render();
+ save();updateStats();
+ showToast("شیشه روشن شده را به شیشه مقصد منتقل کن");
+}
+
+/* =========================
+   WIN / SKIP
+========================= */
+
+function winLevel(){
+ if(gameWon)return;
+ gameWon=true;
+
+ completed=Math.max(completed,level);
+ unlocked=Math.max(unlocked,level+1);
+ coins+=20;
+ achievements.firstWin=true;
+ achievements.win10=completed>=10;
+ achievements.win50=completed>=50;
+ achievements.win100=completed>=100;
+ achievements.win500=completed>=500;
+
+ bestMoves[level]=Math.min(bestMoves[level]||999,moves);
+
+ save();updateStats();
+ playSound(800,.15);
+
+ setTimeout(()=>{
+  openResult("🎉","مرحله با موفقیت تمام شد!","+20 سکه");
+ },250);
+
+ sendScore();
+}
+
+function openResult(icon,title,sub){
+ document.getElementById("modalTitle").textContent="آفرین!";
+ document.getElementById("modalContent").innerHTML=`
+  <div class="resultIcon">${icon}</div>
+  <div class="resultText">${title}</div>
+  <div class="resultSub">${sub}</div>
+  <div class="resultSub">تعداد حرکات: ${moves}</div>
+  <button class="primaryButton" onclick="nextLevel()">مرحله بعدی ←</button>
+ `;
+ document.getElementById("modal").classList.add("show");
+}
+
+function nextLevel(){
+ closeModal();
+ if(level>=MAX_LEVEL){
+  showToast("تبریک! تمام ۵۰۰ مرحله را گذراندی");
+  return;
+ }
+ level++;
+ newLevel();
+}
+
+function skipLevel(){
+ if(gameWon)return;
+ if(coins<30){
+  showToast("برای رد مرحله ۳۰ سکه نیاز داری");
+  return;
+ }
+ if(!confirm("با پرداخت ۳۰ سکه مرحله رد شود؟"))return;
+ coins-=30;
+ completed=Math.max(completed,level);
+ unlocked=Math.max(unlocked,level+1);
+ level=Math.min(MAX_LEVEL,level+1);
+ save();newLevel();
+ showToast("مرحله رد شد");
+}
+
+/* =========================
+   DAILY REWARD
+========================= */
+
+function dateKey(){
+ return new Date().toISOString().slice(0,10);
+}
+
+function dailyReward(){
+ let today=dateKey();
+ if(lastDaily===today){
+  showToast("جایزه امروز را قبلاً دریافت کرده‌ای");
+  return;
+ }
+
+ const yesterday=new Date();
+ yesterday.setDate(yesterday.getDate()-1);
+ const yKey=yesterday.toISOString().slice(0,10);
+
+ dailyStreak=lastDaily===yKey?dailyStreak+1:1;
+ const reward=Math.min(50,10+(dailyStreak-1)*5);
+
+ coins+=reward;
+ lastDaily=today;
+ achievements.daily=true;
+
+ save();updateStats();closeModal();
+ showToast("🎁 "+reward+" سکه جایزه گرفتی!");
+ playSound(700,.15);
+}
+
+/* =========================
+   SHOP
+========================= */
+
+function buyHint(){
+ if(coins<15){
+  showToast("سکه کافی نیست");return;
+ }
+ coins-=15;
+ save();updateStats();closeModal();
+ hint();
+}
+
+function buyGolden(){
+ if(goldenSkin){
+  showToast("پوسته طلایی فعال است");return;
+ }
+ if(coins<40){
+  showToast("۴۰ سکه لازم داری");return;
+ }
+ coins-=40;goldenSkin=true;
+ save();updateStats();render();closeModal();
+ showToast("✨ پوسته طلایی فعال شد");
+}
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+
+const achievementList=[
+ ["firstWin","🎯","اولین پیروزی","اولین مرحله را تمام کن"],
+ ["win10","🏅","بازیکن حرفه‌ای","۱۰ مرحله را تمام کن"],
+ ["win50","🥇","استاد رنگ‌ها","۵۰ مرحله را تمام کن"],
+ ["win100","👑","قهرمان","۱۰۰ مرحله را تمام کن"],
+ ["win500","💎","افسانه Color Escape","۵۰۰ مرحله را تمام کن"],
+ ["daily","🎁","جایزه روزانه","جایزه روزانه را دریافت کن"]
+];
+
+/* =========================
+   MODALS
+========================= */
+
+function openModal(type){
+ const title=document.getElementById("modalTitle");
+ const content=document.getElementById("modalContent");
+
+ if(type==="shop"){
+  title.textContent="🛍️ فروشگاه";
+  content.innerHTML=`
+   <div class="shopItem">
+    <div>💡 راهنمای حرکت<small>نمایش یک حرکت مناسب</small></div>
+    <button class="buy" onclick="buyHint()">۱۵ 🪙</button>
+   </div>
+   <div class="shopItem">
+    <div>✨ پوسته طلایی<small>توپ‌های طلایی و خاص</small></div>
+    <button class="buy" onclick="buyGolden()">${goldenSkin?"فعال":"۴۰ 🪙"}</button>
+   </div>
+   <div class="shopItem">
+    <div>🪙 موجودی شما<small>سکه‌های قابل استفاده</small></div>
+    <strong>${coins}</strong>
+   </div>
+  `;
+ }
+
+ if(type==="daily"){
+  title.textContent="🎁 جایزه روزانه";
+  let reward=Math.min(50,10+(dailyStreak)*5);
+  content.innerHTML=`
+   <div class="resultIcon">🎁</div>
+   <div class="resultText">جایزه ورود روزانه</div>
+   <div class="resultSub">روز ${dailyStreak+1} • جایزه ${reward} سکه</div>
+   <div class="resultSub">با ورودهای متوالی، جایزه بیشتر می‌شود.</div>
+   <button class="primaryButton" onclick="dailyReward()">دریافت جایزه</button>
+  `;
+ }
+
+ if(type==="achievements"){
+  title.textContent="🏅 دستاوردها";
+  content.innerHTML=achievementList.map(a=>`
+   <div class="shopItem">
+    <div>${a[1]} ${a[2]}<small>${a[3]}</small></div>
+    <strong>${achievements[a[0]]?"✅":"🔒"}</strong>
+   </div>
+  `).join("");
+ }
+
+ if(type==="settings"){
+  title.textContent="⚙️ تنظیمات";
+  content.innerHTML=`
+   <button class="menuButton" onclick="toggleSound()">🔊 صدا: ${soundEnabled?"روشن":"خاموش"}</button>
+   <button class="menuButton" onclick="openLanguages()">🌐 تغییر زبان: ${languages[language].name}</button>
+   <button class="menuButton" onclick="showToast('Color Escape v5.0')">ℹ️ درباره بازی</button>
+   <button class="menuButton" onclick="if(confirm('همه اطلاعات محلی پاک شود؟'))resetGame()">🗑️ پاک کردن اطلاعات بازی</button>
+  `;
+ }
+
+ if(type==="leaderboard"){
+  title.textContent="🏆 جدول رتبه‌بندی";
+  content.innerHTML=`
+   <div class="resultIcon">🌍</div>
+   <div class="resultText">بازیکنان Color Escape</div>
+   <div class="resultSub" id="leaderData">در حال دریافت اطلاعات...</div>
+   <button class="primaryButton" onclick="loadLeaderboard()">بروزرسانی جدول</button>
+  `;
+  setTimeout(loadLeaderboard,100);
+ }
+
+ document.getElementById("modal").classList.add("show");
+}
+
+function openLanguages(){
+ document.getElementById("modalTitle").textContent="🌐 زبان بازی";
+ document.getElementById("modalContent").innerHTML=
+ Object.keys(languages).map(k=>`
+  <button class="menuButton" onclick="setLanguage('${k}')">
+   ${languages[k].name} ${language===k?"✓":""}
+  </button>
+ `).join("");
+}
+
+function setLanguage(k){
+ language=k;
+ document.documentElement.lang=k;
+ document.documentElement.dir=languages[k].dir;
+ save();closeModal();
+ showToast("زبان انتخاب شد: "+languages[k].name);
+}
+
+function closeModal(){
+ document.getElementById("modal").classList.remove("show");
+}
+
+function toggleSound(){
+ soundEnabled=!soundEnabled;
+ save();
+ openModal("settings");
+}
+
+function resetGame(){
+ localStorage.removeItem(SAVE_KEY);
+ location.reload();
+}
+
+/* =========================
+   SOUND
+========================= */
+
+let audioContext=null;
+
+function playSound(freq=500,duration=.08){
+ if(!soundEnabled)return;
+ try{
+  audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();
+  let osc=audioContext.createOscillator();
+  let gain=audioContext.createGain();
+  osc.frequency.value=freq;
+  osc.type="sine";
+  gain.gain.setValueAtTime(.07,audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);
+  osc.connect(gain);gain.connect(audioContext.destination);
+  osc.start();osc.stop(audioContext.currentTime+duration);
+ }catch(e){}
+}
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(message){
+ const el=document.getElementById("toast");
  el.textContent=message;
  el.classList.add("show");
  clearTimeout(toastTimer);
  toastTimer=setTimeout(()=>el.classList.remove("show"),2300);
 }
 
-/* ---------------- LEVEL GENERATION ---------------- */
+/* =========================
+   CLOUDFLARE API
+========================= */
 
-function colorCount(n){
- if(n<=5)return 3;
- if(n<=12)return 4;
- if(n<=20)return 5;
- if(n<=30)return 6;
- if(n<=40)return 7;
- return 8;
-}
-function scrambleCount(n){
- if(n<=5)return 12+n*2;
- if(n<=12)return 25+(n-5)*3;
- if(n<=20)return 46+(n-12)*3;
- if(n<=30)return 70+(n-20)*3;
- if(n<=40)return 100+(n-30)*3;
- return Math.min(1900,130+(n-40)*4);
-}
-function createLevel(n){
- const count=colorCount(n);
- const result=Array.from({length:count+2},(_,i)=>
-  i<count?Array(CAP).fill(i):[]
- );
-
- let seed=9871+n*7919;
- const random=max=>{
-  seed=(seed*16807)%2147483647;
-  return seed%max;
- };
-
- let previous="";
- for(let step=0;step<scrambleCount(n);step++){
-  const choices=[];
-  for(let from=0;from<result.length;from++){
-   const source=result[from];
-   if(!source.length)continue;
-   const color=source[source.length-1];
-   let run=1;
-   while(run<source.length&&source[source.length-1-run]===color)run++;
-
-   for(let to=0;to<result.length;to++){
-    if(from===to)continue;
-    const target=result[to];
-    const maxMove=Math.min(
-     run===source.length?run:run-1,
-     CAP-target.length
-    );
-    if(maxMove<1)continue;
-    if(target.length&&target[target.length-1]===color)continue;
-    if(previous===to+":"+from)continue;
-    choices.push({from,to,maxMove});
-   }
-  }
-  if(!choices.length)break;
-  const m=choices[random(choices.length)];
-  const amount=1+random(m.maxMove);
-  for(let k=0;k<amount;k++)result[m.to].push(result[m.from].pop());
-  previous=m.from+":"+m.to;
- }
- return result;
-}
-
-function isSolved(){
- return tubes.every(t=>
-  t.length===0||(t.length===CAP&&t.every(v=>v===t[0]))
- );
-}
-
-/* ---------------- MOVE LOGIC ---------------- */
-
-function snapshot(){
- history.push({
-  tubes:tubes.map(t=>t.slice()),
-  moves
- });
- if(history.length>100)history.shift();
-}
-
-function moveBalls(fromIndex,toIndex){
- const from=tubes[fromIndex];
- const to=tubes[toIndex];
- if(!from.length||to.length>=CAP)return false;
-
- const color=from[from.length-1];
- if(to.length&&to[to.length-1]!==color)return false;
-
- snapshot();
-
- while(
-  from.length&&
-  from[from.length-1]===color&&
-  to.length<CAP
- ){
-  to.push(from.pop());
- }
-
- moves++;
- selected=-1;
- playTone(520,.07);
- render();
- return true;
-}
-
-function tapTube(index){
- if(isSolved())return;
-
- if(selected===-1){
-  if(tubes[index].length){
-   selected=index;
-   $("message").textContent=tr("selectTarget");
-  }else{
-   $("message").textContent=tr("selectSource");
-  }
-  render();
-  return;
- }
-
- if(selected===index){
-  selected=-1;
-  render();
-  return;
- }
-
- const source=tubes[selected];
- const target=tubes[index];
-
- if(source.length&&target.length<CAP&&
-    (!target.length||target[target.length-1]===source[source.length-1])){
-  moveBalls(selected,index);
- }else{
-  if(tubes[index].length){
-   selected=index;
-   $("message").textContent=tr("invalid");
-  }else{
-   selected=-1;
-   $("message").textContent=tr("invalid");
-  }
-  render();
- }
-}
-
-/* ---------------- ACHIEVEMENTS ---------------- */
-
-const ACHIEVEMENTS=[
- {id:"first",count:1,reward:10},
- {id:"five",count:5,reward:25},
- {id:"ten",count:10,reward:50},
- {id:"twentyfive",count:25,reward:100},
- {id:"fifty",count:50,reward:100},
- {id:"hundred",count:100,reward:150},
- {id:"twofifty",count:250,reward:250},
- {id:"fivehundred",count:500,reward:500}
-];
-
-function checkAchievements(){
- let changed=false;
- ACHIEVEMENTS.forEach(a=>{
-  if(claimed.length>=a.count&&!unlockedAchievements.includes(a.id)){
-   unlockedAchievements.push(a.id);
-   coins+=a.reward;
-   changed=true;
-   toast("🏆 "+tr(a.id)+" +"+a.reward+" 🪙");
-  }
- });
- if(changed){
-  localStorage.setItem("ce_achievements_v1",JSON.stringify(unlockedAchievements));
-  saveCoins();
- }
-}
-function renderAchievements(){
- const list=$("achievementList");
- list.innerHTML="";
- ACHIEVEMENTS.forEach(a=>{
-  const unlocked=unlockedAchievements.includes(a.id);
-  const item=document.createElement("div");
-  item.className="achievement";
-  const title=document.createElement("strong");
-  title.textContent=tr(a.id);
-  const desc=document.createElement("small");
-  desc.textContent=a.count+" · "+a.reward+" 🪙";
-  const status=document.createElement("small");
-  status.textContent=unlocked?tr("unlocked"):tr("locked");
-  item.append(title,desc,status);
-  list.appendChild(item);
- });
- $("achievementSummary").textContent=
-  unlockedAchievements.length+" / "+ACHIEVEMENTS.length+" · "+tr("achievementSummary");
-}
-
-/* ---------------- DAILY REWARD ---------------- */
-
-function dateKey(date=new Date()){
- return date.getFullYear()+"-"+
-  String(date.getMonth()+1).padStart(2,"0")+"-"+
-  String(date.getDate()).padStart(2,"0");
-}
-function getDaily(){
- const today=dateKey();
- const yesterdayDate=new Date();
- yesterdayDate.setDate(yesterdayDate.getDate()-1);
- const yesterday=dateKey(yesterdayDate);
- const streak=dailyData.lastClaim===yesterday?
-  (Number(dailyData.streak)||0)+1:1;
- return{
-  today,
-  already:dailyData.lastClaim===today,
-  streak,
-  reward:Math.min(10+(streak-1)*5,50)
- };
-}
-function updateDaily(){
- const d=getDaily();
- $("dailyReward").textContent=d.reward+" 🪙";
- $("dailyStreak").textContent=tr("dailyDay")+" "+d.streak+" · "+tr("streak");
- $("claimDaily").disabled=d.already;
- $("claimDaily").textContent=d.already?tr("dailyDone"):tr("claim")+" · "+d.reward+" 🪙";
-}
-
-/* ---------------- HINT ---------------- */
-
-function findHint(){
- for(let i=0;i<tubes.length;i++){
-  const a=tubes[i];
-  if(!a.length)continue;
-  const color=a[a.length-1];
-
-  for(let j=0;j<tubes.length;j++){
-   if(i===j)continue;
-   const b=tubes[j];
-   if(b.length<CAP&&b.length&&b[b.length-1]===color)
-    return[i,j];
-  }
- }
- for(let i=0;i<tubes.length;i++){
-  if(!tubes[i].length)continue;
-  for(let j=0;j<tubes.length;j++){
-   if(i!==j&&tubes[j].length===0)return[i,j];
-  }
- }
- return null;
-}
-function useHint(){
- if(isSolved())return;
- if(coins<15){toast(tr("noCoins"));return}
- const pair=findHint();
- if(!pair){toast(tr("noHint"));return}
- coins-=15;saveCoins();
- selected=pair[0];
- render();
- $("message").textContent=
-  tr("hintFrom")+" "+(pair[0]+1)+" "+tr("hintTo")+" "+(pair[1]+1);
- const target=$("playArea").children[pair[1]];
- if(target){
-  target.animate(
-   [{transform:"scale(1)"},{transform:"scale(1.13)"},{transform:"scale(1)"}],
-   {duration:650,iterations:2}
-  );
- }
- updateShop();
-}
-
-/* ---------------- SHOP ---------------- */
-
-function updateShop(){
- $("buyHint").disabled=coins<15||isSolved();
- $("buyHint").textContent=tr("hintButton");
- $("buySkin").disabled=goldenSkin||coins<40;
- $("buySkin").textContent=goldenSkin?tr("skinActive"):"40 🪙";
-}
-function buySkin(){
- if(goldenSkin)return;
- if(coins<40){toast(tr("noCoins"));return}
- coins-=40;
- goldenSkin=true;
- document.body.classList.add("golden");
- localStorage.setItem("ce_golden_skin_v1","1");
- saveCoins();updateShop();render();
- $("shopMessage").textContent=tr("skinBought");
-}
-
-/* ---------------- LEADERBOARD ---------------- */
-
-async function submitScore(){
- if(!tg?.initData)return;
-
- const completed=claimed.length;
- const score=Math.max(0,level-(isSolved()?0:1));
- if(score<=leaderboardSentLevel)return;
-
+async function sendScore(){
  try{
+  if(!userName)return;
   const response=await fetch("/score",{
    method:"POST",
    headers:{"Content-Type":"application/json"},
    body:JSON.stringify({
-    initData:tg.initData,
-    level:score,
-    completed
+    name:userName,
+    level:completed,
+    completed:completed,
+    moves:totalMoves,
+    coins:coins
    })
   });
-  if(response.ok)leaderboardSentLevel=score;
- }catch(e){}
+  if(!response.ok)console.warn("Score API:",response.status);
+ }catch(e){
+  console.warn("Score API unavailable:",e);
+ }
 }
 
 async function loadLeaderboard(){
- const list=$("leaderboardList");
- list.textContent=tr("loading");
-
+ const el=document.getElementById("leaderData");
+ if(!el)return;
  try{
   const response=await fetch("/leaderboard");
-  if(!response.ok)throw new Error("HTTP "+response.status);
+  if(!response.ok)throw new Error("API error");
   const data=await response.json();
-
-  if(!Array.isArray(data.players)||!data.players.length){
-   list.textContent=tr("noPlayers");
+  const list=Array.isArray(data)?data:(data.players||data.results||[]);
+  if(!list.length){
+   el.textContent="هنوز بازیکنی ثبت نشده است.";
    return;
   }
-
-  list.innerHTML="";
-  data.players.forEach((p,i)=>{
-   const row=document.createElement("div");
-   row.className="leader-row";
-
-   const rank=document.createElement("div");
-   rank.className="leader-rank";
-   rank.textContent="#"+(i+1);
-
-   const name=document.createElement("div");
-   name.className="leader-name";
-
-   const title=document.createElement("strong");
-   title.textContent=p.name||"Player";
-
-   const meta=document.createElement("div");
-   meta.className="leader-meta";
-   meta.textContent=(p.completed||0)+" "+tr("completed");
-
-   name.append(title,meta);
-
-   const lvl=document.createElement("strong");
-   lvl.textContent=tr("level")+" "+(p.level||0);
-
-   row.append(rank,name,lvl);
-   list.appendChild(row);
-  });
+  el.innerHTML=list.slice(0,10).map((p,i)=>`
+   <div class="shopItem">
+    <div>${["🥇","🥈","🥉"][i]||"🏅"} ${escapeHTML(p.name||"Player")}</div>
+    <strong>مرحله ${Number(p.level)||0}</strong>
+   </div>
+  `).join("");
  }catch(e){
-  list.textContent=tr("serverError");
+  el.textContent="ارتباط با جدول رتبه‌بندی برقرار نشد.";
  }
 }
 
-/* ---------------- RENDER GAME ---------------- */
-
-function tubeColumns(count){
- if(count<=4)return count;
- if(count===5)return 3;
- if(count<=8)return 4;
- return 4;
+function escapeHTML(str){
+ return String(str).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
 }
 
-function render(){
- const area=$("playArea");
- area.innerHTML="";
+/* =========================
+   ADMIN TEST
+========================= */
 
- const count=tubes.length;
- area.className="play-area count-"+count;
-
- tubes.forEach((tube,index)=>{
-  const wrap=document.createElement("div");
-  wrap.className="tube-wrap";
-
-  const button=document.createElement("button");
-  button.type="button";
-  button.className="tube";
-  if(selected===index)button.classList.add("selected");
-  if(!tube.length)button.classList.add("empty");
-  button.setAttribute("aria-label","Bottle "+(index+1));
-  button.addEventListener("click",()=>tapTube(index));
-
-  tube.forEach((color,ballIndex)=>{
-   const ball=document.createElement("span");
-   ball.className="ball";
-   ball.style.setProperty("--ball-color",COLORS[color]);
-   ball.style.animationDelay=(ballIndex*.035)+"s";
-   button.appendChild(ball);
-  });
-
-  const shine=document.createElement("span");
-  shine.className="tube-shine";
-  const shine2=document.createElement("span");
-  shine2.className="tube-shine second";
-  const base=document.createElement("span");
-  base.className="tube-base";
-
-  button.append(shine,shine2,base);
-  wrap.appendChild(button);
-  area.appendChild(wrap);
- });
-
- $("level").textContent=level+" / "+TOTAL;
- $("stageLevel").textContent="LEVEL "+String(level).padStart(2,"0");
- $("moves").textContent=moves;
- $("best").textContent=best[level]||"—";
- $("coins").textContent=coins;
- $("undo").disabled=!history.length;
- $("skip").disabled=level>=TOTAL||coins<30;
- $("hint").disabled=isSolved()||coins<15;
- $("next").disabled=!isSolved()||level>=TOTAL;
-
- const done=tubes.reduce((sum,t)=>{
-  return sum+(t.length===CAP&&t.every(v=>v===t[0])?1:0);
- },0);
- const count=colorCount(level);
- $("progress").style.width=(done/count*100)+"%";
-
- if(isSolved()){
-  $("message").textContent=tr("solved");
-
-  if(!claimed.includes(level)){
-   claimed.push(level);
-   coins+=20;
-   localStorage.setItem("ce_rewards_v1",JSON.stringify(claimed));
-   saveCoins();
-  }
-
-  checkAchievements();
-
-  if(!best[level]||moves<best[level]){
-   best[level]=moves;
-   localStorage.setItem("ce_best",JSON.stringify(best));
-  }
-
-  $("best").textContent=best[level];
-  $("coins").textContent=coins;
-  $("winText").textContent=
-   tr("level")+" "+level+" · "+moves+" "+tr("moves")+" · +20 🪙";
-  $("win").classList.add("show");
-  submitScore();
- }else{
-  $("win").classList.remove("show");
+function adminMode(){
+ const params=new URLSearchParams(location.search);
+ if(params.get("admin")==="1"){
+  const btn=document.createElement("button");
+  btn.className="action";
+  btn.style.width="100%";
+  btn.style.marginTop="12px";
+  btn.textContent="🧪 مرحله بعدی (تست)";
+  btn.onclick=()=>{
+   level=Math.min(MAX_LEVEL,level+1);
+   newLevel();
+  };
+  document.querySelector(".bottomNote").before(btn);
  }
-
- updateShop();
- saveProgress();
 }
 
-/* ---------------- LEVEL CONTROL ---------------- */
+/* =========================
+   KEYBOARD
+========================= */
 
-function startLevel(n){
- level=Math.max(1,Math.min(TOTAL,n));
- tubes=createLevel(level);
- moves=0;
- selected=-1;
- history=[];
- $("win").classList.remove("show");
- $("message").textContent=tr("start");
- render();
-}
-
-function undoMove(){
- const previous=history.pop();
- if(!previous)return;
- tubes=previous.tubes.map(t=>t.slice());
- moves=previous.moves;
- selected=-1;
- $("win").classList.remove("show");
- render();
- playTone(340,.08);
-}
-
-/* ---------------- SOUND ---------------- */
-
-function playTone(freq,duration=.08){
- if(muted)return;
- try{
-  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
-  const oscillator=audio.createOscillator();
-  const gain=audio.createGain();
-
-  oscillator.frequency.value=freq;
-  gain.gain.setValueAtTime(.0001,audio.currentTime);
-  gain.gain.exponentialRampToValueAtTime(.035,audio.currentTime+.01);
-  gain.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+duration);
-
-  oscillator.connect(gain);
-  gain.connect(audio.destination);
-  oscillator.start();
-  oscillator.stop(audio.currentTime+duration+.02);
- }catch(e){}
-}
-
-/* ---------------- LANGUAGE ---------------- */
-
-function applyLanguage(){
- const rtl=lang==="fa"||lang==="ar";
- document.documentElement.lang=lang;
- document.documentElement.dir=rtl?"rtl":"ltr";
- $("language").value=lang;
-
- document.querySelectorAll("[data-i]").forEach(el=>{
-  const key=el.dataset.i;
-  el.textContent=tr(key);
- });
-
- $("soundToggle").textContent=muted?tr("soundOff"):tr("soundOn");
- $("message").textContent=tr("start");
-}
-
-/* ---------------- EVENTS ---------------- */
-
-$("language").addEventListener("change",()=>{
- lang=$("language").value;
- localStorage.setItem("ce_language",lang);
- applyLanguage();
- render();
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closeModal();
+ if(e.key==="z"||e.key==="Z")undo();
 });
 
-$("undo").onclick=undoMove;
-$("restart").onclick=()=>startLevel(level);
+/* =========================
+   START GAME
+========================= */
 
-$("next").onclick=()=>{
- if(isSolved()&&level<TOTAL)startLevel(level+1);
-};
+function startGame(){
+ loadSave();
 
-$("skip").onclick=()=>{
- if(level>=TOTAL)return;
- if(coins<30){toast(tr("noCoins"));return}
- coins-=30;saveCoins();
- startLevel(level+1);
-};
+ document.documentElement.lang=language;
+ document.documentElement.dir=languages[language].dir;
 
-$("hint").onclick=useHint;
+ newLevel();
+ adminMode();
 
-$("continue").onclick=()=>{
- $("win").classList.remove("show");
- if(level<TOTAL)startLevel(level+1);
- else{
-  $("message").textContent=tr("allDone");
-  toast(tr("allDone"));
- }
-};
-
-$("openShop").onclick=()=>{
- $("shopModal").classList.add("show");
- updateShop();
-};
-$("closeShop").onclick=()=>$("shopModal").classList.remove("show");
-$("buyHint").onclick=()=>{
- $("shopModal").classList.remove("show");
- useHint();
-};
-$("buySkin").onclick=buySkin;
-
-$("dailyOpen").onclick=()=>{
- $("dailyModal").classList.add("show");
- updateDaily();
-};
-$("closeDaily").onclick=()=>$("dailyModal").classList.remove("show");
-
-$("claimDaily").onclick=()=>{
- const d=getDaily();
- if(d.already)return;
-
- coins+=d.reward;
- dailyData={lastClaim:d.today,streak:d.streak};
-
- localStorage.setItem("ce_daily_reward_v1",JSON.stringify(dailyData));
- saveCoins();
- updateDaily();
- render();
- $("dailyMessage").textContent=tr("claimSuccess");
- toast("+"+d.reward+" 🪙");
-};
-
-$("openLeaderboard").onclick=()=>{
- $("leaderboardModal").classList.add("show");
- loadLeaderboard();
-};
-$("closeLeaderboard").onclick=()=>$("leaderboardModal").classList.remove("show");
-$("refreshLeaderboard").onclick=loadLeaderboard;
-
-$("openAchievements").onclick=()=>{
- $("achievementsModal").classList.add("show");
- renderAchievements();
-};
-$("closeAchievements").onclick=()=>$("achievementsModal").classList.remove("show");
-
-$("soundToggle").onclick=()=>{
- muted=!muted;
- $("soundToggle").textContent=muted?tr("soundOff"):tr("soundOn");
- if(!muted)playTone(650,.12);
-};
-
-/* Close modal by tapping outside */
-document.querySelectorAll(".overlay").forEach(overlay=>{
- overlay.addEventListener("click",e=>{
-  if(e.target===overlay)overlay.classList.remove("show");
- });
-});
-
-/* ---------------- RESTORE SAVED GAME ---------------- */
-
-function restoreGame(){
- let saved=null;
+ // Telegram WebApp theme integration
  try{
-  saved=JSON.parse(localStorage.getItem("ce_progress_v1")||"null");
+  if(tg){
+   tg.setHeaderColor("#101a35");
+   tg.setBackgroundColor("#101a35");
+  }
  }catch(e){}
 
- if(saved&&Number.isInteger(saved.level)&&
-    saved.level>=1&&saved.level<=TOTAL&&
-    Array.isArray(saved.tubes)&&saved.tubes.length){
-
-  const expected=colorCount(saved.level);
-  const valid=
-   saved.tubes.length===expected+2&&
-   saved.tubes.every(t=>
-    Array.isArray(t)&&t.length<=CAP&&
-    t.every(c=>Number.isInteger(c)&&c>=0&&c<expected)
-   );
-
-  if(valid){
-   level=saved.level;
-   tubes=saved.tubes.map(t=>t.slice());
-   moves=Number(saved.moves)||0;
-   history=[];
-   selected=-1;
-   return;
-  }
- }
- startLevel(1);
+ updateStats();
 }
 
-restoreGame();
-applyLanguage();
-render();
-updateDaily();
-updateShop();
+startGame();
 
-})();
 </script>
 </body>
 </html>
+ 
