@@ -952,11 +952,15 @@ function openModal(type){
   content.innerHTML=`
    <div class="shopItem">
     <div>💡 راهنمای حرکت<small>نمایش یک حرکت مناسب</small></div>
-    <button class="buy" onclick="buyHint()">۱۵ 🪙</button>
+    <button class="buy" onclick="startPayment('hint')">۳ ⭐</button>
+   </div>
+   <div class="shopItem">
+    <div>🪙 ۵۰ سکه<small>۵۰ سکه برای استفاده در بازی</small></div>
+    <button class="buy" onclick="startPayment('coins50')">۵ ⭐</button>
    </div>
    <div class="shopItem">
     <div>✨ پوسته طلایی<small>توپ‌های طلایی و خاص</small></div>
-    <button class="buy" onclick="buyGolden()">${goldenSkin?"فعال":"۴۰ 🪙"}</button>
+    <button class="buy" onclick="startPayment('golden')">${goldenSkin?"فعال":"۱۰ ⭐"}</button>
    </div>
    <div class="shopItem">
     <div>🪙 موجودی شما<small>سکه‌های قابل استفاده</small></div>
@@ -1033,6 +1037,43 @@ function openLanguages(){
    ${languages[k].name} ${language===k?"✓":""}
   </button>
  `).join("");
+}
+
+async function startPayment(product){
+ if(!tg?.initData){
+  showToast("پرداخت فقط داخل Telegram قابل انجام است");
+  return;
+ }
+ try{
+  showToast("در حال آماده‌سازی پرداخت...");
+  const response=await fetch("/api/payment",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({product,initData:tg.initData})
+  });
+  const data=await response.json();
+  if(!response.ok||!data.success)throw new Error(data.error||"Payment error");
+
+  const onStatus=status=>{
+   if(status==="paid"){
+    if(product==="hint")hintOwned=true;
+    if(product==="golden")goldenSkin=true;
+    save();
+    updateStats();
+    showToast("پرداخت با موفقیت انجام شد");
+    openModal("shop");
+   }else if(status==="cancelled"){
+    showToast("پرداخت لغو شد");
+   }else if(status==="failed"){
+    showToast("پرداخت ناموفق بود");
+   }
+  };
+
+  if(typeof tg.openInvoice==="function")tg.openInvoice(data.invoiceLink,onStatus);
+  else tg.openLink(data.invoiceLink);
+ }catch(e){
+  showToast("شروع پرداخت ناموفق بود");
+ }
 }
 
 let referralLink="";
