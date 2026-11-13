@@ -4,110 +4,417 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#211b1c">
-<meta name="description" content="Color Escape 3D - 500 Levels">
-<title>Color Escape 3D</title>
+<meta name="theme-color" content="#211916">
+<meta name="description" content="Color Escape - Premium Color Puzzle">
+<title>Color Escape</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
 :root{
- --bg:#211b1c;--panel:#302729;--panel2:#403333;
- --text:#f8eee3;--muted:#c9b6a5;--accent:#d5ad83;
- --gold:#e9bd72;--border:#725748;
+ --bg:#211916;
+ --bg2:#2b201c;
+ --panel:#352720;
+ --panel2:#45332a;
+ --panel3:#594234;
+ --cream:#f5e8d5;
+ --muted:#c5ad98;
+ --gold:#e5b875;
+ --gold2:#bd8750;
+ --border:#765642;
+ --shadow:0 12px 30px #100b09a8;
+
+ --c1:#ee9caa;
+ --c2:#8fd1ad;
+ --c3:#b7a0e4;
+ --c4:#f1ce79;
+ --c5:#83c8df;
+ --c6:#e8a5d1;
+ --c7:#b7d58b;
+ --c8:#e9a77e;
+ --c9:#93a9e8;
+ --c10:#c7a18a;
 }
+
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
-body{display:flex;justify-content:center;background:radial-gradient(ellipse at 50% 0,#49372e 0,#292122 48%,#171315 100%)}
+html,body{
+ margin:0;min-height:100%;
+ background:var(--bg);color:var(--cream);
+ font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+body{
+ background:
+ radial-gradient(ellipse at 50% -15%,#70503a 0,transparent 55%),
+ linear-gradient(160deg,#2e211c,#1d1513 72%);
+ display:flex;justify-content:center;
+}
 button,select{font:inherit}
 button{cursor:pointer}
-.app{width:min(100%,600px);padding:14px 13px 25px;min-height:100vh;display:flex;flex-direction:column}
-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.brand{font-size:25px;font-weight:1000;letter-spacing:1px;text-shadow:0 2px 12px #0008}
-.brand span{color:var(--accent)}
-.lang-select{background:#382d2b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:8px 7px;max-width:115px;font-size:12px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:14px 0 9px}
-.stat{background:linear-gradient(145deg,#514039,#302729);border:1px solid #755b49;border-radius:15px;padding:9px 4px;text-align:center;box-shadow:0 5px 15px #0004}
-.stat small{display:block;font-size:10px;color:#e3cbb4}
-.stat strong{font-size:18px;display:block;margin-top:3px}
-.message{min-height:34px;text-align:center;color:#eddbc8;font-size:12px;padding:7px}
-.board{
- position:relative;width:100%;height:clamp(430px,112vw,610px);
- min-height:430px;flex:none;overflow:hidden;
- border:1px solid #927052;border-radius:25px;
- background:linear-gradient(160deg,#35413d 0%,#3b4135 38%,#59402f 75%,#30231f 100%);
- box-shadow:inset 0 0 40px #fff1,0 18px 45px #0008;
+button:disabled{opacity:.35;cursor:not-allowed}
+.app{
+ width:min(100%,560px);
+ min-height:100vh;
+ padding:13px 13px 26px;
+ display:flex;flex-direction:column;
 }
-#threeBoard{position:absolute;inset:0;z-index:2;visibility:hidden;touch-action:pan-y}
-#threeBoard canvas{display:block;width:100%;height:100%;outline:none}
-.board.is-loading #threeBoard,.board.is-loading .tubes{visibility:hidden}
-.board.three-ready #threeBoard{visibility:visible}
-.board.three-ready .tubes{opacity:0;visibility:hidden;pointer-events:none}
-.tubes{
- position:absolute;inset:0;z-index:3;display:flex;
- align-items:center;justify-content:center;align-content:center;
- gap:12px;flex-wrap:wrap;padding:40px 12px 45px
+header{
+ display:flex;align-items:center;
+ justify-content:space-between;gap:10px;
+}
+.brand{
+ font-size:24px;font-weight:1000;
+ letter-spacing:1px;color:#f5e5d0;
+ text-shadow:0 3px 12px #0008;
+}
+.brand span{color:var(--gold)}
+.brand small{
+ display:block;font-size:8px;
+ letter-spacing:4px;color:#bda18a;
+ margin-top:-3px;
+}
+.lang-select{
+ max-width:118px;padding:8px 9px;
+ color:#f8ead8;background:#382921;
+ border:1px solid var(--border);
+ border-radius:12px;font-size:12px;
+ outline:none;
+}
+.top-tools{display:flex;align-items:center;gap:7px}
+
+.stats{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:7px;margin:15px 0 8px;
+}
+.stat{
+ min-width:0;text-align:center;
+ padding:9px 3px 8px;
+ border-radius:15px;
+ background:linear-gradient(145deg,#503b2e,#30231e);
+ border:1px solid #775840;
+ box-shadow:inset 0 1px #ffffff12,0 5px 13px #0003;
+}
+.stat small{
+ display:block;font-size:10px;
+ color:#d2b99e;white-space:nowrap;
+}
+.stat strong{
+ display:block;font-size:18px;
+ color:#fff0db;margin-top:3px;
+ font-variant-numeric:tabular-nums;
+}
+.message{
+ min-height:34px;text-align:center;
+ color:#e7c9a6;font-size:12px;
+ padding:7px 4px;
+}
+
+/* Main game table */
+.game-stage{
+ position:relative;
+ width:100%;
+ min-height:450px;
+ height:clamp(450px,118vw,590px);
+ overflow:hidden;
+ border-radius:26px;
+ border:1px solid #8c6848;
+ background:
+ radial-gradient(ellipse at 50% 5%,#6e5945 0,#51402f 37%,transparent 75%),
+ linear-gradient(155deg,#49382c 0%,#382a22 45%,#2b211c 100%);
+ box-shadow:
+ inset 0 2px 2px #ffffff20,
+ inset 0 -25px 45px #130c09a0,
+ 0 16px 38px #0008;
+}
+.game-stage:before{
+ content:"";position:absolute;inset:0;
+ pointer-events:none;opacity:.18;
+ background:
+ repeating-linear-gradient(0deg,transparent 0 54px,#d7b58a12 55px,#0000 57px),
+ linear-gradient(110deg,#fff0 20%,#fff2 48%,#fff0 70%);
+}
+.game-stage:after{
+ content:"";position:absolute;
+ left:8%;right:8%;bottom:18px;height:24px;
+ border-radius:50%;
+ background:#130b08;
+ filter:blur(18px);opacity:.55;
+ pointer-events:none;
+}
+.stage-top{
+ position:absolute;top:13px;left:14px;right:14px;
+ display:flex;justify-content:space-between;
+ align-items:center;z-index:2;
+ pointer-events:none;
+}
+.stage-label{
+ border:1px solid #c49a6a77;
+ background:#211713a8;
+ color:#f3d7b5;
+ border-radius:20px;padding:6px 10px;
+ font-size:10px;letter-spacing:.5px;
+}
+.stage-level{
+ font-size:11px;color:#f3d7b5;
+ background:#211713a8;border-radius:20px;
+ padding:6px 10px;
+}
+.play-area{
+ position:absolute;inset:58px 9px 42px;
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ grid-auto-rows:1fr;
+ align-items:center;justify-items:center;
+ align-content:center;
+ gap:15px 5px;
+ z-index:1;
+}
+.play-area.count-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.play-area.count-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.play-area.count-5{grid-template-columns:repeat(3,minmax(0,1fr))}
+.play-area.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}
+.play-area.count-7{grid-template-columns:repeat(4,minmax(0,1fr))}
+.play-area.count-8{grid-template-columns:repeat(4,minmax(0,1fr))}
+.play-area.count-9{grid-template-columns:repeat(3,minmax(0,1fr))}
+.play-area.count-10{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+.tube-wrap{
+ width:100%;height:100%;
+ min-height:165px;
+ display:flex;align-items:center;
+ justify-content:center;
+ position:relative;
 }
 .tube{
- width:46px;height:170px;border:2px solid #d7e8e6;border-top:0;
- border-radius:0 0 15px 15px;background:#d9f3ff18;
- display:flex;flex-direction:column-reverse;align-items:stretch;
- padding:4px;position:relative
+ position:relative;
+ width:min(67px,100%);
+ height:174px;
+ max-height:100%;
+ min-height:145px;
+ padding:8px 6px 9px;
+ border:0;background:transparent;
+ border-radius:0 0 23px 23px;
+ display:flex;flex-direction:column-reverse;
+ align-items:center;justify-content:flex-start;
+ gap:3px;
+ overflow:visible;
+ transform:translateY(0);
+ transition:transform .22s ease,filter .22s ease;
+ filter:drop-shadow(0 9px 5px #100a0870);
+ isolation:isolate;
 }
-.tube:before{content:"";position:absolute;top:-7px;left:-5px;right:-5px;height:8px;border:2px solid #e6f7ff;border-radius:5px;background:#9fc4d4}
-.tube.selected{transform:translateY(-9px);border-color:var(--gold)}
-.liquid{height:25%;width:100%;border-radius:5px;margin-top:2px;box-shadow:inset 0 4px 8px #ffffff66}
-.board-caption{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:10px;color:#fff4e5;text-shadow:0 2px 4px #000;z-index:4;pointer-events:none}
-.three-badge{position:absolute;top:11px;right:11px;background:#211b1ddd;border:1px solid #c29b72;border-radius:20px;padding:7px 10px;font-size:10px;z-index:4;pointer-events:none}
-.board-loader{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:#211b20;color:#f9e6cd;font-size:13px}
-.board-loader:before{content:"";width:34px;height:34px;border:3px solid #ffffff30;border-top-color:#e9bd72;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.board:not(.is-loading) .board-loader{display:none}
-.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-button{border:0;border-radius:13px;padding:11px 6px;min-height:45px;font-weight:800;background:linear-gradient(135deg,#e9c99e,#c18c5c);color:#352319;font-size:12px;box-shadow:0 4px 12px #0003}
-button.secondary{background:linear-gradient(145deg,#51413a,#302a30);color:#fff3e2;border:1px solid #80684f}
-button:disabled{opacity:.35;cursor:not-allowed}
-.sound-toggle{margin-top:9px;width:100%}
-.footer{text-align:center;color:#bda78e;font-size:10px;margin-top:13px}
-.overlay{position:fixed;inset:0;background:#09070bdc;display:none;align-items:center;justify-content:center;padding:18px;z-index:10;backdrop-filter:blur(8px)}
+.tube:before{
+ content:"";position:absolute;
+ inset:0;
+ border:2px solid #d9eff0b9;
+ border-top:0;
+ border-radius:0 0 21px 21px;
+ background:linear-gradient(90deg,#d8f4f52a,#ffffff0b 23%,#ffffff18 73%,#d8f4f52c);
+ box-shadow:
+ inset 5px 0 8px #ffffff25,
+ inset -4px 0 8px #b7dce51a,
+ 0 0 0 1px #a6c9d344;
+ z-index:4;pointer-events:none;
+}
+.tube:after{
+ content:"";position:absolute;
+ top:-5px;left:-4px;right:-4px;height:8px;
+ border:2px solid #e2f5f1d9;
+ border-radius:8px;
+ background:linear-gradient(180deg,#e7ffff7a,#b4d5d766);
+ box-shadow:0 2px 5px #0005;
+ z-index:5;
+}
+.tube.selected{
+ transform:translateY(-12px);
+ filter:drop-shadow(0 14px 8px #0008) drop-shadow(0 0 7px #e9bd72a0);
+}
+.tube.selected:before{border-color:#f0c57d}
+.tube:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+
+.tube-base{
+ position:absolute;bottom:-3px;left:5px;right:5px;
+ height:9px;border-radius:50%;
+ background:linear-gradient(180deg,#d6f4f1aa,#86b2b9aa);
+ border:1px solid #e6ffffa0;
+ z-index:6;pointer-events:none;
+}
+.tube-shine{
+ position:absolute;z-index:5;
+ top:12px;bottom:12px;left:8px;width:4px;
+ border-radius:10px;
+ background:linear-gradient(180deg,#fff9,#fff2,transparent);
+ pointer-events:none;
+}
+.tube-shine.second{
+ left:auto;right:8px;width:2px;opacity:.45;
+}
+.ball{
+ flex:0 0 24%;
+ width:88%;max-height:34px;
+ min-height:20px;
+ position:relative;
+ border-radius:50%;
+ z-index:2;
+ background:
+ radial-gradient(ellipse at 31% 22%,#ffffffc9 0 5%,#ffffff52 13%,transparent 32%),
+ radial-gradient(ellipse at 68% 78%,#0002,transparent 49%),
+ var(--ball-color);
+ box-shadow:
+ inset 0 3px 5px #ffffff85,
+ inset 0 -5px 7px #0002,
+ 0 2px 4px #0005;
+ animation:ballAppear .25s ease both;
+}
+.ball:after{
+ content:"";position:absolute;
+ top:15%;left:19%;width:25%;height:12%;
+ border-radius:50%;background:#ffffff99;
+ filter:blur(1px);transform:rotate(-25deg);
+}
+@keyframes ballAppear{
+ from{opacity:.5;transform:translateY(-9px) scale(.82)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+.tube.empty .tube-base{opacity:.55}
+
+.stage-caption{
+ position:absolute;bottom:12px;left:0;right:0;
+ z-index:3;text-align:center;
+ color:#d6b99b;font-size:10px;
+ pointer-events:none;
+}
+.progress-wrap{
+ height:5px;background:#1b110e;
+ border-radius:20px;overflow:hidden;
+ margin:11px 3px 0;
+ border:1px solid #6b4c36;
+}
+.progress-fill{
+ height:100%;width:0%;
+ background:linear-gradient(90deg,#c28b50,#f4d18f);
+ border-radius:20px;
+ transition:width .3s ease;
+}
+
+.controls{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:8px;margin-top:13px;
+}
+.btn{
+ min-height:45px;padding:9px 5px;
+ border-radius:14px;border:1px solid #9b744e;
+ background:linear-gradient(145deg,#e6c18d,#b98552);
+ color:#352218;font-size:12px;font-weight:850;
+ box-shadow:0 5px 12px #0004,inset 0 1px #fff7;
+ transition:transform .12s,filter .12s;
+}
+.btn:active{transform:scale(.96);filter:brightness(1.1)}
+.btn.secondary{
+ color:#f5e6d4;
+ background:linear-gradient(145deg,#594234,#382a23);
+ border-color:#806047;
+ box-shadow:inset 0 1px #ffffff12,0 4px 10px #0003;
+}
+.btn.wide{grid-column:1/-1}
+.footer{
+ text-align:center;color:#92765e;
+ font-size:9px;letter-spacing:2px;
+ margin-top:17px;
+}
+
+/* Dialogs */
+.overlay{
+ position:fixed;inset:0;z-index:20;
+ display:none;align-items:center;justify-content:center;
+ padding:17px;background:#100b09d9;
+ backdrop-filter:blur(9px);
+}
 .overlay.show{display:flex}
-.dialog{width:min(100%,390px);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#574438,#28232a);border:1px solid #b28a60;border-radius:23px;padding:21px;text-align:center;box-shadow:0 20px 80px #000b}
-.dialog h2{margin:0 0 9px;font-size:23px}
-.dialog p{color:#e0cdb7;font-size:13px;line-height:1.7}
-.dialog button{width:100%;margin-top:9px}
-.shop-grid{display:grid;gap:10px;margin-top:15px}
-.shop-item,.achievement{background:#3b3030;border:1px solid #82664c;border-radius:14px;padding:12px;text-align:start}
-.shop-item strong,.achievement strong{display:block;margin-bottom:5px}
-.shop-item p{margin:3px 0;font-size:12px}
-.achievement-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
-.achievement small{display:block;color:#ddc9b0;font-size:10px;margin-top:5px}
-.leaderboard-list{display:grid;gap:8px;margin:12px 0;max-height:45vh;overflow:auto}
-.leader-row{display:grid;grid-template-columns:35px 1fr auto;gap:8px;align-items:center;background:#3b3030;border-radius:12px;padding:10px;text-align:start}
-.leader-rank{color:#ffd166;font-weight:900}
-.leader-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.leader-meta{font-size:10px;color:#d8c4ad}
-.daily-info{background:#3b3030;border:1px solid #8b6c4d;border-radius:15px;padding:15px;margin:14px 0}
-.daily-info strong{display:block;font-size:30px;color:#ffd166}
-body.golden{--accent:#ffd166}
-@media(max-width:390px){
- .app{padding:11px 9px}.brand{font-size:22px}
- .board{height:450px;min-height:450px}
- .stats{gap:5px}.stat strong{font-size:16px}.controls{gap:6px}
+.dialog{
+ width:min(100%,390px);max-height:88vh;
+ overflow:auto;text-align:center;
+ padding:22px 18px;
+ border-radius:24px;
+ border:1px solid #a47a51;
+ background:linear-gradient(145deg,#594233,#2c211d);
+ box-shadow:0 25px 80px #000b,inset 0 1px #fff2;
 }
-@media(max-height:650px){.board{height:390px;min-height:390px}}
+.dialog h2{margin:0 0 9px;font-size:22px;color:#f9e8d2}
+.dialog p{font-size:13px;line-height:1.7;color:#d9c1a8}
+.dialog .btn{width:100%;margin-top:9px}
+.dialog .btn.secondary{margin-top:8px}
+.shop-grid{display:grid;gap:10px;margin-top:15px}
+.shop-item,.achievement,.leader-row{
+ border:1px solid #76583f;
+ background:linear-gradient(145deg,#49352b,#352720);
+ border-radius:15px;padding:12px;text-align:start;
+}
+.shop-item strong,.achievement strong{display:block;color:#f7dfbf}
+.shop-item p{margin:5px 0;font-size:11px}
+.daily-info{
+ margin:15px 0;padding:18px;
+ border:1px solid #8b6847;border-radius:17px;
+ background:linear-gradient(145deg,#503b2e,#30231e);
+}
+.daily-info strong{
+ display:block;font-size:33px;color:#f3c77e;margin:6px;
+}
+.achievement-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px 0}
+.achievement small{display:block;font-size:10px;color:#cbb39a;margin-top:5px}
+.leaderboard-list{display:grid;gap:8px;margin:12px 0;max-height:45vh;overflow:auto}
+.leader-row{
+ display:grid;grid-template-columns:34px 1fr auto;
+ gap:8px;align-items:center;
+}
+.leader-rank{color:#efc879;font-weight:900}
+.leader-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leader-meta{font-size:10px;color:#c8ad92}
+.toast{
+ position:fixed;z-index:40;bottom:22px;left:50%;
+ transform:translate(-50%,20px);
+ opacity:0;pointer-events:none;
+ background:#f1d2a7;color:#332219;
+ padding:11px 17px;border-radius:30px;
+ font-size:12px;font-weight:800;
+ box-shadow:0 8px 25px #0008;
+ transition:.25s;
+ max-width:90%;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+body.golden .tube:before{border-color:#ffe0a5c9}
+body.golden .ball{filter:saturate(1.12)}
+@media(max-width:390px){
+ .app{padding:10px 9px 20px}
+ .brand{font-size:21px}
+ .game-stage{height:490px;min-height:490px}
+ .play-area{inset:57px 6px 43px;gap:12px 2px}
+ .tube{width:59px;height:160px}
+ .ball{min-height:18px}
+ .controls{gap:6px}
+ .btn{font-size:11px}
+}
+@media(max-height:700px){
+ .game-stage{height:430px;min-height:430px}
+ .tube{height:145px;min-height:130px}
+}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <header>
- <div class="brand">COLOR <span>ESCAPE</span></div>
- <select id="language" class="lang-select" aria-label="Language">
-  <option value="fa">🇮🇷 فارسی</option>
-  <option value="en">🇬🇧 English</option>
-  <option value="ar">🇸🇦 العربية</option>
-  <option value="es">🇪🇸 Español</option>
-  <option value="fr">🇫🇷 Français</option>
-  <option value="de">🇩🇪 Deutsch</option>
-  <option value="ru">🇷🇺 Русский</option>
- </select>
+ <div class="brand">COLOR <span>ESCAPE</span><small>PREMIUM PUZZLE</small></div>
+ <div class="top-tools">
+  <select id="language" class="lang-select">
+   <option value="fa">🇮🇷 فارسی</option>
+   <option value="en">🇬🇧 English</option>
+   <option value="ar">🇸🇦 العربية</option>
+   <option value="es">🇪🇸 Español</option>
+   <option value="fr">🇫🇷 Français</option>
+   <option value="de">🇩🇪 Deutsch</option>
+   <option value="ru">🇷🇺 Русский</option>
+  </select>
+ </div>
 </header>
 
 <section class="stats">
@@ -119,148 +426,182 @@ body.golden{--accent:#ffd166}
 
 <div class="message" id="message">رنگ‌ها را مرتب کن و همه لوله‌ها را کامل کن!</div>
 
-<main class="board is-loading" id="gameBoard">
- <div class="board-loader">در حال آماده‌سازی بازی سه‌بعدی...</div>
- <div id="threeBoard"></div>
- <div class="three-badge">✨ PREMIUM 3D EDITION</div>
- <div class="tubes" id="tubes"></div>
- <div class="board-caption" data-i="tap">برای انتقال رنگ روی شیشه‌ها بزن</div>
+<main class="game-stage">
+ <div class="stage-top">
+  <span class="stage-label">✦ COLOR SORT</span>
+  <span class="stage-level" id="stageLevel">LEVEL 01</span>
+ </div>
+
+ <div class="play-area" id="playArea"></div>
+
+ <div class="stage-caption" data-i="tap">برای انتقال توپ‌ها روی بطری‌ها بزن</div>
 </main>
 
+<div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+
 <section class="controls">
- <button class="secondary" id="undo" data-i="undo">↶ برگشت</button>
- <button class="secondary" id="restart" data-i="restart">⟲ شروع مجدد</button>
- <button id="next" disabled data-i="next">مرحله بعد ←</button>
- <button class="secondary" id="skip" data-i="skip">⏭ رد کردن · ۳۰ 🪙</button>
- <button class="secondary" id="openShop" data-i="shop">🛍️ فروشگاه</button>
- <button class="secondary" id="dailyOpen" data-i="daily">🎁 جایزه روزانه</button>
- <button class="secondary" id="openAchievements" data-i="achievements">🏆 دستاوردها</button>
- <button class="secondary" id="openLeaderboard" data-i="leaderboard">🥇 رتبه‌بندی</button>
+ <button class="btn secondary" id="undo" data-i="undo">↶ برگشت</button>
+ <button class="btn secondary" id="restart" data-i="restart">⟲ شروع مجدد</button>
+ <button class="btn" id="next" disabled data-i="next">مرحله بعد ←</button>
+
+ <button class="btn secondary" id="skip" data-i="skip">⏭ رد کردن · ۳۰ 🪙</button>
+ <button class="btn secondary" id="hint" data-i="hintButton">💡 راهنما · ۱۵ 🪙</button>
+ <button class="btn secondary" id="openShop" data-i="shop">🛍️ فروشگاه</button>
+
+ <button class="btn secondary" id="dailyOpen" data-i="daily">🎁 جایزه روزانه</button>
+ <button class="btn secondary" id="openAchievements" data-i="achievements">🏆 دستاوردها</button>
+ <button class="btn secondary" id="openLeaderboard" data-i="leaderboard">🥇 رتبه‌بندی</button>
 </section>
 
-<button class="sound-toggle secondary" id="soundToggle">🔊 صدا روشن</button>
-<div class="footer">COLOR ESCAPE 3D · 500 LEVELS · GLOBAL PUZZLE</div>
+<button class="btn secondary wide" id="soundToggle" style="margin-top:9px">🔊 صدا روشن</button>
+<div class="footer">COLOR ESCAPE · SORT YOUR WORLD</div>
 </div>
 
-<div class="overlay" id="win"><div class="dialog">
- <h2 data-i="won">مرحله کامل شد! 🎉</h2>
- <p id="winText"></p>
- <button id="continue" data-i="continue">ادامه</button>
-</div></div>
+<div class="toast" id="toast"></div>
 
-<div class="overlay" id="shop"><div class="dialog">
- <h2 data-i="shopTitle">🛍️ فروشگاه بازی</h2>
- <p data-i="shopDesc">با سکه‌هایت امکانات بازی را بخر.</p>
- <div class="shop-grid">
-  <div class="shop-item">
-   <strong data-i="hintTitle">💡 راهنمای حرکت</strong>
-   <p data-i="hintDesc">یک حرکت قانونی پیشنهاد می‌دهد.</p>
-   <button id="buyHint">۱۵ 🪙</button>
-  </div>
-  <div class="shop-item">
-   <strong data-i="skinTitle">✨ پوسته طلایی</strong>
-   <p data-i="skinDesc">ظاهر طلایی بازی را فعال کن.</p>
-   <button id="buySkin">۴۰ 🪙</button>
-  </div>
+<!-- Win -->
+<div class="overlay" id="win">
+ <div class="dialog">
+  <h2 data-i="won">مرحله کامل شد! 🎉</h2>
+  <p id="winText"></p>
+  <button class="btn" id="continue" data-i="continue">ادامه</button>
  </div>
- <p id="shopMessage"></p>
- <button class="secondary" id="closeShop" data-i="close">بستن</button>
-</div></div>
+</div>
 
-<div class="overlay" id="daily"><div class="dialog">
- <h2 data-i="dailyTitle">🎁 جایزه روزانه</h2>
- <p data-i="dailyDesc">هر روز وارد بازی شو و جایزه بگیر.</p>
- <div class="daily-info">
-  <span data-i="todayReward">جایزه امروز</span>
-  <strong id="dailyReward">۱۰ 🪙</strong>
-  <span id="dailyStreak"></span>
+<!-- Shop -->
+<div class="overlay" id="shopModal">
+ <div class="dialog">
+  <h2 data-i="shopTitle">🛍️ فروشگاه بازی</h2>
+  <p data-i="shopDesc">با سکه‌هایت امکانات بازی را بخر.</p>
+  <div class="shop-grid">
+   <div class="shop-item">
+    <strong data-i="hintTitle">💡 راهنمای حرکت</strong>
+    <p data-i="hintDesc">یک حرکت قانونی پیشنهاد می‌دهد.</p>
+    <button class="btn" id="buyHint">۱۵ 🪙</button>
+   </div>
+   <div class="shop-item">
+    <strong data-i="skinTitle">✨ پوسته طلایی</strong>
+    <p data-i="skinDesc">ظاهر طلایی بازی را فعال کن.</p>
+    <button class="btn" id="buySkin">۴۰ 🪙</button>
+   </div>
+  </div>
+  <p id="shopMessage"></p>
+  <button class="btn secondary" id="closeShop" data-i="close">بستن</button>
  </div>
- <p id="dailyMessage"></p>
- <button id="claimDaily" data-i="claim">دریافت جایزه</button>
- <button class="secondary" id="closeDaily" data-i="close">بستن</button>
-</div></div>
+</div>
 
-<div class="overlay" id="leaderboard"><div class="dialog">
- <h2 data-i="leaderboardTitle">🥇 جدول رتبه‌بندی</h2>
- <div id="leaderboardList" class="leaderboard-list"></div>
- <p id="leaderboardMessage"></p>
- <button id="refreshLeaderboard" data-i="refresh">بروزرسانی</button>
- <button class="secondary" id="closeLeaderboard" data-i="close">بستن</button>
-</div></div>
+<!-- Daily -->
+<div class="overlay" id="dailyModal">
+ <div class="dialog">
+  <h2 data-i="dailyTitle">🎁 جایزه روزانه</h2>
+  <p data-i="dailyDesc">هر روز وارد بازی شو و جایزه بگیر.</p>
+  <div class="daily-info">
+   <span data-i="todayReward">جایزه امروز</span>
+   <strong id="dailyReward">۱۰ 🪙</strong>
+   <span id="dailyStreak"></span>
+  </div>
+  <p id="dailyMessage"></p>
+  <button class="btn" id="claimDaily" data-i="claim">دریافت جایزه</button>
+  <button class="btn secondary" id="closeDaily" data-i="close">بستن</button>
+ </div>
+</div>
 
-<div class="overlay" id="achievements"><div class="dialog">
- <h2 data-i="achievementsTitle">🏆 دستاوردها</h2>
- <p id="achievementSummary"></p>
- <div class="achievement-list" id="achievementList"></div>
- <button class="secondary" id="closeAchievements" data-i="close">بستن</button>
-</div></div>
+<!-- Leaderboard -->
+<div class="overlay" id="leaderboardModal">
+ <div class="dialog">
+  <h2 data-i="leaderboardTitle">🥇 جدول رتبه‌بندی</h2>
+  <div id="leaderboardList" class="leaderboard-list"></div>
+  <p id="leaderboardMessage"></p>
+  <button class="btn" id="refreshLeaderboard" data-i="refresh">بروزرسانی</button>
+  <button class="btn secondary" id="closeLeaderboard" data-i="close">بستن</button>
+ </div>
+</div>
+
+<!-- Achievements -->
+<div class="overlay" id="achievementsModal">
+ <div class="dialog">
+  <h2 data-i="achievementsTitle">🏆 دستاوردها</h2>
+  <p id="achievementSummary"></p>
+  <div class="achievement-list" id="achievementList"></div>
+  <button class="btn secondary" id="closeAchievements" data-i="close">بستن</button>
+ </div>
+</div>
 
 <script>
 (()=>{
 "use strict";
-const CAP=4,TOTAL=500;
+
+/* ---------------- CONFIG ---------------- */
+
+const TOTAL=500;
+const CAP=4;
+
 const COLORS=[
- "#d58c91","#87ae91","#a18ab9","#dfb968",
- "#7fa9b7","#c68cae","#a3b47b","#d49b78"
+ "#ee9caa","#8fd1ad","#b7a0e4","#f1ce79",
+ "#83c8df","#e8a5d1","#b7d58b","#e9a77e",
+ "#93a9e8","#c7a18a"
 ];
+
 const $=id=>document.getElementById(id);
+
 const tg=window.Telegram?.WebApp;
 if(tg){
  try{
   tg.ready();tg.expand();
-  tg.setHeaderColor("#302729");
-  tg.setBackgroundColor("#211b1c");
-  tg.enableClosingConfirmation();
+  tg.setHeaderColor("#352720");
+  tg.setBackgroundColor("#211916");
  }catch(e){}
 }
 
-const common={
- level:"مرحله",moves:"حرکت",best:"بهترین",coins:"🪙 سکه",
- tap:"برای انتقال رنگ روی شیشه‌ها بزن",undo:"↶ برگشت",
- restart:"⟲ شروع مجدد",next:"مرحله بعد ←",skip:"⏭ رد کردن · ۳۰ 🪙",
- shop:"🛍️ فروشگاه",daily:"🎁 جایزه روزانه",
- achievements:"🏆 دستاوردها",leaderboard:"🥇 رتبه‌بندی",
- won:"مرحله کامل شد! 🎉",continue:"ادامه",
- shopTitle:"🛍️ فروشگاه بازی",shopDesc:"با سکه‌هایت امکانات بازی را بخر.",
- hintTitle:"💡 راهنمای حرکت",hintDesc:"یک حرکت قانونی پیشنهاد می‌دهد.",
- skinTitle:"✨ پوسته طلایی",skinDesc:"ظاهر طلایی بازی را فعال کن.",
- close:"بستن",dailyTitle:"🎁 جایزه روزانه",
- dailyDesc:"هر روز وارد بازی شو و جایزه بگیر.",
- todayReward:"جایزه امروز",claim:"دریافت جایزه",
- leaderboardTitle:"🥇 جدول رتبه‌بندی",refresh:"بروزرسانی",
- achievementsTitle:"🏆 دستاوردها",
- startMessage:"رنگ‌ها را مرتب کن و همه لوله‌ها را کامل کن!",
- selectSource:"یک شیشه دارای رنگ انتخاب کن.",
- selectTarget:"حالا شیشه مقصد را انتخاب کن.",
- invalid:"فقط رنگ مشابه یا شیشه خالی را انتخاب کن.",
- solved:"عالی! همه رنگ‌ها مرتب شدند.",
- hint:"راهنمای حرکت",noHint:"حرکت پیشنهادی پیدا نشد.",
- noCoins:"سکه کافی نداری!",skipDone:"مرحله رد شد.",
- dailyDone:"جایزه امروز را دریافت کرده‌ای!",
- claimSuccess:"جایزه دریافت شد!",skinBought:"پوسته طلایی فعال شد!",
- needCoins:"سکه کافی نیست!",noPlayers:"هنوز بازیکنی ثبت نشده است.",
- serverError:"ارتباط با سرور برقرار نشد.",
- completed:"مرحله تکمیل‌شده",streak:"روز زنجیره ورود",
- locked:"قفل است",unlocked:"باز شده ✓",
- achievementSummary:"دستاورد باز شده",
- levelWord:"مرحله",movesWord:"حرکت",
- first:"شروع قهرمانی",five:"پنج‌قدم",ten:"قهرمان کوچک",
- twentyfive:"استاد رنگ‌ها",fifty:"قهرمان رنگ‌ها",
- hundred:"قهرمان بزرگ",twofifty:"افسانه رنگ‌ها",
- fivehundred:"افسانه Color Escape",
- allDone:"تمام ۵۰۰ مرحله را تمام کردی! 👑",
- hintFrom:"از شیشه",hintTo:"به شیشه",
- dailyDay:"روز",skinActive:"پوسته طلایی فعال است ✓",
- soundOn:"🔊 صدا روشن",soundOff:"🔇 صدا خاموش",
- loading:"در حال دریافت..."
-};
+/* ---------------- TRANSLATIONS ---------------- */
 
-const translations={
- fa:common,
+const T={
+ fa:{
+  level:"مرحله",moves:"حرکت",best:"بهترین",coins:"🪙 سکه",
+  tap:"برای انتقال توپ‌ها روی بطری‌ها بزن",
+  undo:"↶ برگشت",restart:"⟲ شروع مجدد",next:"مرحله بعد ←",
+  skip:"⏭ رد کردن · ۳۰ 🪙",hintButton:"💡 راهنما · ۱۵ 🪙",
+  shop:"🛍️ فروشگاه",daily:"🎁 جایزه روزانه",
+  achievements:"🏆 دستاوردها",leaderboard:"🥇 رتبه‌بندی",
+  won:"مرحله کامل شد! 🎉",continue:"ادامه",
+  shopTitle:"🛍️ فروشگاه بازی",shopDesc:"با سکه‌هایت امکانات بازی را بخر.",
+  hintTitle:"💡 راهنمای حرکت",hintDesc:"یک حرکت قانونی پیشنهاد می‌دهد.",
+  skinTitle:"✨ پوسته طلایی",skinDesc:"ظاهر طلایی بازی را فعال کن.",
+  close:"بستن",dailyTitle:"🎁 جایزه روزانه",
+  dailyDesc:"هر روز وارد بازی شو و جایزه بگیر.",
+  todayReward:"جایزه امروز",claim:"دریافت جایزه",
+  leaderboardTitle:"🥇 جدول رتبه‌بندی",refresh:"بروزرسانی",
+  achievementsTitle:"🏆 دستاوردها",
+  start:"رنگ‌ها را مرتب کن و همه بطری‌ها را کامل کن!",
+  selectSource:"ابتدا یک بطری دارای توپ انتخاب کن.",
+  selectTarget:"حالا بطری مقصد را انتخاب کن.",
+  invalid:"فقط رنگ مشابه یا بطری خالی را انتخاب کن.",
+  solved:"عالی! همه رنگ‌ها مرتب شدند.",
+  noHint:"حرکت پیشنهادی پیدا نشد.",
+  noCoins:"سکه کافی نداری!",
+  dailyDone:"جایزه امروز را دریافت کرده‌ای!",
+  claimSuccess:"جایزه دریافت شد!",
+  skinBought:"پوسته طلایی فعال شد!",
+  noPlayers:"هنوز بازیکنی ثبت نشده است.",
+  serverError:"ارتباط با سرور برقرار نشد.",
+  completed:"مرحله تکمیل‌شده",streak:"روز زنجیره ورود",
+  locked:"قفل است",unlocked:"باز شده ✓",
+  achievementSummary:"دستاورد باز شده",
+  first:"اولین پیروزی",five:"پنج مرحله",ten:"قهرمان کوچک",
+  twentyfive:"استاد رنگ‌ها",fifty:"قهرمان رنگ‌ها",
+  hundred:"قهرمان بزرگ",twofifty:"افسانه رنگ‌ها",
+  fivehundred:"افسانه Color Escape",
+  allDone:"تمام ۵۰۰ مرحله را تمام کردی! 👑",
+  hintFrom:"از بطری",hintTo:"به بطری",
+  dailyDay:"روز",skinActive:"پوسته طلایی فعال است ✓",
+  soundOn:"🔊 صدا روشن",soundOff:"🔇 صدا خاموش",
+  loading:"در حال دریافت..."
+ },
  en:{
-  ...common,level:"Level",moves:"Moves",best:"Best",coins:"🪙 Coins",
-  tap:"Tap glass tubes to move colors",undo:"↶ Undo",
-  restart:"⟲ Restart",next:"Next Level →",skip:"⏭ Skip · 30 🪙",
+  level:"Level",moves:"Moves",best:"Best",coins:"🪙 Coins",
+  tap:"Tap a bottle to move the balls",
+  undo:"↶ Undo",restart:"⟲ Restart",next:"Next Level →",
+  skip:"⏭ Skip · 30 🪙",hintButton:"💡 Hint · 15 🪙",
   shop:"🛍️ Shop",daily:"🎁 Daily Reward",
   achievements:"🏆 Achievements",leaderboard:"🥇 Leaderboard",
   won:"Level Complete! 🎉",continue:"Continue",
@@ -271,47 +612,55 @@ const translations={
   dailyDesc:"Come back every day for free coins.",
   todayReward:"Today's reward",claim:"Claim Reward",
   leaderboardTitle:"🥇 Leaderboard",refresh:"Refresh",
-  achievementsTitle:"🏆 Achievements",startMessage:"Sort the colors!",
-  selectSource:"Select a tube containing colors.",
-  selectTarget:"Now select the target tube.",
-  invalid:"Choose a matching color or an empty tube.",
+  achievementsTitle:"🏆 Achievements",
+  start:"Sort the colors and complete every bottle!",
+  selectSource:"Select a bottle containing balls.",
+  selectTarget:"Now select the target bottle.",
+  invalid:"Choose a matching color or an empty bottle.",
   solved:"Amazing! All colors are sorted.",
-  noHint:"No suggested move found.",noCoins:"Not enough coins!",
+  noHint:"No suggested move found.",
+  noCoins:"Not enough coins!",
   dailyDone:"Today's reward already claimed.",
-  claimSuccess:"Reward claimed!",skinBought:"Golden skin activated!",
-  noPlayers:"No players yet.",serverError:"Could not connect to server.",
-  completed:"Completed levels",streak:"Day streak",locked:"Locked",
-  unlocked:"Unlocked ✓",achievementSummary:"Achievements unlocked",
-  levelWord:"Level",movesWord:"Moves",first:"First Victory",
-  five:"Five Steps",ten:"Little Champion",twentyfive:"Color Master",
-  fifty:"Color Champion",hundred:"Big Champion",
-  twofifty:"Color Legend",fivehundred:"Color Escape Legend",
+  claimSuccess:"Reward claimed!",
+  skinBought:"Golden skin activated!",
+  noPlayers:"No players yet.",
+  serverError:"Could not connect to server.",
+  completed:"Completed levels",streak:"Day streak",
+  locked:"Locked",unlocked:"Unlocked ✓",
+  achievementSummary:"Achievements unlocked",
+  first:"First Victory",five:"Five Levels",ten:"Little Champion",
+  twentyfive:"Color Master",fifty:"Color Champion",
+  hundred:"Big Champion",twofifty:"Color Legend",
+  fivehundred:"Color Escape Legend",
   allDone:"You completed all 500 levels! 👑",
-  hintFrom:"From tube",hintTo:"to tube",dailyDay:"Day",
-  skinActive:"Golden skin active ✓",soundOn:"🔊 Sound On",
-  soundOff:"🔇 Sound Off",loading:"Loading..."
+  hintFrom:"From bottle",hintTo:"to bottle",
+  dailyDay:"Day",skinActive:"Golden skin active ✓",
+  soundOn:"🔊 Sound On",soundOff:"🔇 Sound Off",
+  loading:"Loading..."
  },
  ar:{
-  ...common,level:"المرحلة",moves:"الحركات",best:"الأفضل",
-  coins:"🪙 العملات",tap:"اضغط على الأنابيب لنقل الألوان",
+  level:"المرحلة",moves:"الحركات",best:"الأفضل",coins:"🪙 العملات",
+  tap:"اضغط على الزجاجات لنقل الكرات",
   undo:"↶ تراجع",restart:"⟲ إعادة",next:"المرحلة التالية",
-  skip:"⏭ تخطي · 30 🪙",shop:"🛍️ المتجر",
-  daily:"🎁 المكافأة اليومية",achievements:"🏆 الإنجازات",
-  leaderboard:"🥇 الترتيب",won:"اكتملت المرحلة! 🎉",
-  continue:"متابعة",shopTitle:"🛍️ متجر اللعبة",
-  shopDesc:"اشترِ الميزات باستخدام العملات.",
+  skip:"⏭ تخطي · 30 🪙",hintButton:"💡 تلميح · 15 🪙",
+  shop:"🛍️ المتجر",daily:"🎁 المكافأة اليومية",
+  achievements:"🏆 الإنجازات",leaderboard:"🥇 الترتيب",
+  won:"اكتملت المرحلة! 🎉",continue:"متابعة",
+  shopTitle:"🛍️ متجر اللعبة",shopDesc:"اشترِ الميزات باستخدام العملات.",
   hintTitle:"💡 تلميح الحركة",hintDesc:"يقترح حركة قانونية.",
   skinTitle:"✨ المظهر الذهبي",skinDesc:"افتح المظهر الذهبي.",
   close:"إغلاق",dailyTitle:"🎁 المكافأة اليومية",
   dailyDesc:"عد كل يوم للحصول على العملات.",
   todayReward:"مكافأة اليوم",claim:"استلام المكافأة",
   leaderboardTitle:"🥇 قائمة الترتيب",refresh:"تحديث",
-  achievementsTitle:"🏆 الإنجازات",startMessage:"رتب الألوان!",
-  selectSource:"اختر أنبوباً يحتوي على ألوان.",
-  selectTarget:"اختر أنبوب الوجهة.",
-  invalid:"اختر لوناً مطابقاً أو أنبوباً فارغاً.",
+  achievementsTitle:"🏆 الإنجازات",
+  start:"رتب الألوان وأكمل جميع الزجاجات!",
+  selectSource:"اختر زجاجة تحتوي على كرات.",
+  selectTarget:"اختر زجاجة الوجهة.",
+  invalid:"اختر لوناً مطابقاً أو زجاجة فارغة.",
   solved:"رائع! تم ترتيب جميع الألوان.",
-  noHint:"لم يتم العثور على حركة.",noCoins:"العملات غير كافية!",
+  noHint:"لم يتم العثور على حركة.",
+  noCoins:"العملات غير كافية!",
   dailyDone:"لقد استلمت مكافأة اليوم.",
   claimSuccess:"تم استلام المكافأة!",
   skinBought:"تم تفعيل المظهر الذهبي!",
@@ -320,22 +669,21 @@ const translations={
   completed:"المراحل المكتملة",streak:"أيام متتالية",
   locked:"مغلق",unlocked:"مفتوح ✓",
   achievementSummary:"الإنجازات المفتوحة",
-  levelWord:"المرحلة",movesWord:"الحركات",
-  first:"الفوز الأول",five:"خمس خطوات",ten:"بطل صغير",
+  first:"الفوز الأول",five:"خمسة مستويات",ten:"بطل صغير",
   twentyfive:"خبير الألوان",fifty:"بطل الألوان",
   hundred:"البطل الكبير",twofifty:"أسطورة الألوان",
   fivehundred:"أسطورة Color Escape",
   allDone:"لقد أكملت جميع المراحل الـ500! 👑",
-  hintFrom:"من الأنبوب",hintTo:"إلى الأنبوب",
+  hintFrom:"من الزجاجة",hintTo:"إلى الزجاجة",
   dailyDay:"اليوم",skinActive:"المظهر الذهبي مفعل ✓",
   soundOn:"🔊 الصوت يعمل",soundOff:"🔇 الصوت مغلق",
   loading:"جار التحميل..."
  },
  es:{
-  ...common,level:"Nivel",moves:"Movimientos",best:"Mejor",
-  coins:"🪙 Monedas",tap:"Toca los tubos para mover colores",
-  undo:"↶ Deshacer",restart:"⟲ Reiniciar",
-  next:"Siguiente nivel →",skip:"⏭ Saltar · 30 🪙",
+  level:"Nivel",moves:"Movimientos",best:"Mejor",coins:"🪙 Monedas",
+  tap:"Toca una botella para mover las bolas",
+  undo:"↶ Deshacer",restart:"⟲ Reiniciar",next:"Siguiente nivel →",
+  skip:"⏭ Saltar · 30 🪙",hintButton:"💡 Pista · 15 🪙",
   shop:"🛍️ Tienda",daily:"🎁 Premio diario",
   achievements:"🏆 Logros",leaderboard:"🥇 Clasificación",
   won:"¡Nivel completado! 🎉",continue:"Continuar",
@@ -346,10 +694,11 @@ const translations={
   dailyDesc:"Vuelve cada día para ganar monedas.",
   todayReward:"Premio de hoy",claim:"Reclamar",
   leaderboardTitle:"🥇 Clasificación",refresh:"Actualizar",
-  achievementsTitle:"🏆 Logros",startMessage:"¡Ordena los colores!",
-  selectSource:"Selecciona un tubo con colores.",
-  selectTarget:"Selecciona el tubo de destino.",
-  invalid:"Elige un color igual o un tubo vacío.",
+  achievementsTitle:"🏆 Logros",
+  start:"¡Ordena los colores!",
+  selectSource:"Selecciona una botella con bolas.",
+  selectTarget:"Selecciona la botella de destino.",
+  invalid:"Elige un color igual o una botella vacía.",
   solved:"¡Genial! Todos los colores están ordenados.",
   noHint:"No se encontró ningún movimiento.",
   noCoins:"¡No tienes suficientes monedas!",
@@ -360,21 +709,21 @@ const translations={
   completed:"Niveles completados",streak:"Días consecutivos",
   locked:"Bloqueado",unlocked:"Desbloqueado ✓",
   achievementSummary:"Logros desbloqueados",
-  levelWord:"Nivel",movesWord:"Movimientos",
-  first:"Primera victoria",five:"Cinco pasos",
-  ten:"Pequeño campeón",twentyfive:"Maestro del color",
-  fifty:"Campeón del color",hundred:"Gran campeón",
-  twofifty:"Leyenda del color",fivehundred:"Leyenda Color Escape",
+  first:"Primera victoria",five:"Cinco niveles",ten:"Pequeño campeón",
+  twentyfive:"Maestro del color",fifty:"Campeón del color",
+  hundred:"Gran campeón",twofifty:"Leyenda del color",
+  fivehundred:"Leyenda Color Escape",
   allDone:"¡Has completado los 500 niveles! 👑",
-  hintFrom:"Del tubo",hintTo:"al tubo",dailyDay:"Día",
-  skinActive:"Tema dorado activo ✓",soundOn:"🔊 Sonido activado",
-  soundOff:"🔇 Sonido desactivado",loading:"Cargando..."
+  hintFrom:"De botella",hintTo:"a botella",
+  dailyDay:"Día",skinActive:"Tema dorado activo ✓",
+  soundOn:"🔊 Sonido activado",soundOff:"🔇 Sonido desactivado",
+  loading:"Cargando..."
  },
  fr:{
-  ...common,level:"Niveau",moves:"Coups",best:"Record",
-  coins:"🪙 Pièces",tap:"Touchez les tubes pour déplacer les couleurs",
-  undo:"↶ Annuler",restart:"⟲ Recommencer",
-  next:"Niveau suivant →",skip:"⏭ Passer · 30 🪙",
+  level:"Niveau",moves:"Coups",best:"Record",coins:"🪙 Pièces",
+  tap:"Touchez une bouteille pour déplacer les boules",
+  undo:"↶ Annuler",restart:"⟲ Recommencer",next:"Niveau suivant →",
+  skip:"⏭ Passer · 30 🪙",hintButton:"💡 Indice · 15 🪙",
   shop:"🛍️ Boutique",daily:"🎁 Récompense quotidienne",
   achievements:"🏆 Succès",leaderboard:"🥇 Classement",
   won:"Niveau terminé ! 🎉",continue:"Continuer",
@@ -385,10 +734,11 @@ const translations={
   dailyDesc:"Revenez chaque jour pour gagner des pièces.",
   todayReward:"Récompense du jour",claim:"Récupérer",
   leaderboardTitle:"🥇 Classement",refresh:"Actualiser",
-  achievementsTitle:"🏆 Succès",startMessage:"Triez les couleurs !",
-  selectSource:"Choisissez un tube avec des couleurs.",
-  selectTarget:"Choisissez le tube cible.",
-  invalid:"Choisissez une couleur identique ou un tube vide.",
+  achievementsTitle:"🏆 Succès",
+  start:"Triez les couleurs !",
+  selectSource:"Choisissez une bouteille avec des boules.",
+  selectTarget:"Choisissez la bouteille cible.",
+  invalid:"Choisissez une couleur identique ou vide.",
   solved:"Bravo ! Toutes les couleurs sont triées.",
   noHint:"Aucun mouvement trouvé.",noCoins:"Pas assez de pièces !",
   dailyDone:"Récompense du jour déjà récupérée.",
@@ -398,21 +748,21 @@ const translations={
   completed:"Niveaux terminés",streak:"Jours consécutifs",
   locked:"Verrouillé",unlocked:"Débloqué ✓",
   achievementSummary:"Succès débloqués",
-  levelWord:"Niveau",movesWord:"Coups",
-  first:"Première victoire",five:"Cinq étapes",
-  ten:"Petit champion",twentyfive:"Maître des couleurs",
-  fifty:"Champion des couleurs",hundred:"Grand champion",
-  twofifty:"Légende des couleurs",fivehundred:"Légende Color Escape",
+  first:"Première victoire",five:"Cinq niveaux",ten:"Petit champion",
+  twentyfive:"Maître des couleurs",fifty:"Champion des couleurs",
+  hundred:"Grand champion",twofifty:"Légende des couleurs",
+  fivehundred:"Légende Color Escape",
   allDone:"Vous avez terminé les 500 niveaux ! 👑",
-  hintFrom:"Du tube",hintTo:"au tube",dailyDay:"Jour",
-  skinActive:"Thème doré activé ✓",soundOn:"🔊 Son activé",
-  soundOff:"🔇 Son désactivé",loading:"Chargement..."
+  hintFrom:"De la bouteille",hintTo:"à la bouteille",
+  dailyDay:"Jour",skinActive:"Thème doré activé ✓",
+  soundOn:"🔊 Son activé",soundOff:"🔇 Son désactivé",
+  loading:"Chargement..."
  },
  de:{
-  ...common,level:"Level",moves:"Züge",best:"Bestwert",
-  coins:"🪙 Münzen",tap:"Tippe auf Röhren, um Farben zu bewegen",
-  undo:"↶ Zurück",restart:"⟲ Neustart",
-  next:"Nächstes Level →",skip:"⏭ Überspringen · 30 🪙",
+  level:"Level",moves:"Züge",best:"Bestwert",coins:"🪙 Münzen",
+  tap:"Tippe auf eine Flasche, um Kugeln zu bewegen",
+  undo:"↶ Zurück",restart:"⟲ Neustart",next:"Nächstes Level →",
+  skip:"⏭ Überspringen · 30 🪙",hintButton:"💡 Tipp · 15 🪙",
   shop:"🛍️ Shop",daily:"🎁 Tagesbelohnung",
   achievements:"🏆 Erfolge",leaderboard:"🥇 Rangliste",
   won:"Level geschafft! 🎉",continue:"Weiter",
@@ -423,10 +773,11 @@ const translations={
   dailyDesc:"Komme täglich zurück und erhalte Münzen.",
   todayReward:"Heutige Belohnung",claim:"Abholen",
   leaderboardTitle:"🥇 Rangliste",refresh:"Aktualisieren",
-  achievementsTitle:"🏆 Erfolge",startMessage:"Sortiere die Farben!",
-  selectSource:"Wähle eine Röhre mit Farben.",
-  selectTarget:"Wähle die Zielröhre.",
-  invalid:"Wähle eine gleiche Farbe oder eine leere Röhre.",
+  achievementsTitle:"🏆 Erfolge",
+  start:"Sortiere die Farben!",
+  selectSource:"Wähle eine Flasche mit Kugeln.",
+  selectTarget:"Wähle die Zielflasche.",
+  invalid:"Wähle eine gleiche Farbe oder eine leere Flasche.",
   solved:"Super! Alle Farben sind sortiert.",
   noHint:"Kein Zug gefunden.",noCoins:"Nicht genug Münzen!",
   dailyDone:"Tagesbelohnung bereits abgeholt.",
@@ -436,21 +787,21 @@ const translations={
   completed:"Abgeschlossene Level",streak:"Tage in Folge",
   locked:"Gesperrt",unlocked:"Freigeschaltet ✓",
   achievementSummary:"Freigeschaltete Erfolge",
-  levelWord:"Level",movesWord:"Züge",
-  first:"Erster Sieg",five:"Fünf Schritte",
-  ten:"Kleiner Champion",twentyfive:"Farbenmeister",
-  fifty:"Farben-Champion",hundred:"Großer Champion",
-  twofifty:"Farbenlegende",fivehundred:"Color Escape Legende",
+  first:"Erster Sieg",five:"Fünf Level",ten:"Kleiner Champion",
+  twentyfive:"Farbenmeister",fifty:"Farben-Champion",
+  hundred:"Großer Champion",twofifty:"Farbenlegende",
+  fivehundred:"Color Escape Legende",
   allDone:"Du hast alle 500 Level geschafft! 👑",
-  hintFrom:"Von Röhre",hintTo:"zu Röhre",dailyDay:"Tag",
-  skinActive:"Gold-Design aktiv ✓",soundOn:"🔊 Ton an",
-  soundOff:"🔇 Ton aus",loading:"Wird geladen..."
+  hintFrom:"Von Flasche",hintTo:"zu Flasche",
+  dailyDay:"Tag",skinActive:"Gold-Design aktiv ✓",
+  soundOn:"🔊 Ton an",soundOff:"🔇 Ton aus",
+  loading:"Wird geladen..."
  },
  ru:{
-  ...common,level:"Уровень",moves:"Ходы",best:"Рекорд",
-  coins:"🪙 Монеты",tap:"Нажимайте на колбы, чтобы перемещать цвета",
-  undo:"↶ Отмена",restart:"⟲ Заново",
-  next:"Следующий уровень →",skip:"⏭ Пропустить · 30 🪙",
+  level:"Уровень",moves:"Ходы",best:"Рекорд",coins:"🪙 Монеты",
+  tap:"Нажмите на бутылку, чтобы переместить шарики",
+  undo:"↶ Отмена",restart:"⟲ Заново",next:"Следующий уровень →",
+  skip:"⏭ Пропустить · 30 🪙",hintButton:"💡 Подсказка · 15 🪙",
   shop:"🛍️ Магазин",daily:"🎁 Ежедневная награда",
   achievements:"🏆 Достижения",leaderboard:"🥇 Рейтинг",
   won:"Уровень пройден! 🎉",continue:"Продолжить",
@@ -461,50 +812,238 @@ const translations={
   dailyDesc:"Заходите каждый день и получайте монеты.",
   todayReward:"Награда сегодня",claim:"Получить",
   leaderboardTitle:"🥇 Таблица лидеров",refresh:"Обновить",
-  achievementsTitle:"🏆 Достижения",startMessage:"Сортируйте цвета!",
-  selectSource:"Выберите колбу с цветом.",
-  selectTarget:"Выберите целевую колбу.",
-  invalid:"Выберите такой же цвет или пустую колбу.",
+  achievementsTitle:"🏆 Достижения",
+  start:"Сортируйте цвета!",
+  selectSource:"Выберите бутылку с шариками.",
+  selectTarget:"Выберите целевую бутылку.",
+  invalid:"Выберите такой же цвет или пустую бутылку.",
   solved:"Отлично! Все цвета отсортированы.",
   noHint:"Подходящий ход не найден.",
   noCoins:"Недостаточно монет!",
   dailyDone:"Награда за сегодня уже получена.",
-  claimSuccess:"Награда получена!",
-  skinBought:"Золотая тема активирована!",
+  claimSuccess:"Награда получена!",skinBought:"Золотая тема активирована!",
   noPlayers:"Пока нет игроков.",
   serverError:"Нет соединения с сервером.",
   completed:"Пройденные уровни",streak:"Дней подряд",
   locked:"Закрыто",unlocked:"Открыто ✓",
   achievementSummary:"Открытые достижения",
-  levelWord:"Уровень",movesWord:"Ходы",
-  first:"Первая победа",five:"Пять шагов",
-  ten:"Маленький чемпион",twentyfive:"Мастер цветов",
-  fifty:"Чемпион цветов",hundred:"Большой чемпион",
-  twofifty:"Легенда цветов",fivehundred:"Легенда Color Escape",
+  first:"Первая победа",five:"Пять уровней",ten:"Маленький чемпион",
+  twentyfive:"Мастер цветов",fifty:"Чемпион цветов",
+  hundred:"Большой чемпион",twofifty:"Легенда цветов",
+  fivehundred:"Легенда Color Escape",
   allDone:"Вы прошли все 500 уровней! 👑",
-  hintFrom:"Из колбы",hintTo:"в колбу",dailyDay:"День",
-  skinActive:"Золотая тема включена ✓",soundOn:"🔊 Звук включён",
-  soundOff:"🔇 Звук выключен",loading:"Загрузка..."
+  hintFrom:"Из бутылки",hintTo:"в бутылку",
+  dailyDay:"День",skinActive:"Золотая тема включена ✓",
+  soundOn:"🔊 Звук включён",soundOff:"🔇 Звук выключен",
+  loading:"Загрузка..."
  }
 };
 
-let language=localStorage.getItem("ce_language")||"fa";
-if(!translations[language])language="fa";
-const tr=k=>translations[language][k]??common[k]??k;
+let lang=localStorage.getItem("ce_language")||"fa";
+if(!T[lang])lang="fa";
+const tr=k=>T[lang][k]||T.fa[k]||k;
 
-let level=1,tubes=[],selected=-1,moves=0,history=[],best={};
+/* ---------------- GAME STATE ---------------- */
+
+let level=1;
+let tubes=[];
+let selected=-1;
+let moves=0;
+let history=[];
+let best={};
 let coins=Math.max(0,Number(localStorage.getItem("ce_coins_v1"))||0);
-let claimed=[],unlockedAchievements=[],dailyData={lastClaim:"",streak:0};
+let claimed=[];
+let unlockedAchievements=[];
+let dailyData={lastClaim:"",streak:0};
 let goldenSkin=localStorage.getItem("ce_golden_skin_v1")==="1";
-let muted=false,leaderboardSentLevel=0,audio=null;
+let muted=false;
+let audio=null;
+let leaderboardSentLevel=0;
+let toastTimer=null;
 
-try{claimed=JSON.parse(localStorage.getItem("ce_rewards_v1")||"[]");if(!Array.isArray(claimed))claimed=[]}catch(e){claimed=[]}
-try{unlockedAchievements=JSON.parse(localStorage.getItem("ce_achievements_v1")||"[]");if(!Array.isArray(unlockedAchievements))unlockedAchievements=[]}catch(e){unlockedAchievements=[]}
-try{dailyData=JSON.parse(localStorage.getItem("ce_daily_reward_v1")||'{"lastClaim":"","streak":0}')||dailyData}catch(e){}
-try{best=JSON.parse(localStorage.getItem("ce_best")||"{}")||{}}catch(e){best={}}
+try{
+ claimed=JSON.parse(localStorage.getItem("ce_rewards_v1")||"[]");
+ if(!Array.isArray(claimed))claimed=[];
+}catch(e){claimed=[]}
+
+try{
+ unlockedAchievements=JSON.parse(localStorage.getItem("ce_achievements_v1")||"[]");
+ if(!Array.isArray(unlockedAchievements))unlockedAchievements=[];
+}catch(e){unlockedAchievements=[]}
+
+try{
+ dailyData=JSON.parse(localStorage.getItem("ce_daily_reward_v1")||'{"lastClaim":"","streak":0}');
+}catch(e){dailyData={lastClaim:"",streak:0}}
+
+try{
+ best=JSON.parse(localStorage.getItem("ce_best")||"{}")||{};
+}catch(e){best={}}
+
 if(goldenSkin)document.body.classList.add("golden");
 
-const LEVEL_REWARD=20,SKIP_COST=30;
+/* ---------------- STORAGE ---------------- */
+
+function saveCoins(){
+ localStorage.setItem("ce_coins_v1",String(coins));
+}
+function saveProgress(){
+ try{
+  localStorage.setItem("ce_progress_v1",JSON.stringify({
+   level,tubes,moves
+  }));
+ }catch(e){}
+}
+function toast(message){
+ const el=$("toast");
+ el.textContent=message;
+ el.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>el.classList.remove("show"),2300);
+}
+
+/* ---------------- LEVEL GENERATION ---------------- */
+
+function colorCount(n){
+ if(n<=5)return 3;
+ if(n<=12)return 4;
+ if(n<=20)return 5;
+ if(n<=30)return 6;
+ if(n<=40)return 7;
+ return 8;
+}
+function scrambleCount(n){
+ if(n<=5)return 12+n*2;
+ if(n<=12)return 25+(n-5)*3;
+ if(n<=20)return 46+(n-12)*3;
+ if(n<=30)return 70+(n-20)*3;
+ if(n<=40)return 100+(n-30)*3;
+ return Math.min(1900,130+(n-40)*4);
+}
+function createLevel(n){
+ const count=colorCount(n);
+ const result=Array.from({length:count+2},(_,i)=>
+  i<count?Array(CAP).fill(i):[]
+ );
+
+ let seed=9871+n*7919;
+ const random=max=>{
+  seed=(seed*16807)%2147483647;
+  return seed%max;
+ };
+
+ let previous="";
+ for(let step=0;step<scrambleCount(n);step++){
+  const choices=[];
+  for(let from=0;from<result.length;from++){
+   const source=result[from];
+   if(!source.length)continue;
+   const color=source[source.length-1];
+   let run=1;
+   while(run<source.length&&source[source.length-1-run]===color)run++;
+
+   for(let to=0;to<result.length;to++){
+    if(from===to)continue;
+    const target=result[to];
+    const maxMove=Math.min(
+     run===source.length?run:run-1,
+     CAP-target.length
+    );
+    if(maxMove<1)continue;
+    if(target.length&&target[target.length-1]===color)continue;
+    if(previous===to+":"+from)continue;
+    choices.push({from,to,maxMove});
+   }
+  }
+  if(!choices.length)break;
+  const m=choices[random(choices.length)];
+  const amount=1+random(m.maxMove);
+  for(let k=0;k<amount;k++)result[m.to].push(result[m.from].pop());
+  previous=m.from+":"+m.to;
+ }
+ return result;
+}
+
+function isSolved(){
+ return tubes.every(t=>
+  t.length===0||(t.length===CAP&&t.every(v=>v===t[0]))
+ );
+}
+
+/* ---------------- MOVE LOGIC ---------------- */
+
+function snapshot(){
+ history.push({
+  tubes:tubes.map(t=>t.slice()),
+  moves
+ });
+ if(history.length>100)history.shift();
+}
+
+function moveBalls(fromIndex,toIndex){
+ const from=tubes[fromIndex];
+ const to=tubes[toIndex];
+ if(!from.length||to.length>=CAP)return false;
+
+ const color=from[from.length-1];
+ if(to.length&&to[to.length-1]!==color)return false;
+
+ snapshot();
+
+ while(
+  from.length&&
+  from[from.length-1]===color&&
+  to.length<CAP
+ ){
+  to.push(from.pop());
+ }
+
+ moves++;
+ selected=-1;
+ playTone(520,.07);
+ render();
+ return true;
+}
+
+function tapTube(index){
+ if(isSolved())return;
+
+ if(selected===-1){
+  if(tubes[index].length){
+   selected=index;
+   $("message").textContent=tr("selectTarget");
+  }else{
+   $("message").textContent=tr("selectSource");
+  }
+  render();
+  return;
+ }
+
+ if(selected===index){
+  selected=-1;
+  render();
+  return;
+ }
+
+ const source=tubes[selected];
+ const target=tubes[index];
+
+ if(source.length&&target.length<CAP&&
+    (!target.length||target[target.length-1]===source[source.length-1])){
+  moveBalls(selected,index);
+ }else{
+  if(tubes[index].length){
+   selected=index;
+   $("message").textContent=tr("invalid");
+  }else{
+   selected=-1;
+   $("message").textContent=tr("invalid");
+  }
+  render();
+ }
+}
+
+/* ---------------- ACHIEVEMENTS ---------------- */
+
 const ACHIEVEMENTS=[
  {id:"first",count:1,reward:10},
  {id:"five",count:5,reward:25},
@@ -516,626 +1055,488 @@ const ACHIEVEMENTS=[
  {id:"fivehundred",count:500,reward:500}
 ];
 
-function saveCoins(){try{localStorage.setItem("ce_coins_v1",String(coins))}catch(e){}}
-function saveProgress(){try{localStorage.setItem("ce_progress_v1",JSON.stringify({level,tubes,moves}))}catch(e){}}
-function levelColors(n){
- if(n<=5)return 3;if(n<=12)return 4;if(n<=20)return 5;
- if(n<=30)return 6;if(n<=40)return 7;return 8;
-}
-function scrambleSteps(n){
- if(n<=5)return 12+n*2;
- if(n<=12)return 25+(n-5)*3;
- if(n<=20)return 46+(n-12)*3;
- if(n<=30)return 70+(n-20)*3;
- if(n<=40)return 100+(n-30)*3;
- return Math.min(1900,130+(n-40)*4);
-}
-function makeLevel(n){
- const count=levelColors(n);
- const result=Array.from({length:count+2},(_,i)=>i<count?Array(CAP).fill(i):[]);
- let seed=9871+n*7919;
- const random=max=>{seed=(seed*16807)%2147483647;return seed%max};
- let previous="";
- for(let step=0;step<scrambleSteps(n);step++){
-  const choices=[];
-  for(let from=0;from<result.length;from++){
-   const tube=result[from];if(!tube.length)continue;
-   const color=tube[tube.length-1];let run=1;
-   while(run<tube.length&&tube[tube.length-1-run]===color)run++;
-   for(let to=0;to<result.length;to++){
-    if(to===from)continue;
-    const target=result[to];
-    const maxMove=Math.min(run===tube.length?run:run-1,CAP-target.length);
-    if(maxMove<1)continue;
-    if(target.length&&target[target.length-1]===color)continue;
-    if(previous===to+":"+from)continue;
-    choices.push({from,to,maxMove});
-   }
-  }
-  if(!choices.length)break;
-  const move=choices[random(choices.length)];
-  const amount=1+random(move.maxMove);
-  for(let k=0;k<amount;k++)result[move.to].push(result[move.from].pop());
-  previous=move.from+":"+move.to;
- }
- return result;
-}
-function solved(){
- return tubes.every(t=>t.length===0||(t.length===CAP&&t.every(v=>v===t[0])));
-}
-function snapshot(){
- history.push({tubes:tubes.map(t=>t.slice()),moves});
- if(history.length>100)history.shift();
-}
 function checkAchievements(){
  let changed=false;
  ACHIEVEMENTS.forEach(a=>{
   if(claimed.length>=a.count&&!unlockedAchievements.includes(a.id)){
-   unlockedAchievements.push(a.id);coins+=a.reward;changed=true;
+   unlockedAchievements.push(a.id);
+   coins+=a.reward;
+   changed=true;
+   toast("🏆 "+tr(a.id)+" +"+a.reward+" 🪙");
   }
  });
  if(changed){
-  try{localStorage.setItem("ce_achievements_v1",JSON.stringify(unlockedAchievements))}catch(e){}
+  localStorage.setItem("ce_achievements_v1",JSON.stringify(unlockedAchievements));
   saveCoins();
-  $("message").textContent="🏆 "+tr("unlocked");
  }
 }
 function renderAchievements(){
- const list=$("achievementList");list.innerHTML="";
+ const list=$("achievementList");
+ list.innerHTML="";
  ACHIEVEMENTS.forEach(a=>{
   const unlocked=unlockedAchievements.includes(a.id);
-  const item=document.createElement("div");item.className="achievement";
-  const title=document.createElement("strong");title.textContent=tr(a.id);
-  const desc=document.createElement("small");desc.textContent=a.count+" · "+a.reward+" 🪙";
-  const status=document.createElement("small");status.textContent=unlocked?tr("unlocked"):tr("locked");
-  item.append(title,desc,status);list.appendChild(item);
+  const item=document.createElement("div");
+  item.className="achievement";
+  const title=document.createElement("strong");
+  title.textContent=tr(a.id);
+  const desc=document.createElement("small");
+  desc.textContent=a.count+" · "+a.reward+" 🪙";
+  const status=document.createElement("small");
+  status.textContent=unlocked?tr("unlocked"):tr("locked");
+  item.append(title,desc,status);
+  list.appendChild(item);
  });
- $("achievementSummary").textContent=unlockedAchievements.length+" / "+ACHIEVEMENTS.length+" · "+tr("achievementSummary");
+ $("achievementSummary").textContent=
+  unlockedAchievements.length+" / "+ACHIEVEMENTS.length+" · "+tr("achievementSummary");
 }
 
-async function submitLeaderboardScore(){
- if(!tg?.initData)return;
- const completed=claimed.length?Math.max(...claimed.map(Number).filter(Number.isFinite),0):0;
- const score=Math.max(completed,level-(solved()?0:1));
- if(score<=leaderboardSentLevel)return;
- try{
-  const response=await fetch("/score",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({initData:tg.initData,level:score,completed:claimed.length})
-  });
-  if(response.ok)leaderboardSentLevel=score;
- }catch(e){}
-}
-async function loadLeaderboard(){
- const list=$("leaderboardList");list.textContent=tr("loading");
- try{
-  const response=await fetch("/leaderboard");
-  if(!response.ok)throw new Error();
-  const data=await response.json();
-  if(!Array.isArray(data.players)||!data.players.length){list.textContent=tr("noPlayers");return}
-  list.innerHTML="";
-  data.players.forEach((p,i)=>{
-   const row=document.createElement("div");row.className="leader-row";
-   const rank=document.createElement("div");rank.className="leader-rank";rank.textContent="#"+(i+1);
-   const name=document.createElement("div");name.className="leader-name";
-   const title=document.createElement("strong");title.textContent=p.name||"Player";
-   const meta=document.createElement("div");meta.className="leader-meta";meta.textContent=(p.completed||0)+" "+tr("completed");
-   name.append(title,meta);
-   const lvl=document.createElement("strong");lvl.textContent=tr("levelWord")+" "+(p.level||0);
-   row.append(rank,name,lvl);list.appendChild(row);
-  });
- }catch(e){list.textContent=tr("serverError")}
-}
+/* ---------------- DAILY REWARD ---------------- */
 
-function render(){
- saveProgress();
- $("level").textContent=level+" / "+TOTAL;
- $("moves").textContent=moves;
- $("best").textContent=best[level]||"—";
- $("coins").textContent=coins;
- $("undo").disabled=!history.length;
- $("skip").disabled=level>=TOTAL||coins<SKIP_COST;
- $("next").disabled=!solved()||level>=TOTAL;
-
- const root=$("tubes");root.innerHTML="";
- tubes.forEach((tube,i)=>{
-  const el=document.createElement("button");
-  el.type="button";
-  el.className="tube"+(selected===i?" selected":"");
-  el.setAttribute("aria-label","Tube "+(i+1));
-  el.addEventListener("click",()=>tapTube(i));
-  tube.forEach(color=>{
-   const liquid=document.createElement("span");
-   liquid.className="liquid";
-   liquid.style.background=COLORS[color];
-   el.appendChild(liquid);
-  });
-  root.appendChild(el);
- });
-
- if(solved()){
-  submitLeaderboardScore();
-  $("message").textContent=tr("solved");
-  if(!claimed.includes(level)){
-   coins+=LEVEL_REWARD;claimed.push(level);saveCoins();
-   try{localStorage.setItem("ce_rewards_v1",JSON.stringify(claimed))}catch(e){}
-  }
-  checkAchievements();
-  if(!best[level]||moves<best[level]){
-   best[level]=moves;
-   try{localStorage.setItem("ce_best",JSON.stringify(best))}catch(e){}
-  }
-  $("best").textContent=best[level];
-  $("coins").textContent=coins;
-  $("winText").textContent=tr("levelWord")+" "+level+" · "+moves+" "+tr("movesWord")+" · +"+LEVEL_REWARD+" 🪙";
-  $("win").classList.add("show");
- }else{
-  $("win").classList.remove("show");
- }
+function dateKey(date=new Date()){
+ return date.getFullYear()+"-"+
+  String(date.getMonth()+1).padStart(2,"0")+"-"+
+  String(date.getDate()).padStart(2,"0");
 }
-function tapTube(i){
- if(solved())return;
- if(selected===-1){
-  if(tubes[i].length){selected=i;$("message").textContent=tr("selectTarget")}
-  else $("message").textContent=tr("selectSource");
-  render();return;
- }
- if(selected===i){selected=-1;render();return}
- const from=tubes[selected],to=tubes[i];
- if(from.length&&to.length<CAP&&(!to.length||to[to.length-1]===from[from.length-1])){
-  snapshot();
-  const color=from[from.length-1];
-  while(from.length&&from[from.length-1]===color&&to.length<CAP)to.push(from.pop());
-  moves++;selected=-1;render();
- }else{
-  selected=i;$("message").textContent=tr("invalid");render();
- }
-}
-function start(n){
- level=n;tubes=makeLevel(n);selected=-1;moves=0;history=[];
- $("win").classList.remove("show");
- $("message").textContent=tr("startMessage");
- render();
-}
-function localDateKey(d=new Date()){
- return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
-function dailyStatus(){
- const today=localDateKey(),y=new Date();y.setDate(y.getDate()-1);
- const yesterday=localDateKey(y);
- const streak=dailyData.lastClaim===yesterday?(Number(dailyData.streak)||0)+1:1;
- return{today,already:dailyData.lastClaim===today,streak,reward:Math.min(10+(streak-1)*5,50)};
+function getDaily(){
+ const today=dateKey();
+ const yesterdayDate=new Date();
+ yesterdayDate.setDate(yesterdayDate.getDate()-1);
+ const yesterday=dateKey(yesterdayDate);
+ const streak=dailyData.lastClaim===yesterday?
+  (Number(dailyData.streak)||0)+1:1;
+ return{
+  today,
+  already:dailyData.lastClaim===today,
+  streak,
+  reward:Math.min(10+(streak-1)*5,50)
+ };
 }
 function updateDaily(){
- const d=dailyStatus();
+ const d=getDaily();
  $("dailyReward").textContent=d.reward+" 🪙";
  $("dailyStreak").textContent=tr("dailyDay")+" "+d.streak+" · "+tr("streak");
  $("claimDaily").disabled=d.already;
  $("claimDaily").textContent=d.already?tr("dailyDone"):tr("claim")+" · "+d.reward+" 🪙";
 }
+
+/* ---------------- HINT ---------------- */
+
+function findHint(){
+ for(let i=0;i<tubes.length;i++){
+  const a=tubes[i];
+  if(!a.length)continue;
+  const color=a[a.length-1];
+
+  for(let j=0;j<tubes.length;j++){
+   if(i===j)continue;
+   const b=tubes[j];
+   if(b.length<CAP&&b.length&&b[b.length-1]===color)
+    return[i,j];
+  }
+ }
+ for(let i=0;i<tubes.length;i++){
+  if(!tubes[i].length)continue;
+  for(let j=0;j<tubes.length;j++){
+   if(i!==j&&tubes[j].length===0)return[i,j];
+  }
+ }
+ return null;
+}
+function useHint(){
+ if(isSolved())return;
+ if(coins<15){toast(tr("noCoins"));return}
+ const pair=findHint();
+ if(!pair){toast(tr("noHint"));return}
+ coins-=15;saveCoins();
+ selected=pair[0];
+ render();
+ $("message").textContent=
+  tr("hintFrom")+" "+(pair[0]+1)+" "+tr("hintTo")+" "+(pair[1]+1);
+ const target=$("playArea").children[pair[1]];
+ if(target){
+  target.animate(
+   [{transform:"scale(1)"},{transform:"scale(1.13)"},{transform:"scale(1)"}],
+   {duration:650,iterations:2}
+  );
+ }
+ updateShop();
+}
+
+/* ---------------- SHOP ---------------- */
+
 function updateShop(){
- $("buyHint").disabled=coins<15||solved();
- $("buyHint").textContent=tr("hint")+" · 15 🪙";
+ $("buyHint").disabled=coins<15||isSolved();
+ $("buyHint").textContent=tr("hintButton");
  $("buySkin").disabled=goldenSkin||coins<40;
  $("buySkin").textContent=goldenSkin?tr("skinActive"):"40 🪙";
 }
-function applyLanguage(){
- const rtl=["fa","ar"].includes(language);
- document.documentElement.lang=language;
- document.documentElement.dir=rtl?"rtl":"ltr";
- $("language").value=language;
- document.querySelectorAll("[data-i]").forEach(el=>el.textContent=tr(el.dataset.i));
- $("soundToggle").textContent=muted?tr("soundOff"):tr("soundOn");
+function buySkin(){
+ if(goldenSkin)return;
+ if(coins<40){toast(tr("noCoins"));return}
+ coins-=40;
+ goldenSkin=true;
+ document.body.classList.add("golden");
+ localStorage.setItem("ce_golden_skin_v1","1");
+ saveCoins();updateShop();render();
+ $("shopMessage").textContent=tr("skinBought");
 }
+
+/* ---------------- LEADERBOARD ---------------- */
+
+async function submitScore(){
+ if(!tg?.initData)return;
+
+ const completed=claimed.length;
+ const score=Math.max(0,level-(isSolved()?0:1));
+ if(score<=leaderboardSentLevel)return;
+
+ try{
+  const response=await fetch("/score",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    initData:tg.initData,
+    level:score,
+    completed
+   })
+  });
+  if(response.ok)leaderboardSentLevel=score;
+ }catch(e){}
+}
+
+async function loadLeaderboard(){
+ const list=$("leaderboardList");
+ list.textContent=tr("loading");
+
+ try{
+  const response=await fetch("/leaderboard");
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const data=await response.json();
+
+  if(!Array.isArray(data.players)||!data.players.length){
+   list.textContent=tr("noPlayers");
+   return;
+  }
+
+  list.innerHTML="";
+  data.players.forEach((p,i)=>{
+   const row=document.createElement("div");
+   row.className="leader-row";
+
+   const rank=document.createElement("div");
+   rank.className="leader-rank";
+   rank.textContent="#"+(i+1);
+
+   const name=document.createElement("div");
+   name.className="leader-name";
+
+   const title=document.createElement("strong");
+   title.textContent=p.name||"Player";
+
+   const meta=document.createElement("div");
+   meta.className="leader-meta";
+   meta.textContent=(p.completed||0)+" "+tr("completed");
+
+   name.append(title,meta);
+
+   const lvl=document.createElement("strong");
+   lvl.textContent=tr("level")+" "+(p.level||0);
+
+   row.append(rank,name,lvl);
+   list.appendChild(row);
+  });
+ }catch(e){
+  list.textContent=tr("serverError");
+ }
+}
+
+/* ---------------- RENDER GAME ---------------- */
+
+function tubeColumns(count){
+ if(count<=4)return count;
+ if(count===5)return 3;
+ if(count<=8)return 4;
+ return 4;
+}
+
+function render(){
+ const area=$("playArea");
+ area.innerHTML="";
+
+ const count=tubes.length;
+ area.className="play-area count-"+count;
+
+ tubes.forEach((tube,index)=>{
+  const wrap=document.createElement("div");
+  wrap.className="tube-wrap";
+
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="tube";
+  if(selected===index)button.classList.add("selected");
+  if(!tube.length)button.classList.add("empty");
+  button.setAttribute("aria-label","Bottle "+(index+1));
+  button.addEventListener("click",()=>tapTube(index));
+
+  tube.forEach((color,ballIndex)=>{
+   const ball=document.createElement("span");
+   ball.className="ball";
+   ball.style.setProperty("--ball-color",COLORS[color]);
+   ball.style.animationDelay=(ballIndex*.035)+"s";
+   button.appendChild(ball);
+  });
+
+  const shine=document.createElement("span");
+  shine.className="tube-shine";
+  const shine2=document.createElement("span");
+  shine2.className="tube-shine second";
+  const base=document.createElement("span");
+  base.className="tube-base";
+
+  button.append(shine,shine2,base);
+  wrap.appendChild(button);
+  area.appendChild(wrap);
+ });
+
+ $("level").textContent=level+" / "+TOTAL;
+ $("stageLevel").textContent="LEVEL "+String(level).padStart(2,"0");
+ $("moves").textContent=moves;
+ $("best").textContent=best[level]||"—";
+ $("coins").textContent=coins;
+ $("undo").disabled=!history.length;
+ $("skip").disabled=level>=TOTAL||coins<30;
+ $("hint").disabled=isSolved()||coins<15;
+ $("next").disabled=!isSolved()||level>=TOTAL;
+
+ const done=tubes.reduce((sum,t)=>{
+  return sum+(t.length===CAP&&t.every(v=>v===t[0])?1:0);
+ },0);
+ const count=colorCount(level);
+ $("progress").style.width=(done/count*100)+"%";
+
+ if(isSolved()){
+  $("message").textContent=tr("solved");
+
+  if(!claimed.includes(level)){
+   claimed.push(level);
+   coins+=20;
+   localStorage.setItem("ce_rewards_v1",JSON.stringify(claimed));
+   saveCoins();
+  }
+
+  checkAchievements();
+
+  if(!best[level]||moves<best[level]){
+   best[level]=moves;
+   localStorage.setItem("ce_best",JSON.stringify(best));
+  }
+
+  $("best").textContent=best[level];
+  $("coins").textContent=coins;
+  $("winText").textContent=
+   tr("level")+" "+level+" · "+moves+" "+tr("moves")+" · +20 🪙";
+  $("win").classList.add("show");
+  submitScore();
+ }else{
+  $("win").classList.remove("show");
+ }
+
+ updateShop();
+ saveProgress();
+}
+
+/* ---------------- LEVEL CONTROL ---------------- */
+
+function startLevel(n){
+ level=Math.max(1,Math.min(TOTAL,n));
+ tubes=createLevel(level);
+ moves=0;
+ selected=-1;
+ history=[];
+ $("win").classList.remove("show");
+ $("message").textContent=tr("start");
+ render();
+}
+
+function undoMove(){
+ const previous=history.pop();
+ if(!previous)return;
+ tubes=previous.tubes.map(t=>t.slice());
+ moves=previous.moves;
+ selected=-1;
+ $("win").classList.remove("show");
+ render();
+ playTone(340,.08);
+}
+
+/* ---------------- SOUND ---------------- */
+
+function playTone(freq,duration=.08){
+ if(muted)return;
+ try{
+  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
+  const oscillator=audio.createOscillator();
+  const gain=audio.createGain();
+
+  oscillator.frequency.value=freq;
+  gain.gain.setValueAtTime(.0001,audio.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.035,audio.currentTime+.01);
+  gain.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+duration);
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+  oscillator.start();
+  oscillator.stop(audio.currentTime+duration+.02);
+ }catch(e){}
+}
+
+/* ---------------- LANGUAGE ---------------- */
+
+function applyLanguage(){
+ const rtl=lang==="fa"||lang==="ar";
+ document.documentElement.lang=lang;
+ document.documentElement.dir=rtl?"rtl":"ltr";
+ $("language").value=lang;
+
+ document.querySelectorAll("[data-i]").forEach(el=>{
+  const key=el.dataset.i;
+  el.textContent=tr(key);
+ });
+
+ $("soundToggle").textContent=muted?tr("soundOff"):tr("soundOn");
+ $("message").textContent=tr("start");
+}
+
+/* ---------------- EVENTS ---------------- */
+
 $("language").addEventListener("change",()=>{
- language=$("language").value;
- localStorage.setItem("ce_language",language);
- applyLanguage();render();
+ lang=$("language").value;
+ localStorage.setItem("ce_language",lang);
+ applyLanguage();
+ render();
 });
-$("openLeaderboard").onclick=()=>{$("leaderboard").classList.add("show");loadLeaderboard()};
-$("closeLeaderboard").onclick=()=>$("leaderboard").classList.remove("show");
-$("refreshLeaderboard").onclick=loadLeaderboard;
-$("openAchievements").onclick=()=>{$("achievements").classList.add("show");renderAchievements()};
-$("closeAchievements").onclick=()=>$("achievements").classList.remove("show");
-$("openShop").onclick=()=>{$("shop").classList.add("show");updateShop()};
-$("closeShop").onclick=()=>$("shop").classList.remove("show");
-$("dailyOpen").onclick=()=>{$("daily").classList.add("show");updateDaily()};
-$("closeDaily").onclick=()=>$("daily").classList.remove("show");
-$("claimDaily").onclick=()=>{
- const d=dailyStatus();if(d.already)return;
- coins+=d.reward;dailyData={lastClaim:d.today,streak:d.streak};
- try{localStorage.setItem("ce_daily_reward_v1",JSON.stringify(dailyData))}catch(e){}
- saveCoins();updateDaily();render();
- $("dailyMessage").textContent=tr("claimSuccess");
+
+$("undo").onclick=undoMove;
+$("restart").onclick=()=>startLevel(level);
+
+$("next").onclick=()=>{
+ if(isSolved()&&level<TOTAL)startLevel(level+1);
 };
-$("buyHint").onclick=()=>{
- if(coins<15||solved())return;
- let choice=null;
- for(let i=0;i<tubes.length&&!choice;i++){
-  if(!tubes[i].length)continue;
-  const color=tubes[i][tubes[i].length-1];
-  for(let j=0;j<tubes.length;j++){
-   if(i!==j&&tubes[j].length>0&&tubes[j].length<CAP&&tubes[j][tubes[j].length-1]===color){choice=[i,j];break}
-  }
- }
- if(!choice){
-  for(let i=0;i<tubes.length&&!choice;i++){
-   if(!tubes[i].length)continue;
-   for(let j=0;j<tubes.length;j++)if(i!==j&&!tubes[j].length){choice=[i,j];break}
-  }
- }
- if(!choice){$("message").textContent=tr("noHint");return}
- coins-=15;saveCoins();$("shop").classList.remove("show");
- $("message").textContent=tr("hintFrom")+" "+(choice[0]+1)+" "+tr("hintTo")+" "+(choice[1]+1);
- selected=choice[0];render();updateShop();
-};
-$("buySkin").onclick=()=>{
- if(goldenSkin||coins<40)return;
- coins-=40;goldenSkin=true;document.body.classList.add("golden");
- try{localStorage.setItem("ce_golden_skin_v1","1")}catch(e){}
- saveCoins();updateShop();render();$("shopMessage").textContent=tr("skinBought");
-};
-$("undo").onclick=()=>{
- const s=history.pop();if(!s)return;
- tubes=s.tubes.map(t=>t.slice());moves=s.moves;selected=-1;
- $("win").classList.remove("show");render();
-};
-$("restart").onclick=()=>start(level);
-$("next").onclick=()=>{if(level<TOTAL)start(level+1)};
+
 $("skip").onclick=()=>{
- if(level>=TOTAL||coins<SKIP_COST)return;
- coins-=SKIP_COST;saveCoins();start(level+1);
+ if(level>=TOTAL)return;
+ if(coins<30){toast(tr("noCoins"));return}
+ coins-=30;saveCoins();
+ startLevel(level+1);
 };
+
+$("hint").onclick=useHint;
+
 $("continue").onclick=()=>{
  $("win").classList.remove("show");
- if(level<TOTAL)start(level+1);
- else $("message").textContent=tr("allDone");
+ if(level<TOTAL)startLevel(level+1);
+ else{
+  $("message").textContent=tr("allDone");
+  toast(tr("allDone"));
+ }
 };
+
+$("openShop").onclick=()=>{
+ $("shopModal").classList.add("show");
+ updateShop();
+};
+$("closeShop").onclick=()=>$("shopModal").classList.remove("show");
+$("buyHint").onclick=()=>{
+ $("shopModal").classList.remove("show");
+ useHint();
+};
+$("buySkin").onclick=buySkin;
+
+$("dailyOpen").onclick=()=>{
+ $("dailyModal").classList.add("show");
+ updateDaily();
+};
+$("closeDaily").onclick=()=>$("dailyModal").classList.remove("show");
+
+$("claimDaily").onclick=()=>{
+ const d=getDaily();
+ if(d.already)return;
+
+ coins+=d.reward;
+ dailyData={lastClaim:d.today,streak:d.streak};
+
+ localStorage.setItem("ce_daily_reward_v1",JSON.stringify(dailyData));
+ saveCoins();
+ updateDaily();
+ render();
+ $("dailyMessage").textContent=tr("claimSuccess");
+ toast("+"+d.reward+" 🪙");
+};
+
+$("openLeaderboard").onclick=()=>{
+ $("leaderboardModal").classList.add("show");
+ loadLeaderboard();
+};
+$("closeLeaderboard").onclick=()=>$("leaderboardModal").classList.remove("show");
+$("refreshLeaderboard").onclick=loadLeaderboard;
+
+$("openAchievements").onclick=()=>{
+ $("achievementsModal").classList.add("show");
+ renderAchievements();
+};
+$("closeAchievements").onclick=()=>$("achievementsModal").classList.remove("show");
 
 $("soundToggle").onclick=()=>{
  muted=!muted;
  $("soundToggle").textContent=muted?tr("soundOff"):tr("soundOn");
- if(!muted)tone(660,.12);
+ if(!muted)playTone(650,.12);
 };
-function tone(freq,duration=.07){
- if(muted)return;
- try{
-  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
-  const o=audio.createOscillator(),g=audio.createGain();
-  o.frequency.value=freq;
-  g.gain.setValueAtTime(.0001,audio.currentTime);
-  g.gain.exponentialRampToValueAtTime(.035,audio.currentTime+.01);
-  g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+duration);
-  o.connect(g);g.connect(audio.destination);
-  o.start();o.stop(audio.currentTime+duration+.02);
- }catch(e){}
-}
-document.addEventListener("click",e=>{
- if(e.target.closest("#tubes,.tube"))tone(420,.05);
+
+/* Close modal by tapping outside */
+document.querySelectorAll(".overlay").forEach(overlay=>{
+ overlay.addEventListener("click",e=>{
+  if(e.target===overlay)overlay.classList.remove("show");
+ });
 });
 
-let saved=null;
-try{saved=JSON.parse(localStorage.getItem("ce_progress_v1")||"null")}catch(e){}
-if(saved&&Number.isInteger(saved.level)&&saved.level>=1&&saved.level<=TOTAL&&Array.isArray(saved.tubes)&&saved.tubes.length){
- level=saved.level;
- tubes=saved.tubes.map(t=>Array.isArray(t)?t.slice():[]);
- moves=Number(saved.moves)||0;
- if(tubes.length!==levelColors(level)+2||!tubes.every(t=>t.length<=CAP&&t.every(c=>Number.isInteger(c)&&c>=0&&c<levelColors(level)))){
-  tubes=makeLevel(level);moves=0;
- }
- render();
-}else start(1);
+/* ---------------- RESTORE SAVED GAME ---------------- */
 
-applyLanguage();updateShop();
-})();
-</script>
+function restoreGame(){
+ let saved=null;
+ try{
+  saved=JSON.parse(localStorage.getItem("ce_progress_v1")||"null");
+ }catch(e){}
 
-<script type="module">
-(async()=>{
-const host=document.getElementById("threeBoard");
-const board=document.getElementById("gameBoard");
-const root=document.getElementById("tubes");
-let THREE,renderer,scene,camera,raycaster,observer,resizeObserver;
-let groups=[],ballObjects=[],signature="";
-const fallback=()=>{
- board.classList.remove("is-loading","three-ready");
- host.style.display="none";
-};
-function disposeGroup(g){
- g.traverse(o=>{
-  if(o.geometry)o.geometry.dispose();
-  if(o.material){
-   if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());
-   else o.material.dispose();
+ if(saved&&Number.isInteger(saved.level)&&
+    saved.level>=1&&saved.level<=TOTAL&&
+    Array.isArray(saved.tubes)&&saved.tubes.length){
+
+  const expected=colorCount(saved.level);
+  const valid=
+   saved.tubes.length===expected+2&&
+   saved.tubes.every(t=>
+    Array.isArray(t)&&t.length<=CAP&&
+    t.every(c=>Number.isInteger(c)&&c>=0&&c<expected)
+   );
+
+  if(valid){
+   level=saved.level;
+   tubes=saved.tubes.map(t=>t.slice());
+   moves=Number(saved.moves)||0;
+   history=[];
+   selected=-1;
+   return;
   }
- });
- scene.remove(g);
-}
-function clear(){
- groups.forEach(disposeGroup);
- groups=[];ballObjects=[];
-}
-function woodMaterial(color,roughness=.78){
- return new THREE.MeshStandardMaterial({color,roughness,metalness:.02});
-}
-function addEnvironment(){
- const table=new THREE.Group();scene.add(table);
- const top=new THREE.Mesh(
-  new THREE.BoxGeometry(18,.32,13),
-  woodMaterial(0x765039)
- );
- top.position.set(0,-.36,-.1);top.receiveShadow=true;table.add(top);
-
- for(let i=0;i<9;i++){
-  const plank=new THREE.Mesh(
-   new THREE.BoxGeometry(17.9,.012,1.42),
-   woodMaterial(i%2?0x8c6041:0x795137)
-  );
-  plank.position.set(0,-.19,-5.5+i*1.35);
-  plank.receiveShadow=true;table.add(plank);
  }
- for(let i=0;i<22;i++){
-  const line=new THREE.Mesh(
-   new THREE.BoxGeometry(THREE.MathUtils.randFloat(2,8),.006,.012),
-   new THREE.MeshBasicMaterial({color:0x43291d,transparent:true,opacity:.25})
-  );
-  line.position.set(THREE.MathUtils.randFloat(-7,7),-.178,THREE.MathUtils.randFloat(-5.5,5.5));
-  line.rotation.y=THREE.MathUtils.randFloat(-.025,.025);
-  table.add(line);
- }
- const wall=new THREE.Mesh(
-  new THREE.PlaneGeometry(20,10),
-  new THREE.MeshBasicMaterial({color:0x303c37})
- );
- wall.position.set(0,4.2,-6.5);scene.add(wall);
-
- const pot=new THREE.Mesh(
-  new THREE.CylinderGeometry(.65,.48,1.15,32),
-  woodMaterial(0x765039)
- );
- pot.position.set(6.2,.38,-3.7);scene.add(pot);
-
- const soil=new THREE.Mesh(
-  new THREE.CircleGeometry(.47,24),
-  woodMaterial(0x30251d)
- );
- soil.rotation.x=-Math.PI/2;soil.position.set(6.2,.97,-3.7);scene.add(soil);
-
- for(let i=0;i<7;i++){
-  const leaf=new THREE.Mesh(
-   new THREE.SphereGeometry(1,16,12),
-   new THREE.MeshStandardMaterial({color:i%2?0x477b3e:0x67934a,roughness:.65})
-  );
-  leaf.scale.set(.25,.85,.11);
-  leaf.position.set(6.2+Math.sin(i*1.1)*.65,1.65+Math.cos(i)*.3,-3.7+Math.cos(i*1.1)*.45);
-  leaf.rotation.z=(i-3)*.25;scene.add(leaf);
- }
- const lamp=new THREE.PointLight(0xffbd70,30,12);
- lamp.position.set(-6,5,1);scene.add(lamp);
- const glow=new THREE.Mesh(
-  new THREE.SphereGeometry(.22,20,16),
-  new THREE.MeshBasicMaterial({color:0xffd28a})
- );
- glow.position.copy(lamp.position);scene.add(glow);
+ startLevel(1);
 }
 
-function makeBottle(group,colors){
- const glass=new THREE.MeshPhysicalMaterial({
-  color:0xd7e9e5,metalness:.04,roughness:.12,
-  transmission:.28,thickness:.24,ior:1.38,
-  transparent:true,opacity:.55,clearcoat:1,
-  clearcoatRoughness:.035,side:THREE.DoubleSide,
-  depthWrite:false
- });
- const profile=[
-  new THREE.Vector2(.29,.10),new THREE.Vector2(.35,.13),
-  new THREE.Vector2(.39,.22),new THREE.Vector2(.39,2.02),
-  new THREE.Vector2(.38,2.13),new THREE.Vector2(.32,2.23),
-  new THREE.Vector2(.25,2.30),new THREE.Vector2(.235,2.38),
-  new THREE.Vector2(.235,2.75),new THREE.Vector2(.27,2.78),
-  new THREE.Vector2(.27,2.87),new THREE.Vector2(.22,2.91),
-  new THREE.Vector2(.20,2.88)
- ];
- const bottle=new THREE.Mesh(new THREE.LatheGeometry(profile,48),glass);
- bottle.position.y=.03;group.add(bottle);
+restoreGame();
+applyLanguage();
+render();
+updateDaily();
+updateShop();
 
- const mouth=new THREE.Mesh(
-  new THREE.TorusGeometry(.255,.045,14,48),
-  new THREE.MeshPhysicalMaterial({color:0xe4f8ff,metalness:.18,roughness:.08,clearcoat:1})
- );
- mouth.rotation.x=Math.PI/2;mouth.position.y=2.88;group.add(mouth);
-
- const baseRing=new THREE.Mesh(
-  new THREE.TorusGeometry(.34,.035,12,48),
-  new THREE.MeshStandardMaterial({color:0xc5e8ef,metalness:.35,roughness:.15})
- );
- baseRing.rotation.x=Math.PI/2;baseRing.position.y=.14;group.add(baseRing);
-
- for(const x of [-.31,.31]){
-  const shine=new THREE.Mesh(
-   new THREE.CylinderGeometry(.012,.018,1.7,8),
-   new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.72})
-  );
-  shine.position.set(x,1.12,.22);group.add(shine);
- }
-
- // توپ‌ها کمی جلوتر از بدنه شیشه قرار می‌گیرند تا پشت شیشه محو نشوند.
- colors.forEach((color,j)=>{
-  const mat=new THREE.MeshPhysicalMaterial({
-   color:new THREE.Color(color),roughness:.17,metalness:.015,
-   clearcoat:1,clearcoatRoughness:.045
-  });
-  const ball=new THREE.Mesh(new THREE.SphereGeometry(.255,36,28),mat);
-  const y=.39+j*.47;
-  ball.position.set(0,y,.17);
-  ball.castShadow=true;ball.receiveShadow=true;group.add(ball);
-  ballObjects.push({mesh:ball,base:y,phase:Math.random()*6.28,speed:.7+Math.random()*.4});
- });
-
- const bottom=new THREE.Mesh(
-  new THREE.CylinderGeometry(.34,.36,.12,40),
-  new THREE.MeshPhysicalMaterial({color:0xb8e6f2,transparent:true,opacity:.65,roughness:.12,clearcoat:1})
- );
- bottom.position.y=.10;group.add(bottom);
-
- const hit=new THREE.Mesh(
-  new THREE.CylinderGeometry(.52,.52,3.2,20),
-  new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false})
- );
- hit.position.y=1.45;hit.userData.tubeIndex=group.userData.tubeIndex;group.add(hit);
-}
-
-function build(){
- const buttons=[...root.querySelectorAll(".tube")];
- if(!buttons.length)return;
- clear();
- const count=buttons.length;
-
- // در موبایل بطری‌ها در ردیف‌های کوتاه‌تر قرار می‌گیرند.
- const perRow=count<=4?count:count<=8?4:5;
- const rows=Math.ceil(count/perRow);
- const gapX=count>8?1.52:1.72;
- const gapZ=3.25;
-
- buttons.forEach((button,i)=>{
-  const colors=[...button.querySelectorAll(".liquid")].map(el=>el.style.background);
-  const row=Math.floor(i/perRow);
-  const col=i%perRow;
-  const rowCount=Math.min(perRow,count-row*perRow);
-  const x=(col-(rowCount-1)/2)*gapX;
-  const z=(row-(rows-1)/2)*gapZ;
-
-  const g=new THREE.Group();
-  g.position.set(x,.02,z);
-  g.userData.tubeIndex=i;
-  scene.add(g);groups.push(g);
-  makeBottle(g,colors);
-
-  const shadow=new THREE.Mesh(
-   new THREE.CircleGeometry(.72,32),
-   new THREE.MeshBasicMaterial({color:0x1b100c,transparent:true,opacity:.25})
-  );
-  shadow.rotation.x=-Math.PI/2;
-  shadow.position.set(0,.012,.05);
-  g.add(shadow);
- });
-
- const width=host.clientWidth,height=host.clientHeight;
- const aspect=Math.max(.45,width/height);
- const requiredW=(perRow-1)*gapX+2.2;
- const requiredH=(rows-1)*gapZ+5.3;
- const fov=THREE.MathUtils.degToRad(35);
- const dist=Math.max(
-  10.8,
-  requiredW/(2*Math.tan(fov/2)*aspect),
-  requiredH/(2*Math.tan(fov/2))
- );
- camera.position.set(0,Math.min(7.2,5.4+rows*.3),dist);
- camera.lookAt(0,1.05,0);
- camera.updateProjectionMatrix();
-}
-
-function getSignature(){
- return [...root.querySelectorAll(".tube")].map(el=>el.innerHTML).join("|");
-}
-function refresh(){
- const s=getSignature();
- if(s!==signature){signature=s;build()}
-}
-function resize(){
- const w=host.clientWidth,h=host.clientHeight;
- if(!w||!h)return;
- renderer.setSize(w,h,false);
- camera.aspect=w/h;
- camera.updateProjectionMatrix();
- build();
- signature=getSignature();
-}
-function onPointer(e){
- const r=renderer.domElement.getBoundingClientRect();
- const mouse=new THREE.Vector2(
-  ((e.clientX-r.left)/r.width)*2-1,
-  -((e.clientY-r.top)/r.height)*2+1
- );
- raycaster.setFromCamera(mouse,camera);
- const hits=raycaster.intersectObjects(groups,true);
- if(!hits.length)return;
- let o=hits[0].object;
- while(o&&!Number.isInteger(o.userData.tubeIndex))o=o.parent;
- if(o){
-  const target=root.querySelectorAll(".tube")[o.userData.tubeIndex];
-  target?.click();
- }
-}
-
-try{
- THREE=await import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
-
- renderer=new THREE.WebGLRenderer({
-  antialias:true,alpha:false,powerPreference:"high-performance"
- });
- renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
- renderer.outputColorSpace=THREE.SRGBColorSpace;
- renderer.toneMapping=THREE.ACESFilmicToneMapping;
- renderer.toneMappingExposure=1.2;
- renderer.shadowMap.enabled=true;
- renderer.shadowMap.type=THREE.PCFSoftShadowMap;
- host.appendChild(renderer.domElement);
-
- scene=new THREE.Scene();
- scene.background=new THREE.Color(0x303c37);
- scene.fog=new THREE.Fog(0x303c37,18,35);
- camera=new THREE.PerspectiveCamera(35,1,.1,80);
-
- scene.add(new THREE.HemisphereLight(0xffe8cf,0x453126,2.0));
-
- const key=new THREE.DirectionalLight(0xffe1b8,3.0);
- key.position.set(-4,9,7);
- key.castShadow=true;
- key.shadow.mapSize.set(1024,1024);
- scene.add(key);
-
- const fill=new THREE.PointLight(0xffbd78,34,22);
- fill.position.set(-5,5,3);
- scene.add(fill);
-
- const cool=new THREE.PointLight(0x8bdcff,12,18);
- cool.position.set(5,4,1);
- scene.add(cool);
-
- addEnvironment();
- raycaster=new THREE.Raycaster();
- resize();
- build();
- signature=getSignature();
-
- renderer.domElement.addEventListener("pointerdown",onPointer);
- resizeObserver=new ResizeObserver(resize);
- resizeObserver.observe(host);
- observer=new MutationObserver(refresh);
- observer.observe(root,{childList:true,subtree:true});
-
- board.classList.remove("is-loading");
- board.classList.add("three-ready");
-
- const clock=new THREE.Clock();
- function animate(){
-  requestAnimationFrame(animate);
-  const t=clock.getElapsedTime();
-  ballObjects.forEach(b=>{
-   b.mesh.position.y=b.base+Math.sin(t*b.speed+b.phase)*.012;
-   b.mesh.rotation.y=t*.12;
-  });
-  fill.intensity=32+Math.sin(t*.6)*2;
-  renderer.render(scene,camera);
- }
- animate();
-
-}catch(err){
- console.error("3D renderer error:",err);
- fallback();
-}
 })();
 </script>
 </body>
